@@ -195,7 +195,14 @@ function tct_register_repeatable_brand_story_group_metabox() {
 /*
 *
 * CUSTOM POST TYPE: PORTFOLIO //////////////////////////////////////////////
-* []
+* [file_list] images
+* [text_date_timestamp] year
+* [text] city
+* [text] prefecture
+* [text] country
+* [text] architect
+* [text] production method
+* [text_small] volume
 *
 */
 
@@ -314,81 +321,84 @@ function tct_register_portfolio_data_metabox() {
 
 
 
-
-
 /*
-* Flexible Fields:
-* [wysiwyg] content translation
-* [radio] weather to show in front page or not
+*
+* CUSTOM POST TYPE: SAMPLE TILES //////////////////////////////////////////////
+* [file] image 1
+* [file] image 2
+*
 */
 
-//add_action( 'cmb2_admin_init', 'tct_register_brand_story_flexible_metabox' );
-/**
- * Hook in and add a demo metabox. Can only happen on the 'cmb2_admin_init' or 'cmb2_init' hook.
- */
-/*
-function tct_register_brand_story_flexible_metabox() {
-	$prefix = '_tct_brand_story_';
+add_action( 'cmb2_admin_init', 'tct_register_sample_tiles_metabox' );
 
+function tct_register_sample_tiles_metabox() {
+	$prefix = 'tct_sample_tiles_';
 
-	 // Sample metabox to demonstrate each field type included
-
-	$cmb_brand_story_flexible = new_cmb2_box( array(
-		'id'            => $prefix . 'flexible',
-		'title'         => esc_html__( 'Test Metabox', 'cmb2' ),
-		'object_types'  => array( 'brand_story' ), // Post type
-		'context'       => 'normal',
-		'priority'      => 'high',
-		'show_names'    => true,
+	$cmb_sample_tile = new_cmb2_box( array(
+		'id'            => $prefix . 'metabox',
+		'title'         => esc_html__( 'Tile Data', 'cmb2' ),
+		'object_types'  => array( 'sample_tile' ), // Post type
+		// 'show_on_cb' => 'yourprefix_show_if_front_page', // function should return a bool value
+		// 'context'    => 'normal',
+		// 'priority'   => 'high',
+		// 'show_names' => true, // Show field names on the left
+		// 'cmb_styles' => false, // false to disable the CMB stylesheet
+		// 'closed'     => true, // true to keep the metabox closed by default
+		// 'classes'    => 'extra-class', // Extra cmb2-wrap classes
+		// 'classes_cb' => 'yourprefix_add_some_classes', // Add classes through a callback.
 	) );
-
-//Then add your flexible field definition. Each layout group should be defined in the layouts array, with the `ID` for that group as its key. Each layout group can contain a `title` and a list of CMB2 `fields`.
-
-// Sample Flexible Field
-	$cmb_brand_story_flexible->add_field( array(
-		'name'       => __( 'Test Flexible', 'cmb2-flexible' ),
-		'desc'       => __( 'field description (optional)', 'cmb2-flexible' ),
-		'id'         => $prefix . 'flexible',
-		'type'       => 'flexible',
-		'layouts' => array(
-			
-			//text field
-				'text' => array(
-					'title' => 'Text Group',
-					'fields' => array(
-						array(
-							'type' => 'text',
-							'name' => 'Title for Text Group',
-							'id' => $prefix . 'title',
-						),
-						
-						array(
-							'type' => 'textarea',
-							'name' => 'Description for Text Group',
-							'id' => $prefix . 'description',
-						)
-					),
-				),
-			
-			//image field
-				'image' => array(
-					'title' => 'Image Group',
-					'fields' => array(
-						array(
-							'type' => 'file',
-							'name' => 'Image for Image Group',
-							'id' => $prefix . 'title',
-						),
-						array(
-							'type' => 'textarea',
-							'name' => 'Description for Image Group',
-							'id' => $prefix . 'description',
-						)
-					),
-				),
-			)
+	
+	// IMAGE 1 (frontal) FIELD
+	$cmb_sample_tile->add_field( array(
+		'name'    => 'Tile Image 1',
+		'desc'    => 'Upload an image or enter an URL.',
+		'id'      => $prefix . 'image_1',
+		'type'    => 'file',
+		// Optional:
+		'options' => array(
+			'url' => false, // Hide the text input for the url
+		),
+		'text'    => array(
+			'add_upload_file_text' => 'Add File' // Change upload button text. Default: "Add or Upload File"
+		),
+		// query_args are passed to wp.media's library query.
+		//'query_args' => array(
+			//'type' => 'application/pdf', // Make library only display PDFs.
+			// Or only allow gif, jpg, or png images
+			// 'type' => array(
+			// 	'image/gif',
+			// 	'image/jpeg',
+			// 	'image/png',
+			// ),
+		// ),
+		'preview_size' => 'large', // Image size to use when previewing in the admin.
 	) );
+	
+	// IMAGE 2 (perspective) FIELD
+	$cmb_sample_tile->add_field( array(
+		'name'    => 'Tile Image 2',
+		'desc'    => 'Upload an image or enter an URL.',
+		'id'      => $prefix . 'image_2',
+		'type'    => 'file',
+		// Optional:
+		'options' => array(
+			'url' => false, // Hide the text input for the url
+		),
+		'text'    => array(
+			'add_upload_file_text' => 'Add File' // Change upload button text. Default: "Add or Upload File"
+		),
+		// query_args are passed to wp.media's library query.
+		//'query_args' => array(
+			//'type' => 'application/pdf', // Make library only display PDFs.
+			// Or only allow gif, jpg, or png images
+			// 'type' => array(
+			// 	'image/gif',
+			// 	'image/jpeg',
+			// 	'image/png',
+			// ),
+		// ),
+		'preview_size' => 'large', // Image size to use when previewing in the admin.
+	) );	
+	
 }
-*/
-
 

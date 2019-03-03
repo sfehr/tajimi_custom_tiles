@@ -34,8 +34,8 @@ get_header();
 				 */
 //				get_template_part( 'template-parts/content', get_post_type() );
 			
-				// get custom made template content-brand_story
-				get_template_part( 'template-parts/content', 'brand_story' );			
+				// get custom made template content-brand_story: needs to be specifyed for other post types that inherit this template
+				get_template_part( 'template-parts/content', 'brand_story' );
 
 			endwhile;
 

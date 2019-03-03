@@ -40,6 +40,11 @@ Nicolas Gallagher and Jonathan Neal https://necolas.github.io/normalize.css/
 # Media
 	## Captions
 	## Galleries
+
+# Basic Styling
+# Header
+# Content
+# Grid Enhancement
 --------------------------------------------------------------*/
 
 /*--------------------------------------------------------------
@@ -54,26 +59,31 @@ Nicolas Gallagher and Jonathan Neal https://necolas.github.io/normalize.css/
 	--small-spacing: 4px;
 	--middle-spacing: 19px;
 	
+	--logo-size-small: 55px;
+	
 	/* COLOR */
 	--basic-color: black;
 	
 	/* TYPO */
-	--font-typeface: '__Linotype Univers_5', sans-serif;
+	--font-typeface: neue-haas-grotesk-display, sans-serif;
 	--font-weight: 400;
-	--font-big-size: 20px;
-	--font-big-lheight: 105%;
-	--font-medium-size: 20px;
-	--font-medium-lheight: 110%;
-	--font-small-size: 16px;
-	--font-small-lheight: 100%;
+	--font-size-l: 30.5px;
+	--font-size-m: 24px;
+	--font-size-s: 18px;
+	--font-size-xs: 13px;
+	--font-lheight-l: 105%;
+	--font-lheight-m: 110%;	
+	--font-lheight-s: 115%;
+	--font-lheight-xs: 115%;
 	
 	/* GRID */
 	--grid-column: 115px;
 	--grid-row: 115px;
-	--grid-gap: 12px;
+	--grid-gap: 9px;
 	--grid-setting: [line-start] var(--grid-column) repeat(auto-fill, [line-center] var(--grid-column) ) [line-end] var(--grid-column);
+	--grid-content-container: var(--grid-column) var(--grid-column) var(--grid-column) 1fr;
   
-	/* GRID ITEM */
+	/* GRID ITEM START PAGE */
 	/* 2-2 */
 	--item-s-xspan: 5; /* 3 + 2 */
 	--item-s-yspan: 4; /* 2 + 2 */
@@ -84,7 +94,7 @@ Nicolas Gallagher and Jonathan Neal https://necolas.github.io/normalize.css/
 	--item-l-yspan: 7; /* 6 + 1 */
 	/* 1-2 */
 	--item-txt-xspan: 4; /* 3 + 1 */
-
+	
 	
 	/* EFFECTS  */
 }
@@ -119,6 +129,18 @@ html {
 
 body {
 	margin: 0;
+	
+font-family: neue-haas-grotesk-display, sans-serif;
+font-style: normal;
+font-weight: 100;	
+	
+	overflow-x: hidden;
+	font-family: var(--font-typeface);
+	font-weight: var(--font-weight);
+	color: var(--basic-color);
+	/* font antialising setting */
+	-moz-osx-font-smoothing: grayscale;
+	-webkit-font-smoothing: antialiased;	
 }
 
 /**
@@ -446,8 +468,8 @@ input,
 select,
 optgroup,
 textarea {
-	color: #404040;
-	font-family: sans-serif;
+	color: var(--basic-color);
+	font-family: var(--font-typeface);
 	font-size: 16px;
 	font-size: 1rem;
 	line-height: 1.5;
@@ -1037,17 +1059,536 @@ object {
 
 
 
+/*--------------------------------------------------------------
+# Basic Styling
+--------------------------------------------------------------*/
+a,
+a:hover,
+a:visited
+{
+	color: var(--basic-color);
+}
 
+p{
+	line-height: var(--font-medium-lheight);
+	margin: unset;
+}
+
+.page-title,
+.site-info{
+	display: none;
+}
+
+h1 {
+	margin: 0px;
+	font-size: var(--font-size-l);
+}
+
+
+/*--------------------------------------------------------------
+# Header
+--------------------------------------------------------------*/
+
+/* SUB PAGE */
+
+.site-header{
+	height: var(--logo-size-small);
+	margin-top: var(--grid-gap);
+	margin-bottom: var(--grid-gap);
+}
+
+.custom-logo-link{
+	position: absolute;
+	display: flex;
+	top: var(--grid-gap);
+	left: var(--grid-gap);
+}
+
+.custom-logo-link:hover{
+	width: calc( (var(--grid-column) + 30px) / 2);
+	background: url("img/tct_logo_type.svg") no-repeat;
+	height: calc( var(--grid-column) / 2 );
+	transform: translate(-2px, -2px);
+}
+
+.custom-logo-link .custom-logo{
+	display: block;
+	width: var(--logo-size-small);
+}
+
+.custom-logo-link .custom-logo:hover{
+	opacity: 0;
+	padding-right: calc( (var(--grid-column) + 30px) / 2);
+}
+
+/* FRONT PAGE */
+
+.home .site-header{
+	height: var(--grid-row);
+}
+
+.home .custom-logo-link:hover{
+	width: calc(var(--grid-column) + 30px);
+	height: var(--grid-column);
+}
+
+.home .custom-logo-link .custom-logo{
+	width: var(--grid-column);
+}
+
+.home .custom-logo-link .custom-logo:hover{
+	padding-right: calc(var(--grid-column) + 30px);
+}
+
+/* GENERAL */
+
+.site-title,
+.site-description{
+	display: none;
+}
+
+.main-navigation{
+	position: fixed;
+	width: auto;
+	height: auto;
+	top: var(--grid-gap);
+	right: var(--grid-gap);
+	font-size: var(--font-size-m);
+}
+
+.main-navigation li{
+	margin-left: 20px;
+	line-height: 100%;
+}
+
+/*--------------------------------------------------------------
+# Content
+--------------------------------------------------------------*/
+
+.itm-mov iframe{
+	width: calc( (var(--grid-column) * 9) + (var(--grid-gap) * 8) );
+	height: calc( (var(--grid-row) * 6) + (var(--grid-gap) * 5) );
+	background: lightgray;
+}
+
+.entry-header h1{
+	font-size: var(--font-size-l);
+	font-weight: 500;
+	text-transform: uppercase;
+	line-height: var(--font-lheight-l);
+	hyphens: auto;
+}
+
+.entry-content p{	
+	font-size: var(--font-size-s);
+	line-height: var(--font-lheight-s);
+	font-weight: 600;
+	margin-top: -1px;
+}
+
+/* CUSTOM POST TYPE: Production Method, Collaborations */
+
+.production_method .container-content,
+.collaborations .container-content
+{
+	margin-bottom: var(--grid-gap);
+}
+
+
+/* CUSTOM POST TYPE: Portfolio */
+
+.portfolio .entry-title,
+.portfolio span,
+.portfolio p
+{
+	font-size: var(--font-size-xs);
+	line-height: var(--font-lheight-xs);
+	text-transform: capitalize;
+}
+	
+.portfolio span{
+	text-transform: uppercase;
+}
+
+.portfolio-entry-group span{
+	float: left;
+}
+	
+.portfolio-entry-group span:after {
+	content: '–';
+	margin-left: 4px;
+	margin-right: 5px;
+}
+	
+.entry-portfolio-data-year .data-title,
+.entry-portfolio-data-location .data-title,
+.portfolio .entry-footer
+{
+	display: none;
+}
+
+
+/* CUSTOM POST TYPE: Sample Tiles */
+
+.page-template-tmpl_sample_tiles .entry-title{
+	display: none;
+}
+
+.menu-tct-sample-tile-filter-container{
+	position: fixed;
+	right: var(--grid-gap);
+	top: calc( var(--logo-size-small) + 3px );	
+	font-size: var(--font-size-xs);
+}
+
+.menu-tct-sample-tile-filter-container .menu-item{
+	float: left;
+	list-style-type: none;
+	margin-left: 50px;
+}
+
+.menu-tct-sample-tile-filter-container .menu-item a{
+	text-decoration: none;
+}
+
+/* SAMPLE TILE */
+
+#tct-sample-tiles{
+	
+}
+
+.sample-tile{
+	display: inline-flex;
+	position: relative;
+	font-size: var(--font-size-s);
+}
+
+.sample-tile *{
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	margin:0px;
+	padding: 0px;
+}
+
+/* Tile Checkbox */
+.tile-checkbox{
+	z-index: 5;
+	width: 100%;
+	height: 100%;
+	opacity: 0;
+	cursor: pointer;
+}
+
+.tile-checkbox:hover{
+	height: calc(150% + var(--grid-gap) );
+}
+
+.tile-checkbox:checked{
+	z-index: 6;
+	left: unset;
+	top: 3px;
+	right: 3px;
+	width: 25px;
+	height: 25px;
+}
+
+.tile-checkbox-label,
+.tile-radio-1,
+.tile-radio-2,
+.tile-radio-label,
+.tile_production_method
+{
+	display: none;
+}
+
+/* checkbox label */
+.tile-checkbox:checked + .tile-checkbox-label
+{
+	z-index: 5;
+	display: unset;
+	display: inline-flex;
+	background-color: white;
+	width: 100%;
+	min-height: 80px;
+}
+
+.tile-checkbox:checked ~ .tile-radio-label,
+.tile-checkbox:checked ~ .tile_production_method
+{
+	display: unset;
+	z-index: 5;
+}
+
+
+/* radio label */
+.tile-checkbox:checked ~ .tile-radio-label
+{
+	position: relative;
+	margin-top: 60px;
+	margin-right: var(--logo-size-small);
+	font-size: var(--font-size-xs);
+	height: 16px;	
+}
+
+/* radio label active state */
+input[type="radio"]:checked + .tile-radio-label {
+	color: lightgray;
+	font-weight: 600;
+}
+
+/* production method */
+.tile-checkbox:checked ~ .tile_production_method
+{
+	margin-top: 22px;
+	font-size: var(--font-size-xs);
+}
+
+/* tile label close icon */
+.tile-checkbox:checked + .tile-checkbox-label:before,
+.tile-checkbox:checked + .tile-checkbox-label:after {
+	z-index: 5;
+	position: absolute;
+	top: 3px;
+	right: 15px;
+	content: '';
+	height: 25px;
+	width: 2px;
+	background-color: black;
+}
+
+.tile-checkbox-label:before{
+	transform: rotate(45deg);  
+}
+
+.tile-checkbox-label:after{
+	transform: rotate(-45deg);  
+}
+
+/* Tile Tooltip */
+.sample-tile .tile-tooltip {
+	position: absolute;
+	top: 100%;
+	z-index: 1;
+	width: 100%;
+	height: calc(50% + var(--grid-gap) );
+	visibility: hidden;
+	background-color: white;
+}
+
+.sample-tile .tile-tooltip p{
+	margin-top: 5px;
+	margin-left: 5px;
+}
+
+.sample-tile .tile-tooltip:after {
+	content: "";
+	position: absolute;
+	bottom: 100%;
+	left: 15%;
+	border-width: 15px;
+	border-style: solid;
+	border-color: transparent transparent white transparent;
+}
+
+.sample-tile:hover .tile-tooltip {
+	visibility: visible;
+}
+
+/* hide tooltip when checked */
+.sample-tile:hover .tile-checkbox:checked ~ .tile-tooltip{
+	visibility: hidden;
+}
+
+/* tile images */
+.itm-1.tile-image,
+.itm-2.tile-image
+{
+	width: 100%;
+	height: 100%;
+}
+
+/* tile image 2 */
+.itm-2.tile-image{
+	display: none;
+}
+
+.tile-image img{
+	height: 100%;
+}
+
+/* tile image 1 activation */
+.tile-radio-1:checked ~ .itm-1.tile-image{
+	display: unset;
+}
+
+/* tile image 2 activation */
+.tile-radio-2:checked ~ .itm-2.tile-image{
+	display: unset;
+}
+
+/* submit */
+#tile_submit{
+	display: none;
+}
+
+
+/* GENERAL */
+.home .site-main,
+.container-media,
+.portfolio,
+#tct-sample-tiles
+{
+	margin-left: var(--grid-gap);
+	margin-right: var(--grid-gap);
+}
+
+.container-content{
+	margin-top: var(--grid-gap);
+	margin-left: var(--grid-gap);
+	margin-right: var(--grid-gap);
+	margin-bottom: var(--grid-row);	
+}
+
+.portfolio{
+	margin-bottom: calc(var(--grid-gap) * 4);
+}
+
+
+
+
+/*--------------------------------------------------------------
+# Grid Enhancement
+--------------------------------------------------------------*/
 
 @supports (display: grid) {
+
+	/* FRONT PAGE: Wrapper grid for tile pattern */
 	
-	/* CUSTOM POST TYPE: Brand Story */
-	/*
-	.brand_story{
+	.home .site-main{
 		display: grid;
 		grid-template-columns: var(--grid-setting);
+		grid-gap: var(--grid-gap);
+/*		margin-left: var(--grid-gap); */
 	}
-	*/
+	
+	.home .site-main article{
+		
+		/* as child item */
+		grid-area: 1 / 1 / 1 / -1;
+	
+		/* as parent container */
+		display: grid;
+		grid-template-columns: var(--grid-setting);  
+		grid-auto-rows: var(--grid-row); 
+		grid-gap: var(--grid-gap);
+		
+		/* tile grid background */
+		background-color: rgba(0,0,0,0.025);
+		background-image: 
+				linear-gradient(white var(--grid-gap), transparent 2px),
+				linear-gradient(90deg, white var(--grid-gap), transparent 2px);
+		background-size: calc( var(--grid-column) + var(--grid-gap) ) calc( var(--grid-row) + var(--grid-gap) );
+		background-position: calc( var(--grid-gap) * -1 ) calc( var(--grid-gap) * -1 );	
+	}
+	
+	
+	/* CUSTOM POST TYPE: Brand Story */
+
+	.container-media{
+		display: grid;
+		grid-template-columns: var(--grid-setting);  
+		grid-gap: var(--grid-gap);
+	}
+	
+	.entry-media{
+		display: flex;
+		grid-column: auto / span 9;
+	}
+	
+	.entry-media:nth-of-type(2n){
+		grid-column: -1 / -10;
+	}
+	
+	.entry-media *{
+		flex-grow: 1;
+	}
+	
+	.container-content{
+		display: grid;
+		grid-template-columns: var(--grid-content-container);
+		grid-gap: var(--grid-gap);
+	}
+	
+	.entry-header{
+		grid-column: 1 / span 2;
+	}	
+	
+	.entry-content{
+		margin: 0px;
+		grid-column: 3 / -1;
+	}
+	
+	
+	/* CUSTOM POST TYPE: Production Method, Collaborations */
+	.production_method .entry-media,
+	.collaborations .entry-media
+	{
+		display: flex;
+		grid-column: auto / span 7;
+	}
+	
+	/* CUSTOM POST TYPE: Portfolio */
+	
+	.portfolio{
+		display: grid;
+		grid-template-columns: var(--grid-setting);  
+		grid-gap: var(--grid-gap);
+		margin-left: var(--grid-gap);
+		margin-right: var(--grid-gap);
+		margin-bottom: calc(var(--grid-gap) * 4);
+	}
+	
+	.portfolio .entry-media{
+		grid-column: auto / span 5;
+	}
+
+	.portfolio .entry-header{
+		grid-column: 1 / span 2;
+	}
+	
+	.entry-portfolio-data-location{
+		grid-column: auto / span 2;
+	}	
+	
+	.portfolio-entry-group{
+		grid-column: auto / span 5;
+	}	
+	
+	.portfolio-entry-group span{
+		float: left;
+	}
+	
+	.portfolio-entry-group span:after {
+		content: '–';
+		margin-left: 4px;
+		margin-right: 5px;
+	}
+	
+	/* CUSTOM POST TYPE: Sample Tiles */
+	
+	#tct-sample-tiles{
+		display: grid;
+		grid-template-columns: var(--grid-setting);  
+		grid-auto-rows: var(--grid-row); 
+		grid-gap: var(--grid-gap);	
+	}
+	
+	.sample-tile{
+		grid-area: auto / auto / span 2 / span 2;
+		
+		background: lightgreen;
+	}
 }
 
 

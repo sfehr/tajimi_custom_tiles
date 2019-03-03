@@ -13,6 +13,13 @@
  * Template Selection for Custom Post Types
  * Get Custom Field Values: File List
  * Get Custom Field Values: Portfolio Data Bundle
+ * tct_tile_filter_menu_attributes: adds a data-slug attribute to the naviagtion links
+ * Register Custom Menu: Tile filter
+ * get children of category
+ * Register Ajax Scripts
+ * Ajax Filter Posts by Category (sample tiles)
+ * ... (Post Form Handler)
+ * 
  */
 
 
@@ -134,7 +141,7 @@ function tajimi_custom_tiles_scripts() {
 	wp_enqueue_script( 'tajimi_custom_tiles-navigation', get_template_directory_uri() . '/js/navigation.js', array(), '20151215', true );
 
 	wp_enqueue_script( 'tajimi_custom_tiles-skip-link-focus-fix', get_template_directory_uri() . '/js/skip-link-focus-fix.js', array(), '20151215', true );
-
+		
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
 		wp_enqueue_script( 'comment-reply' );
 	}
@@ -168,15 +175,20 @@ if ( defined( 'JETPACK__VERSION' ) ) {
 	require get_template_directory() . '/inc/jetpack.php';
 }
 
+
+
+
+
+
+
 /** SF:
  * Load CMB2 functions
  */
 require_once( dirname(__FILE__) . '/inc/tct-cmb2-functions.php');
 
 
-
 /** SF:
- * Template Selection for Custom Post Types
+ * Template Selection for Custom Post Types (Custom Post Types to inherit same template)
  */
 add_filter( 'template_include', function( $template ) {
     // your custom post types
@@ -270,6 +282,7 @@ function tct_get_portfolio_data_bundle( $class ) {
 			case 'year' :
 				// checks if the field contains a value, converts value into a readable format, returns "–" if not
 				$field_output = !( $field_value == '' ) ?  date( "Y", $field_value) : '–';
+				$field_title = 'year';
 				break;
 				
 			case 'location_city' :
@@ -293,35 +306,295 @@ function tct_get_portfolio_data_bundle( $class ) {
 				$country = !( $field_value == '' ) ?  $field_value : '–';
 				// if all fields are without value ('-'), then display '–' only once
 				$field_output = ( !( $city == '–' ) && !( $prefecture == '–' ) && !( $country == '–' ) ) ? $city . ', ' . $prefecture . ', ' . $country : '–';
+				$field_title = 'location';
 				break;
 				
 			case 'architect' :
 				// checks if the field contains a value, returns "–" if not
 				$field_output = !( $field_value == '' ) ?  $field_value : '–';
-				$field_title = 'Architect';
+				$field_title = 'architect';
 				break;				
 
 			case 'method' :
 				// checks if the field contains a value, returns "–" if not
 				$field_output = !( $field_value == '' ) ?  $field_value : '–';
-				$field_title = 'Method used';
+				$field_title = 'method';
 				break;
 				
 			case 'volume' :
 				// checks if the field contains a value, adds 'm2' to the value, returns "–" if not
 				$field_output = !( $field_value == '' ) && !( $field_value == '0' ) ?  $field_value . 'm2' : '–';
-				$field_title = 'Volume';
+				$field_title = 'volume';
 				break;				
 				
 			default:
 				// code to be executed if n is different from all labels;
 		} 		
-				
-		echo '<div class="' . $class . '">';
-		echo '<span class="data-title">' . esc_html( $field_title ) . '</span>';
-		echo wpautop( esc_html( $field_output ) );
-		echo '</div><!-- .' . $class . ' -->';
+		
+		
+		// checks weather a field value exist or not
+		if ( !empty( $field_output ) ) {
+		
+			//add specific class to each entry
+			$specific_class = !( $field_title == '' ) ? $class . '-' . $field_title : '';
+			
+			//WRAPPER OPENING TAG
+			if( $field_title == 'architect'){
+				echo '<div class="portfolio-entry-group">';
+			}
+			
+			echo '<div class="' . $specific_class . '">';
+			// checks weather a field title exist or not
+			if ( !empty( $field_title ) ) { echo '<span class="data-title">' . esc_html( $field_title ) . '</span>'; }
+			echo wpautop( esc_html( $field_output ) );
+			echo '</div><!-- .' . $specific_class . ' -->';
+			
+			//WRAPPER CLOSING TAG
+			if( $field_title == 'volume'){
+				echo '</div><!-- .portfolio-entry-group -->';
+			}			
+		}
 	}
 }
+
 add_filter( 'tct_custom_fields', 'tct_get_portfolio_data_bundle' );
+
+
+/** SF:
+ * Get Custom Field Values: Image (Sample Tile)
+ */
+
+function tct_get_sample_tile_images( $meta_key, $class, $img_size = '' ) {
+	
+	// Get the list of images
+	$images = array(
+		get_post_meta( get_the_ID(), $meta_key . 'image_1_id', 1 ),
+		get_post_meta( get_the_ID(), $meta_key . 'image_2_id', 1 )
+	);
+
+	// Loop through them and output an image
+	foreach ( (array) $images as $image) {
+		$count++;
+		echo '<div class="' . $class . ' itm-' . $count . '">';
+		echo wp_get_attachment_image( $image, $img_size );
+		echo '</div><!-- .' . $class . ' itm-' . $count . ' -->';
+	}
+	
+}
+add_filter( 'tct_custom_fields', 'tct_get_sample_tile_images' );
+
+
+/** SF:
+ * Register Custom Menu: Tile filter
+ */
+function tct_register_custom_new_menu() {
+  register_nav_menu('tct-tile-filter-menu',__( 'Sample Tile Filter Menu' ));
+}
+add_action( 'init', 'tct_register_custom_new_menu' );
+
+
+/** SF:
+ *  tct_tile_filter_menu_attributes: adds a data-slug attribute to the naviagtion links
+ */
+add_filter( 'nav_menu_link_attributes', 'tct_tile_filter_menu_attributes', 10, 3 );
+
+function tct_tile_filter_menu_attributes( $atts, $item, $args ) {
+
+	// checks with menu object the filter will be applyed on
+	if ($args->theme_location == 'tct-tile-filter-menu') {
+		
+		// get term object by name as title
+		$name = $item->title;
+		$terms = get_term_by('name', $name, 'tile_category');
+		
+		// checks if there is a taxonomy term, returns 'no-filter' on false
+		if( !empty($terms) ){
+			$filter_by = $terms->slug;
+		}
+		else{
+			$filter_by = 'all';
+		}
+		
+//		$atts['data-slug'] = $filter_by;
+		$atts['href'] = 'javascript:void(0);';
+		$atts['onClick'] = 'filter_posts_by_category("' . $filter_by . '", 1)';
+		$atts['class'] = 'tile-filter-link filter-cat-' . $filter_by;
+	}
+	
+	return $atts;
+
+}
+
+
+/** SF:
+ *  conditionally displays child category of a specific parent category (used in ajax_filter_posts_by_category)
+ */
+function tct_get_child_category($field, $parent, $taxonomy) {
+	
+	global $post;
+	$parents_id = get_term_by($field, $parent, $taxonomy);
+
+	$terms = get_the_terms($post->ID, $taxonomy);
+	foreach ($terms as $term) {
+		if($term->parent === $parents_id->term_id) { 
+			
+			$parent_name = get_term_by( 'id', $term->parent, $taxonomy );
+			
+			print '<span class="' . $parent . '">'. $parent_name->name . ' – ' . $term->name . '</span>';
+			break;
+		}
+	}	
+	
+}
+
+
+
+/** SF:
+ *  Register Ajax Scripts
+ */
+add_action( 'wp_enqueue_scripts', 'ajax_scripts' );
+
+function ajax_scripts() {
+	
+	//SF: Load Sample Tile Filter JS
+	if ( is_page( 'sample-tiles' ) ) {
+		wp_enqueue_script( 'ajax-scripts', get_template_directory_uri() . '/js/sample-tile-filter.js', array('jquery'), '', true );
+	}
+	
+	//pass the ajax url to javascript
+	global $wp_query;
+	wp_localize_script( 'ajax-scripts', 'ajaxFilterPosts', array( 
+		'ajax_url' => admin_url( 'admin-ajax.php' ),
+		'query_vars' => json_encode( $wp_query->query )
+	) );	
+}
+
+
+/** SF:
+ *  Ajax Filter Posts by Category (sample tiles)
+ */
+add_action('wp_ajax_filter_posts_by_category', 'ajax_filter_posts_by_category');
+add_action('wp_ajax_nopriv_filter_posts_by_category', 'ajax_filter_posts_by_category'); 
+
+function ajax_filter_posts_by_category() {
+
+	
+	////// CUSTOM WP QUERY (for sample tiles)
+	
+	
+	// VARIABLES
+	$terms = isset($_POST['cat_slug']) && !empty($_POST['cat_slug']) ? $_POST['cat_slug'] : 'all';
+	$paged = $_POST['paged'];
+	$posts = $_POST['posts'];			
+
+	// ARGS
+	if($terms != 'all'){
+			
+		$args = array(
+			'post_type' => 'sample_tile',
+			'showposts' => $posts,
+			'paged'     => $paged,
+			'tax_query' => array(
+				array(
+					'taxonomy' => 'tile_category',
+					'field'    => 'slug',
+					'terms'    => $terms
+				)
+			),
+			'order'   => 'asc',
+			'orderby' => 'title',
+		);
+			
+	}	
+	else{
+		$args = array(
+			'post_type' => 'sample_tile',
+			'showposts' => $posts,
+			'paged'     => $paged,
+			'order'   => 'asc',
+			'orderby' => 'title',				
+		);
+	}
+
+	// LOOP
+	$tct_query = null;
+	$tct_query = new WP_Query($args);
+	while( $tct_query -> have_posts() ) : $tct_query -> the_post();
+	
+	
+		// TILE CONTAINER
+	
+		// the tile ID is submitted to give the radio buttons a uniqe name per post
+		?>
+		<div class="sample-tile">
+			
+			<input id="tct_sample_tile_checkbox_<?php the_ID(); ?>" type="checkbox" name="tct_tile[]" class="tile-checkbox" value="<?php the_title(); ?>">
+			<label class="tile-checkbox-label" ><?php the_title(); ?></label>
+			
+			<input id="tct_sample_tile_radio_<?php the_ID(); ?>_1" type="radio" name="tct_tile_image_<?php the_ID(); ?>" class="tile-radio-1" value="">
+			<label for="tct_sample_tile_radio_<?php the_ID(); ?>_1" class="tile-radio-label" >1</label>
+			
+			<input id="tct_sample_tile_radio_<?php the_ID(); ?>_2" type="radio" name="tct_tile_image_<?php the_ID(); ?>" class="tile-radio-2" value="">
+			<label for="tct_sample_tile_radio_<?php the_ID(); ?>_2" class="tile-radio-label" >2</label>
+			
+			<?php
+			// TILE PRODUCTION METHOD
+			tct_get_child_category('slug', 'tile_production_method', 'tile_category');
+	
+
+			// TILE IMAGES: image1, image2
+			tct_get_sample_tile_images( 'tct_sample_tiles_', 'tile-image' ); 
+			
+	
+			// TILE TOOLTIP
+			?>
+			<div class="tile-tooltip">
+			  <p><?php the_title(); ?></p>
+			</div>
+			
+		</div>
+		
+	<?php
+	endwhile; wp_reset_query();
+	
+	////// END CUSTOM WP QUERY	
+}
+
+
+/** SF:
+ *  tct_form_response: handles the post submission form
+ */
+add_action( 'admin_post_tct_form_response', 'tct_form_response');
+add_action( 'admin_post_nopriv_tct_form_response', 'tct_form_response');
+
+function tct_form_response(){
+	
+	if( isset( $_POST['tct_sample_tiles_form_nonce'] ) && wp_verify_nonce( $_POST['tct_sample_tiles_form_nonce'], 'tct_add_sample_tiles_form_nonce') ) {
+		
+		// sanitize the input
+		$tct_sample_tile_name = sanitize_title( $_POST['tct']['tile_name'] );
+		
+		$selected_tiles = $_POST['tct_tile'];
+			
+		foreach ( (array) $selected_tiles as $key => $tile ) {
+			echo $tile . '<br>';
+		}		
+		
+		// do the processing
+				
+		
+		wp_redirect( home_url('contact'));		
+		exit;
+	}
+	else{
+
+		wp_die( __( 'Invalid nonce specified', '{text-domain}' ), __( 'Error', '{text-domain}' ), array(
+					'response' 	=> 403,
+//					'back_link' => 'admin.php?page=' . $this->plugin_name,
+		) );	
+		
+	}
+}
+
+
 

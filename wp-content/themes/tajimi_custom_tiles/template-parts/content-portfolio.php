@@ -10,18 +10,15 @@
 ?>
 
 <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
-	TEMPLATE: portfolio content-portfolio.php
 	
 	<?php
 	
 		/* CUSTOM FIELDS */
 		
 		//portfolio images from file_list field
-		tct_get_portfolio_images('tct_portfolio_data_file_list', 'entry-portfolio-img');
+		tct_get_portfolio_images('tct_portfolio_data_file_list', 'entry-media');
 	
 	?>
-	
-	
 	
 	<header class="entry-header">
 		<?php
@@ -45,7 +42,7 @@
 	<?php tajimi_custom_tiles_post_thumbnail(); ?>
 	
 	<?php
-	//<div class="entry-content">
+	//<div class="entry-content"> // remove this level for css-grid
 	
 		/* CUSTOM FIELDS */
 	
