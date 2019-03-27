@@ -1,0 +1,245 @@
+/*!
+Theme Name: Tajimi Custom Tiles
+Theme URI: http://underscores.me/
+Author: Sebastian Fehr
+Author URI: http://www.sebastianfehr.com
+Description: Additional CSS for the Sample Tiles
+*/
+
+
+
+/* SAMPLE TILE */
+
+.sample-tile{
+	display: inline-flex;
+	position: relative;
+	font-size: var(--font-size-s);
+}
+
+.sample-tile *{
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	margin:0px;
+	padding: 0px;
+}
+
+/* Tile Checkbox */
+.tile-checkbox{
+	z-index: 5;
+	width: 100%;
+	height: 100%;
+	opacity: 0;
+	cursor: pointer;
+}
+
+.tile-checkbox:hover{
+	height: calc(150% + var(--grid-gap) );
+}
+
+.tile-checkbox:checked{
+	z-index: 6;
+	left: unset;
+	top: 3px;
+	right: 3px;
+	width: 25px;
+	height: 25px;
+}
+
+.tile-checkbox-label,
+.tile-radio-1,
+.tile-radio-2,
+.tile-radio-label,
+.tile_production_method
+{
+	display: none;
+}
+
+/* checkbox label */
+.tile-checkbox:checked + .tile-checkbox-label
+{
+	z-index: 5;
+	display: unset;
+	display: inline-flex;
+	background-color: white;
+	width: 100%;
+	min-height: 80px;
+}
+
+.tile-checkbox:checked ~ .tile-radio-label,
+.tile-checkbox:checked ~ .tile_production_method
+{
+	display: unset;
+	z-index: 5;
+}
+
+
+/* radio label */
+.tile-checkbox:checked ~ .tile-radio-label
+{
+	position: relative;
+	margin-top: 60px;
+	margin-right: var(--logo-size-small);
+	font-size: var(--font-size-xs);
+	height: 16px;	
+}
+
+/* radio label active state */
+input[type="radio"]:checked + .tile-radio-label {
+	color: lightgray;
+	font-weight: 600;
+}
+
+/* production method */
+.tile-checkbox:checked ~ .tile_production_method
+{
+	margin-top: 22px;
+	font-size: var(--font-size-xs);
+}
+
+/* tile label close icon */
+.tile-checkbox:checked + .tile-checkbox-label:before,
+.tile-checkbox:checked + .tile-checkbox-label:after {
+	z-index: 5;
+	position: absolute;
+	top: 3px;
+	right: 15px;
+	content: '';
+	height: 25px;
+	width: 2px;
+	background-color: black;
+}
+
+.tile-checkbox-label:before{
+	transform: rotate(45deg);  
+}
+
+.tile-checkbox-label:after{
+	transform: rotate(-45deg);  
+}
+
+/* Tile Tooltip */
+.sample-tile .tile-tooltip {
+	position: absolute;
+	top: 100%;
+	z-index: 6;
+	width: 100%;
+	height: calc(50% + var(--grid-gap) );
+	visibility: hidden;
+	background-color: white;
+}
+
+.sample-tile .tile-tooltip p{
+	margin-top: 5px;
+	margin-left: 5px;
+}
+
+.sample-tile .tile-tooltip:after {
+	content: "";
+	position: absolute;
+	bottom: 100%;
+	left: 15%;
+	border-width: 15px;
+	border-style: solid;
+	border-color: transparent transparent white transparent;
+}
+
+.sample-tile:hover .tile-tooltip {
+	visibility: visible;
+}
+
+/* hide tooltip when checked */
+.sample-tile:hover .tile-checkbox:checked ~ .tile-tooltip{
+	visibility: hidden;
+}
+
+/* tile images */
+.itm-1.tile-image,
+.itm-2.tile-image
+{
+	width: 100%;
+	height: 100%;
+}
+
+/* tile image 2 */
+.itm-2.tile-image{
+	display: none;
+}
+
+.tile-image img{
+	height: 100%;
+}
+
+/* tile image 1 activation */
+.tile-radio-1:checked ~ .itm-1.tile-image{
+	display: unset;
+}
+
+/* tile image 2 activation */
+.tile-radio-2:checked ~ .itm-2.tile-image{
+	display: unset;
+}
+
+/* submit */
+.tile-submit-container{
+	display: none;
+	z-index: 10;
+	position: fixed;
+	bottom: 0px;
+	right: 0px;
+	height: calc(var(--grid-row) * 2);
+	width: calc(var(--grid-row) * 1);
+	background: #f8f8f8;
+	font-size: var(--font-size-s);
+}
+
+.tile-submit-container p{
+	position: absolute;
+	height: 100%;
+	width: 100%;
+}
+
+#tile_submit{
+	position: absolute;
+	height: 100%;
+	width: 100%;
+	border: none;
+	border-radius: 0px;
+	opacity: 0;
+}
+
+#tile_submit:hover{
+	cursor: pointer;
+}
+
+
+/* arrow */
+.tile-submit-container i{
+	border-width: 2px 2px 0 0;
+	border-style: solid;
+	width: 20px;
+	height: 20px;
+	margin: 10px;
+}
+
+.tile-submit-container i:before,
+.tile-submit-container i:after
+{
+    content: "";
+    box-sizing: border-box;
+}
+	
+.tile-submit-container i:before{
+    right: 0;
+    top: -2px;
+    position: absolute;
+    height: 2px;
+    box-shadow: inset 0 0 0 32px;
+    transform: rotate(-45deg);
+    width: 43px;
+    transform-origin: right top;
+  }
+
+.tile-submit-container i:before{
+	
+}

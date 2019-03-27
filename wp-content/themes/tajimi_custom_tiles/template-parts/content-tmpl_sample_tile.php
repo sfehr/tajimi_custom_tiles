@@ -8,19 +8,23 @@
 ?>
 
 <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
+	
 	<header class="entry-header">
 		<?php the_title( '<h1 class="entry-title">', '</h1>' ); ?>
 	</header><!-- .entry-header -->
 
 	<?php
 	// NONCE FIELD: for form security
-	$tct_add_meta_nonce = wp_create_nonce( 'tct_add_sample_tiles_form_nonce' );
+	$tct_add_tile_nonce = wp_create_nonce( 'tct_add_sample_tiles_form_nonce' );
 	?>
-	<form action="<?php echo esc_url( home_url('contact') ); /* echo esc_url( admin_url('admin-post.php') ); */ ?>" method="post" id="tct-sample-tiles">
-	
-		<input type="submit" name="tile_submit" id="tile_submit" class="button button-primary" value="Order Tiles">
-		<input type="hidden" name="tct_sample_tiles_form_nonce" value="<?php echo $tct_add_meta_nonce ?>" />
-		<input type="hidden" name="action" value="tct_form_response">
+	<form action="<?php echo esc_url( home_url('contact') ); ?>" method="post" id="tct-sample-tiles">
+		
+		<div class="tile-submit-container">
+			<p>Order Sample Tiles</p>
+			<i></i>
+			<input type="submit" name="tile_submit" id="tile_submit" class="button button-primary" value="Order Sample Tiles">
+		</div>	
+		<input type="hidden" name="tct_sample_tiles_form_nonce" value="<?php echo $tct_add_tile_nonce ?>" />
 
 		<div class="entry-content">
 			<?php

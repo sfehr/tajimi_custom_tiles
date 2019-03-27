@@ -141,6 +141,12 @@ function tajimi_custom_tiles_scripts() {
 	wp_enqueue_script( 'tajimi_custom_tiles-navigation', get_template_directory_uri() . '/js/navigation.js', array(), '20151215', true );
 
 	wp_enqueue_script( 'tajimi_custom_tiles-skip-link-focus-fix', get_template_directory_uri() . '/js/skip-link-focus-fix.js', array(), '20151215', true );
+	
+	//SF: load sample tiles css on sample tile page
+	if ( is_page( 'sample-tiles' ) ) {
+		wp_enqueue_style( 'sample_tiles_css', get_template_directory_uri() . '/css/sample-tiles.css' );
+		wp_enqueue_script( 'sample-tiles-scripts', get_template_directory_uri() . '/js/sample-tile-form-processor.js', array('jquery'), '', true );
+	}
 		
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
 		wp_enqueue_script( 'comment-reply' );
@@ -415,6 +421,7 @@ function tct_tile_filter_menu_attributes( $atts, $item, $args ) {
 			$filter_by = 'all';
 		}
 		
+		// insert the JS function called in the frontend
 //		$atts['data-slug'] = $filter_by;
 		$atts['href'] = 'javascript:void(0);';
 		$atts['onClick'] = 'filter_posts_by_category("' . $filter_by . '", 1)';
@@ -461,9 +468,14 @@ function ajax_scripts() {
 		wp_enqueue_script( 'ajax-scripts', get_template_directory_uri() . '/js/sample-tile-filter.js', array('jquery'), '', true );
 	}
 	
+	//SF: Load Contact Form Processor JS
+	if ( is_page( 'contact' ) ) {
+		wp_enqueue_script( 'ajax-scripts', get_template_directory_uri() . '/js/contact-form-processor.js', array('jquery'), '', true );
+	}	
+	
 	//pass the ajax url to javascript
 	global $wp_query;
-	wp_localize_script( 'ajax-scripts', 'ajaxFilterPosts', array( 
+	wp_localize_script( 'ajax-scripts', 'ajaxObject', array( 
 		'ajax_url' => admin_url( 'admin-ajax.php' ),
 		'query_vars' => json_encode( $wp_query->query )
 	) );	
@@ -474,13 +486,12 @@ function ajax_scripts() {
  *  Ajax Filter Posts by Category (sample tiles)
  */
 add_action('wp_ajax_filter_posts_by_category', 'ajax_filter_posts_by_category');
-add_action('wp_ajax_nopriv_filter_posts_by_category', 'ajax_filter_posts_by_category'); 
+add_action('wp_ajax_nopriv_filter_posts_by_category', 'ajax_filter_posts_by_category');
 
 function ajax_filter_posts_by_category() {
 
 	
 	////// CUSTOM WP QUERY (for sample tiles)
-	
 	
 	// VARIABLES
 	$terms = isset($_POST['cat_slug']) && !empty($_POST['cat_slug']) ? $_POST['cat_slug'] : 'all';
@@ -531,7 +542,7 @@ function ajax_filter_posts_by_category() {
 			<input id="tct_sample_tile_checkbox_<?php the_ID(); ?>" type="checkbox" name="tct_tile[]" class="tile-checkbox" value="<?php the_title(); ?>">
 			<label class="tile-checkbox-label" ><?php the_title(); ?></label>
 			
-			<input id="tct_sample_tile_radio_<?php the_ID(); ?>_1" type="radio" name="tct_tile_image_<?php the_ID(); ?>" class="tile-radio-1" value="">
+			<input id="tct_sample_tile_radio_<?php the_ID(); ?>_1" type="radio" name="tct_tile_image_<?php the_ID(); ?>" class="tile-radio-1" checked="checked" value="">
 			<label for="tct_sample_tile_radio_<?php the_ID(); ?>_1" class="tile-radio-label" >1</label>
 			
 			<input id="tct_sample_tile_radio_<?php the_ID(); ?>_2" type="radio" name="tct_tile_image_<?php the_ID(); ?>" class="tile-radio-2" value="">
@@ -557,34 +568,153 @@ function ajax_filter_posts_by_category() {
 	<?php
 	endwhile; wp_reset_query();
 	
-	////// END CUSTOM WP QUERY	
+	////// END CUSTOM WP QUERY
+	die();
 }
 
 
 /** SF:
  *  tct_form_response: handles the post submission form
+ *  progressive enhancement: when JS is available the form is triggered by the AJAX
  */
 add_action( 'admin_post_tct_form_response', 'tct_form_response');
 add_action( 'admin_post_nopriv_tct_form_response', 'tct_form_response');
+add_action( 'wp_ajax_tct_form_response', 'tct_form_response');
+add_action( 'wp_ajax_nopriv_tct_form_response', 'tct_form_response');
 
 function tct_form_response(){
 	
-	if( isset( $_POST['tct_sample_tiles_form_nonce'] ) && wp_verify_nonce( $_POST['tct_sample_tiles_form_nonce'], 'tct_add_sample_tiles_form_nonce') ) {
+	//VARIABLES
+	$tct_subject = "Incoming message via " . get_bloginfo('name');
+	$tct_errors = array();
+	$tct_mail_recipient = 'sebastianfehr1@gmail.com';
+	
+	// SECURITY CHECKS: nonce field, Server Request, if $_POST is not empty, if invisible "name" field is empty
+	
+	if( isset( $_POST['tct_contact_form_nonce'] ) && wp_verify_nonce( $_POST['tct_contact_form_nonce'], 'tct_add_contact_form_nonce') && 'POST' == $_SERVER['REQUEST_METHOD'] && !empty($_POST) &&  empty($_POST['name']) ) {
 		
-		// sanitize the input
-		$tct_sample_tile_name = sanitize_title( $_POST['tct']['tile_name'] );
 		
-		$selected_tiles = $_POST['tct_tile'];
-			
-		foreach ( (array) $selected_tiles as $key => $tile ) {
-			echo $tile . '<br>';
+		// BULK CHEK / SANITIZE
+		
+		$fields = array( 'first_name', 'last_name', 'email', 'company', 'message' );
+
+		foreach ($fields as $field) {
+			if( isset($_POST['tct'][$field] ) ) $posted[$field] = strip_tags( trim( $_POST['tct'][$field] ) ); else $posted[$field] = '';
 		}		
 		
-		// do the processing
-				
 		
-		wp_redirect( home_url('contact'));		
-		exit;
+		// SANITIZE
+		
+		// Individual field check and sanitize
+//use specific santize function 
+		if( $posted['first_name'] == null ) array_push( $tct_errors,  sprintf( 'Notice: Please enter Your First Name.', 'tajimi_custom_tiles' ) );
+		if( $posted['last_name'] == null ) array_push( $tct_errors,  sprintf( 'Notice: Please enter Your Last Name.', 'tajimi_custom_tiles' ) );
+		if( $posted['email'] == null ) array_push( $tct_errors,  sprintf( 'Notice: Please enter Your Email.', 'tajimi_custom_tiles' ) );
+		if( $posted['company'] == null ) array_push( $tct_errors,  sprintf( 'Notice: Please enter Your Company.', 'tajimi_custom_tiles' ) );
+		if( $posted['message'] == null ) array_push( $tct_errors,  sprintf( 'Notice: Please enter a Message.', 'tajimi_custom_tiles' ) );
+		
+		$errors = array_filter( $tct_errors );
+		
+		
+		// FILE HANDLE
+		
+		// If no errors, handles the upload file
+		if( empty( $errors ) ) { 
+			
+			/*
+			// gets the install path
+			if ( ! function_exists( 'wp_handle_upload' ) ) {
+				require_once( ABSPATH . 'wp-admin/includes/file.php' );
+			}			
+			
+			//file from the superglobal
+			
+			$uploadedfile = $_FILES['attachmentFile'];
+			
+			$upload_overrides = array( 'test_form' => false );
+			
+			$movefile = wp_handle_upload( $uploadedfile, $upload_overrides );
+
+			if ( $movefile && ! isset( $movefile['error'] ) ) { 
+				$movefile['url'];
+			}
+			*/
+			
+			if ( 'POST' == $_SERVER['REQUEST_METHOD']  ) {
+				
+				if ( $_FILES ) {
+					
+					$files = $_FILES["tct_multiple_attachments"]; 
+					
+					foreach ( $files['name'] as $key => $value ) {
+						
+						if ( $files['name'][$key] ) { 
+							$file = array( 
+										'name' => $files['name'][$key],
+										'type' => $files['type'][$key], 
+										'tmp_name' => $files['tmp_name'][$key], 
+										'error' => $files['error'][$key],
+										'size' => $files['size'][$key]
+									); 
+								
+							$_FILES = array ( "tct_multiple_attachments" => $file );
+								
+							
+							foreach ( $_FILES as $file => $array ) {
+								
+								var_dump( $file );
+								
+								$newupload = tct_handle_attachment( $file ); 
+							}
+						}
+					} 
+				}
+			}			
+
+			
+//var_dump($newupload);
+			
+			$attachments = array( $movefile['file'] );
+			
+			$headers = 'From: '. $posted['first_name'] . $posted['last_name'] .' <'. $posted['email'] .'>' . "\r\n";
+			
+			
+			if( wp_mail( $tct_mail_recipient, $tct_subject , $posted['message'], $headers, $attachments ) ){
+//				die( 'success!' );
+// prepare a Server side response				
+			}
+			else{
+//				die( 'no success!' );
+			}
+			
+			// delete file 
+			unlink( $movefile['file'] );
+		}
+		else{
+			die( implode('<br>', $errors) );
+		}
+		
+	
+		// RESPONSE (AJAX)
+		
+		// if JS/Ajax is available -> message 
+		if( isset( $_POST['ajaxrequest'] ) && $_POST['ajaxrequest'] === 'true' ) {
+			// server response
+			echo '<pre>';					
+			  print_r( $_POST );
+			echo '</pre>';				
+			wp_die();
+		  }	
+		
+//temporarely		
+//		print_r( $_FILES );
+		wp_die();
+		
+		// RESPONSE (admin Post)
+		
+		$url = $_SERVER['HTTP_REFERER'];
+		wp_redirect( $url );
+		die();
 	}
 	else{
 
@@ -592,9 +722,23 @@ function tct_form_response(){
 					'response' 	=> 403,
 //					'back_link' => 'admin.php?page=' . $this->plugin_name,
 		) );	
-		
 	}
 }
 
+
+function tct_handle_attachment( $file_handler ) {	
+	
+	// check to make sure its a successful upload
+	if ( $_FILES[$file_handler]['error'] !== UPLOAD_ERR_OK) __return_false();
+
+		require_once(ABSPATH . "wp-admin" . '/includes/image.php');
+		require_once(ABSPATH . "wp-admin" . '/includes/file.php');
+		require_once(ABSPATH . "wp-admin" . '/includes/media.php');
+
+//		$attach_id = media_handle_upload( $file_handler, $post_id );
+		$movefile = wp_handle_upload( $file_handler, array( 'test_form' => false ) );
+
+	return $movefile;
+}
 
 

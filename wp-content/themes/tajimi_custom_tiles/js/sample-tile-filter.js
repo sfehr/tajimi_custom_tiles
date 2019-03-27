@@ -34,8 +34,8 @@ jQuery(document).ready(function(){
         };
         
         jQuery.ajax({
-            method     : "POST",		
-            url        : ajaxFilterPosts.ajax_url, //defined in functions.php
+            method     : 'POST',		
+            url        : ajaxObject.ajax_url, //defined in functions.php
             data       : data,
             beforeSend : function(){
 				
@@ -64,7 +64,8 @@ jQuery(document).ready(function(){
 
 				
 				// HTML: output the markup
-				jQuery( result ).insertAfter( '.entry-content' );
+				jQuery( result ).insertAfter( '.entry-content' );				
+				
 				
             },
             error: function(xhr,status,error){

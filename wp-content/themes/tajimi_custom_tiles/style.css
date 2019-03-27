@@ -1140,6 +1140,7 @@ h1 {
 	padding-right: calc(var(--grid-column) + 30px);
 }
 
+
 /* GENERAL */
 
 .site-title,
@@ -1230,19 +1231,38 @@ h1 {
 
 /* CUSTOM POST TYPE: Sample Tiles */
 
+.page-template-tmpl_sample_tiles .site-header{
+	position: fixed;
+	z-index: 10;
+	top: 0px;
+	left: 0px;
+	height: calc( var(--grid-gap) * 2 + var(--logo-size-small) );
+	width: 100%;
+	background: white;
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+
 .page-template-tmpl_sample_tiles .entry-title{
 	display: none;
 }
 
 .menu-tct-sample-tile-filter-container{
+	z-index: 10;
 	position: fixed;
-	right: var(--grid-gap);
-	top: calc( var(--logo-size-small) + 3px );	
+	top: calc( var(--logo-size-small) + 1px );	
 	font-size: var(--font-size-xs);
+	width: calc(100vw - (var(--grid-gap) * 2) );
+}
+
+.menu-tct-sample-tile-filter-container .menu{
+	display: flex;
+	justify-content: flex-end;
+	margin: unset;
+	padding: unset;
 }
 
 .menu-tct-sample-tile-filter-container .menu-item{
-	float: left;
 	list-style-type: none;
 	margin-left: 50px;
 }
@@ -1251,185 +1271,9 @@ h1 {
 	text-decoration: none;
 }
 
-/* SAMPLE TILE */
-
-#tct-sample-tiles{
-	
-}
-
-.sample-tile{
-	display: inline-flex;
-	position: relative;
-	font-size: var(--font-size-s);
-}
-
-.sample-tile *{
-	position: absolute;
-	top: 0px;
-	left: 0px;
-	margin:0px;
-	padding: 0px;
-}
-
-/* Tile Checkbox */
-.tile-checkbox{
-	z-index: 5;
-	width: 100%;
-	height: 100%;
-	opacity: 0;
-	cursor: pointer;
-}
-
-.tile-checkbox:hover{
-	height: calc(150% + var(--grid-gap) );
-}
-
-.tile-checkbox:checked{
-	z-index: 6;
-	left: unset;
-	top: 3px;
-	right: 3px;
-	width: 25px;
-	height: 25px;
-}
-
-.tile-checkbox-label,
-.tile-radio-1,
-.tile-radio-2,
-.tile-radio-label,
-.tile_production_method
-{
-	display: none;
-}
-
-/* checkbox label */
-.tile-checkbox:checked + .tile-checkbox-label
-{
-	z-index: 5;
-	display: unset;
-	display: inline-flex;
-	background-color: white;
-	width: 100%;
-	min-height: 80px;
-}
-
-.tile-checkbox:checked ~ .tile-radio-label,
-.tile-checkbox:checked ~ .tile_production_method
-{
-	display: unset;
-	z-index: 5;
-}
-
-
-/* radio label */
-.tile-checkbox:checked ~ .tile-radio-label
-{
-	position: relative;
-	margin-top: 60px;
-	margin-right: var(--logo-size-small);
-	font-size: var(--font-size-xs);
-	height: 16px;	
-}
-
-/* radio label active state */
-input[type="radio"]:checked + .tile-radio-label {
-	color: lightgray;
+.selected-cat{
 	font-weight: 600;
-}
-
-/* production method */
-.tile-checkbox:checked ~ .tile_production_method
-{
-	margin-top: 22px;
-	font-size: var(--font-size-xs);
-}
-
-/* tile label close icon */
-.tile-checkbox:checked + .tile-checkbox-label:before,
-.tile-checkbox:checked + .tile-checkbox-label:after {
-	z-index: 5;
-	position: absolute;
-	top: 3px;
-	right: 15px;
-	content: '';
-	height: 25px;
-	width: 2px;
-	background-color: black;
-}
-
-.tile-checkbox-label:before{
-	transform: rotate(45deg);  
-}
-
-.tile-checkbox-label:after{
-	transform: rotate(-45deg);  
-}
-
-/* Tile Tooltip */
-.sample-tile .tile-tooltip {
-	position: absolute;
-	top: 100%;
-	z-index: 1;
-	width: 100%;
-	height: calc(50% + var(--grid-gap) );
-	visibility: hidden;
-	background-color: white;
-}
-
-.sample-tile .tile-tooltip p{
-	margin-top: 5px;
-	margin-left: 5px;
-}
-
-.sample-tile .tile-tooltip:after {
-	content: "";
-	position: absolute;
-	bottom: 100%;
-	left: 15%;
-	border-width: 15px;
-	border-style: solid;
-	border-color: transparent transparent white transparent;
-}
-
-.sample-tile:hover .tile-tooltip {
-	visibility: visible;
-}
-
-/* hide tooltip when checked */
-.sample-tile:hover .tile-checkbox:checked ~ .tile-tooltip{
-	visibility: hidden;
-}
-
-/* tile images */
-.itm-1.tile-image,
-.itm-2.tile-image
-{
-	width: 100%;
-	height: 100%;
-}
-
-/* tile image 2 */
-.itm-2.tile-image{
-	display: none;
-}
-
-.tile-image img{
-	height: 100%;
-}
-
-/* tile image 1 activation */
-.tile-radio-1:checked ~ .itm-1.tile-image{
-	display: unset;
-}
-
-/* tile image 2 activation */
-.tile-radio-2:checked ~ .itm-2.tile-image{
-	display: unset;
-}
-
-/* submit */
-#tile_submit{
-	display: none;
+	font-style: italic;
 }
 
 
@@ -1437,6 +1281,7 @@ input[type="radio"]:checked + .tile-radio-label {
 .home .site-main,
 .container-media,
 .portfolio,
+.menu-tct-sample-tile-filter-container,
 #tct-sample-tiles
 {
 	margin-left: var(--grid-gap);
@@ -1454,6 +1299,9 @@ input[type="radio"]:checked + .tile-radio-label {
 	margin-bottom: calc(var(--grid-gap) * 4);
 }
 
+#tct-sample-tiles{
+	margin-top: calc( var(--grid-gap) * 2 + var(--logo-size-small) );
+}
 
 
 
@@ -1577,17 +1425,39 @@ input[type="radio"]:checked + .tile-radio-label {
 	
 	/* CUSTOM POST TYPE: Sample Tiles */
 	
+	.menu-tct-sample-tile-filter-container{
+		display: grid;
+		grid-template-columns: repeat(auto-fill, calc(var(--grid-column) * 2 + var(--grid-gap)) );
+		grid-gap: var(--grid-gap);
+	}
+	
+	.menu-tct-sample-tile-filter-container .menu{
+		grid-column: -1 / 1;
+	}	
+	
 	#tct-sample-tiles{
 		display: grid;
 		grid-template-columns: var(--grid-setting);  
 		grid-auto-rows: var(--grid-row); 
 		grid-gap: var(--grid-gap);	
-	}
+	}	
 	
 	.sample-tile{
 		grid-area: auto / auto / span 2 / span 2;
 		
 		background: lightgreen;
+	}
+	
+	.tile-selected{
+		grid-area: auto / auto / span 4 / span 4;
+		
+		background: lightblue;
+	}
+	
+	#tct-sample-tiles .entry-content{
+		grid-area: 1 / 1 / span 4 / span 2;
+		
+		background: lightcoral;
 	}
 }
 
