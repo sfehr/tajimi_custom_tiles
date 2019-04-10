@@ -1091,17 +1091,18 @@ h1 {
 
 /* SUB PAGE */
 
-.site-header{
+.site-header{	
 	height: var(--logo-size-small);
 	margin-top: var(--grid-gap);
 	margin-bottom: var(--grid-gap);
 }
 
 .custom-logo-link{
-	position: absolute;
+	position: fixed;
 	display: flex;
 	top: var(--grid-gap);
 	left: var(--grid-gap);
+	flex-direction: column;
 }
 
 .custom-logo-link:hover{
@@ -1112,19 +1113,24 @@ h1 {
 }
 
 .custom-logo-link .custom-logo{
-	display: block;
 	width: var(--logo-size-small);
 }
 
 .custom-logo-link .custom-logo:hover{
 	opacity: 0;
 	padding-right: calc( (var(--grid-column) + 30px) / 2);
+	padding-bottom: calc( (var(--grid-column) ) / 2);
 }
 
 /* FRONT PAGE */
 
 .home .site-header{
 	height: var(--grid-row);
+}
+
+.home .custom-logo-link{
+	position: absolute;
+	display: inline-flex;
 }
 
 .home .custom-logo-link:hover{
@@ -1138,6 +1144,7 @@ h1 {
 
 .home .custom-logo-link .custom-logo:hover{
 	padding-right: calc(var(--grid-column) + 30px);
+	padding-bottom: calc( (var(--grid-column) ) );
 }
 
 
@@ -1166,10 +1173,18 @@ h1 {
 # Content
 --------------------------------------------------------------*/
 
+.itm-mov{
+	overflow: hidden;
+}
+
 .itm-mov iframe{
-	width: calc( (var(--grid-column) * 9) + (var(--grid-gap) * 8) );
-	height: calc( (var(--grid-row) * 6) + (var(--grid-gap) * 5) );
-	background: lightgray;
+	width: calc( (var(--grid-column) * 7) + (var(--grid-gap) * 6) + 3px ); /* + 3px to seamlessly cut the vide */
+	height: calc( (var(--grid-row) * 4.6) + (var(--grid-gap) * 5) + 1px ); /* keep 3:2 ratio */
+}
+
+.brand_story .itm-mov iframe{
+	width: calc( (var(--grid-column) * 9) + (var(--grid-gap) * 8) + 3px ); /* + 3px to seamlessly cut the vide */
+	height: calc( (var(--grid-row) * 6) + (var(--grid-gap) * 5) + 3px );
 }
 
 .entry-header h1{
@@ -1178,6 +1193,8 @@ h1 {
 	text-transform: uppercase;
 	line-height: var(--font-lheight-l);
 	hyphens: auto;
+	-webkit-hyphens: auto;
+	-ms-hyphens: auto;
 }
 
 .entry-content p{	
@@ -1282,7 +1299,7 @@ h1 {
 .container-media,
 .portfolio,
 .menu-tct-sample-tile-filter-container,
-#tct-sample-tiles
+.page .site-main
 {
 	margin-left: var(--grid-gap);
 	margin-right: var(--grid-gap);
@@ -1352,6 +1369,7 @@ h1 {
 	.entry-media{
 		display: flex;
 		grid-column: auto / span 9;
+		flex-direction: column;
 	}
 	
 	.entry-media:nth-of-type(2n){
@@ -1440,25 +1458,35 @@ h1 {
 		grid-template-columns: var(--grid-setting);  
 		grid-auto-rows: var(--grid-row); 
 		grid-gap: var(--grid-gap);	
+/*		grid-gap: 2px; */
 	}	
 	
 	.sample-tile{
 		grid-area: auto / auto / span 2 / span 2;
-		
-		background: lightgreen;
 	}
 	
 	.tile-selected{
 		grid-area: auto / auto / span 4 / span 4;
-		
-		background: lightblue;
 	}
 	
 	#tct-sample-tiles .entry-content{
 		grid-area: 1 / 1 / span 4 / span 2;
-		
+
+		display: none;
 		background: lightcoral;
 	}
+	
+	/* CUSTOM POST TYPE: Contact */
+	#tct-contact-form{
+		display: grid;
+		grid-template-columns: var(--grid-setting);  
+		grid-gap: var(--grid-gap);
+	}
+	
+	#tct-contact-form *{
+		grid-column: 1 / span 3;
+	}
+	
 }
 
 

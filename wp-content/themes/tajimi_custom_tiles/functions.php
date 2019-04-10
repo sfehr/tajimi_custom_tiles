@@ -18,7 +18,7 @@
  * get children of category
  * Register Ajax Scripts
  * Ajax Filter Posts by Category (sample tiles)
- * ... (Post Form Handler)
+ * tct_form_response: handles the post submission form 
  * 
  */
 
@@ -147,6 +147,11 @@ function tajimi_custom_tiles_scripts() {
 		wp_enqueue_style( 'sample_tiles_css', get_template_directory_uri() . '/css/sample-tiles.css' );
 		wp_enqueue_script( 'sample-tiles-scripts', get_template_directory_uri() . '/js/sample-tile-form-processor.js', array('jquery'), '', true );
 	}
+	
+	//SF: on home: load shrinking header script
+	if ( is_home() ) {
+		wp_enqueue_script( 'sample-tiles-scripts', get_template_directory_uri() . '/js/home-shrinking-header.js', array('jquery'), '', true );
+	}	
 		
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
 		wp_enqueue_script( 'comment-reply' );
@@ -406,7 +411,7 @@ add_filter( 'nav_menu_link_attributes', 'tct_tile_filter_menu_attributes', 10, 3
 
 function tct_tile_filter_menu_attributes( $atts, $item, $args ) {
 
-	// checks with menu object the filter will be applyed on
+	// checks which menu object the filter will be applyed on (note: using $args)
 	if ($args->theme_location == 'tct-tile-filter-menu') {
 		
 		// get term object by name as title
@@ -741,4 +746,30 @@ function tct_handle_attachment( $file_handler ) {
 	return $movefile;
 }
 
+
+
+/** SF:
+ * Display Post Types in homepage
+ */
+function tct_display_home_posts( $query ) {
+	
+  if ( !is_admin() && $query->is_main_query() ) {
+	  
+    if ( $query->is_home() ) {
+		$query->set( 'post_type', array( 'brand_story', 'production_method', 'collaborations' ) );
+
+		$meta_query = array(
+						 array(
+							'key'=>'tct_show_in_startpage_options_checkbox',
+							'value'=> true,
+							'compare'=>'!=',
+						 ),
+		);
+		$query->set( 'meta_query', $meta_query );
+		
+    }
+  }
+}
+
+add_action( 'pre_get_posts', 'tct_display_home_posts' );
 

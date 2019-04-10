@@ -26,6 +26,12 @@ jQuery(document).ready(function () {
 			jQuery( this ).parent().toggleClass( 'tile-selected' );
 		}
 		
+		//RESET RADIO BUTTON ON CLOSING
+		if ( ! this.checked ){
+			jQuery( this ).siblings( '.tile-radio-1' ).prop( 'checked', true ); // Checks it
+			jQuery( this ).siblings( '.tile-radio-2' ).prop( 'checked', false ); // Unchecks it
+		}
+		
 		
 		
 		//SUBMIT BUTTON

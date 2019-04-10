@@ -44,16 +44,12 @@ function tct_register_show_in_startpage_option_metabox() {
 		'object_types'  => array( 'brand_story', 'production_method', 'collaborations' ), // Post type
 	) );
 	
-	// RADIO BUTTON FIELD
+	// CHECK BOX FIELD
 	$cmb_show_options->add_field( array(
-		'name'    => 'Show this Content in Start Page?',
-		'id'      => $prefix . 'radio_inline',
-		'type'    => 'radio_inline',
-		'options' => array(
-			'no' => __( 'No', 'cmb2' ),
-			'yes'   => __( 'Yes', 'cmb2' ),
-		),
-		'default' => 'no',
+		'name'    => esc_html__( 'Display Option', 'cmb2' ),
+		'desc'	  => esc_html__( 'Show this entry in start page', 'cmb2' ),
+		'id'      => $prefix . 'checkbox',
+		'type'    => 'checkbox',
 	) );
 	
 }
