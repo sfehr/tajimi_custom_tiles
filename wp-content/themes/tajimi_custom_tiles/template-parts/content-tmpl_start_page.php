@@ -7,24 +7,24 @@
  * @package Tajimi_Custom_Tiles
  */
 
+if ( get_page_template_slug( get_the_ID() ) ){
+	$template = pathinfo(get_page_template_slug( get_the_ID() ) );
+}
 ?>
 
+<article id="post-<?php the_ID(); ?>" <?php post_class( $template['filename'] ); ?>>
 	
-<?php
-
-	/* CUSTOM FIELDS */
-
-echo 'Test';
-?>
-
-<article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
+	<?php
+	
+		/* CUSTOM FIELDS */
+		tct_get_media_group_entries( 'tct_brand_story_group', 'entry-media' ); // ($meta_key, $class)
+//		$media_group_entries = get_post_meta( get_the_ID(), 'tct_brand_story_group', true );
+	
+	?>	
+	
 	<header class="entry-header">
 		<?php
-		if ( is_singular() ) :
 			the_title( '<h1 class="entry-title">', '</h1>' );
-		else :
-			the_title( '<h2 class="entry-title"><a href="' . esc_url( get_permalink() ) . '" rel="bookmark">', '</a></h2>' );
-		endif;
 
 		if ( 'post' === get_post_type() ) :
 			?>
@@ -41,8 +41,6 @@ echo 'Test';
 
 	<div class="entry-content">
 		<?php
-		
-		tct_get_media_group_entries( 'tct_brand_story_group', 'entry-media' ); // ($meta_key, $class)
 		
 		the_content( sprintf(
 			wp_kses(

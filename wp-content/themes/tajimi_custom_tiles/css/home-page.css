@@ -1,0 +1,165 @@
+/*!
+Theme Name: Tajimi Custom Tiles
+Theme URI: http://underscores.me/
+Author: Sebastian Fehr
+Author URI: http://www.sebastianfehr.com
+Description: Additional CSS for the front page classes injected by JS
+
+* MEDIA ITEM SIZING 
+** 2-2
+** 1-1
+* MEDIA ITEM PLAZING
+* TEXT ITEM
+* MEDIA QUERIES
+
+
+/* MEDIA ITEM SIZING  */
+
+/* 2-2 */ 
+.home .itm-s img,
+.home .itm-s iframe
+{  
+	width: calc( (var(--grid-column) * 3) + ( var(--grid-gap) * 2 ) ); 
+	height: calc( (var(--grid-column) * 2) + ( var(--grid-gap) * 1 ) ); 
+}
+
+.home .itm-s{  
+	grid-area: auto / auto / span var(--item-s-yspan) / span var(--item-s-xspan);
+}
+
+/* grid container right end position (-1) */
+.home .rpos-s{
+	grid-column: calc(var(--item-s-xspan) * -1) / -1;
+}
+	
+/* 1-1 */
+.home .itm-m img,
+.home .itm-m iframe
+{  
+	width: calc( (var(--grid-column) * 6 ) + ( var(--grid-gap) * 5 ) ); 
+	height: calc( (var(--grid-column) * 4) + ( var(--grid-gap) * 3 ) ); 
+}
+
+.home .itm-m{
+	grid-area: auto / auto / span var(--item-m-yspan) / span var(--item-m-xspan);
+}
+
+
+/* grid container right end position (-1) */
+.home .rpos-m{  
+	grid-area: auto / -1 / span var(--item-m-yspan) / calc(var(--item-m-xspan) * -1);
+}
+
+
+.home .itm-l img,
+.home .itm-l iframe
+{  
+	width: calc( (var(--grid-column) * 9 ) + ( var(--grid-gap) * 8 ) ); 
+	height: calc( (var(--grid-column) * 6) + ( var(--grid-gap) * 5 ) ); 
+}
+
+.home .itm-l{
+	grid-area: auto / auto / span var(--item-l-yspan) / span var(--item-l-xspan);
+}
+
+/* grid container right end position (-1) */
+.home .rpos-l{  
+	grid-area: auto / -1 / span var(--item-l-yspan) / calc(var(--item-l-xspan) * -1);
+}	
+
+
+/* MEDIA ITEM PLACING */
+
+.pl-t-l{
+  place-self: start start; 
+}
+
+.pl-t-r{
+  place-self: start end;
+}
+
+.pl-b-l{
+  place-self: end start;
+}
+
+.pl-b-r{
+  place-self: end end;
+}
+
+.pl-c-l{
+  place-self: center start;
+}
+
+.pl-c-r{
+  place-self: center end;
+}
+
+.pl-c-c{
+  place-self: center center;
+}
+
+
+/* MEDIA QUERIES */
+
+@media screen and (max-width: 848px) {
+	.wrapper {
+		background: lightblue;
+	}
+  
+  :root{
+    --item-s-xspan: 3;
+    --item-s-yspan: 2;     
+    --item-m-xspan: 3;
+    --item-m-yspan: 2; 
+    --item-l-xspan: 6;
+    --item-l-yspan: 4;
+    --item-txt-xspan: 3;
+  }
+  
+  .itm {
+    /* unsets the '.pl-' classes */
+    place-self: unset; /* JS toggle class, that contains pl- */
+  }
+  
+  .rpos-s{
+    /* -1 is adjusting to same with like the left pos item */
+    grid-column: calc((var(--item-s-xspan) * -1) - 1 ) / -1;
+  }
+  
+  .rpos-m{
+    grid-column: calc((var(--item-m-xspan) * -1) - 1 ) / -1;
+  }
+  
+  .rpos-l{
+    grid-column: calc((var(--item-l-xspan) * -1) - 1 ) / -1;
+  }
+
+  
+}
+
+/* item-l: (6 * col) + (5 * gap) + margin-left */
+@media screen and (max-width: 636px) {
+	.wrapper {
+		background: lightgreen;
+	}
+  
+  :root{
+    --item-l-xspan: 3;
+    --item-l-yspan: 2;    
+  }
+  
+  .rpos-l{
+    grid-column: calc((var(--item-l-xspan) * -1) - 1 ) / -1;
+  }
+}
+  
+/* item-l: (3 * col) + (2 * gap) + margin-left + margin-right */
+@media screen and (max-width: 636px) {
+	.wrapper{
+		background: beige;
+	}
+  
+  :root{
+    --grid-gap: 5px;
+  }  
+}

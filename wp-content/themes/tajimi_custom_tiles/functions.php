@@ -10,15 +10,18 @@
 /** TCT Custom Functions Inventory:
  *  
  * Load CMB2 Functions  
+ * Add Meta Tags
  * Template Selection for Custom Post Types
  * Get Custom Field Values: File List
  * Get Custom Field Values: Portfolio Data Bundle
  * tct_tile_filter_menu_attributes: adds a data-slug attribute to the naviagtion links
- * Register Custom Menu: Tile filter
  * get children of category
+ * display footer menu
+ * Sort Posts by Taxonomy Term
  * Register Ajax Scripts
  * Ajax Filter Posts by Category (sample tiles)
  * tct_form_response: handles the post submission form 
+ * Limiting Gutenbergs Block elements
  * 
  */
 
@@ -61,6 +64,8 @@ if ( ! function_exists( 'tajimi_custom_tiles_setup' ) ) :
 		// This theme uses wp_nav_menu() in one location.
 		register_nav_menus( array(
 			'menu-1' => esc_html__( 'Primary', 'tajimi_custom_tiles' ),
+			'tct-tile-filter-menu' => esc_html__( 'Sample Tile Filter Menu', 'tct-tile-filter-menu' ),
+			'tct-footer-menu' => esc_html__( 'Footer Menu', 'tct-footer-menu' ),
 		) );
 
 		/*
@@ -148,9 +153,16 @@ function tajimi_custom_tiles_scripts() {
 		wp_enqueue_script( 'sample-tiles-scripts', get_template_directory_uri() . '/js/sample-tile-form-processor.js', array('jquery'), '', true );
 	}
 	
-	//SF: on home: load shrinking header script
+	//SF: on home: load extra css,
 	if ( is_home() ) {
-		wp_enqueue_script( 'sample-tiles-scripts', get_template_directory_uri() . '/js/home-shrinking-header.js', array('jquery'), '', true );
+		wp_enqueue_style( 'home_page_css', get_template_directory_uri() . '/css/home-page.css' );
+		wp_enqueue_script( 'home-grid-layout-scripts', get_template_directory_uri() . '/js/home-grid-layout.js', array('jquery'), '', true );
+//		wp_enqueue_script( 'sample-tiles-scripts', get_template_directory_uri() . '/js/home-shrinking-header.js', array('jquery'), '', true );		
+	}
+	
+	//SF: on designated post-type-archive: load media image slider skript
+	if ( is_post_type_archive( array( 'brand_story', 'production_method', 'collaborations' ) ) ) {
+		wp_enqueue_script( 'sample-tiles-scripts', get_template_directory_uri() . '/js/media-image-slider.js', array('jquery'), '', true );
 	}	
 		
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
@@ -198,6 +210,17 @@ if ( defined( 'JETPACK__VERSION' ) ) {
 require_once( dirname(__FILE__) . '/inc/tct-cmb2-functions.php');
 
 
+
+/** SF:
+ * Add Meta Tags
+ */
+function tct_add_meta_tags() {
+  echo '<link rel="stylesheet" href="https://use.typekit.net/wlv6frg.css">';
+}
+add_action('wp_head', 'tct_add_meta_tags');
+
+	 
+	 
 /** SF:
  * Template Selection for Custom Post Types (Custom Post Types to inherit same template)
  */
@@ -224,31 +247,45 @@ add_filter( 'template_include', function( $template ) {
 /** SF:
  * Get Custom Field Values: Media Group
  */
-function tct_get_media_group_entries($class) {
+function tct_get_media_group_entries( $file_list_meta_key, $class, $img_size = '' ) {
 	
 	// get the custom field
-	$media_group_entries = get_post_meta( get_the_ID(), 'tct_brand_story_group', true );
+	$media_group_entries = get_post_meta( get_the_ID(), $file_list_meta_key, true );
 	
-	//get all group values
+	// shuffle the order in start page
+	if( is_home() ){
+		shuffle( $media_group_entries );
+	}
+	
+	// get all group values
 	foreach ( (array) $media_group_entries as $key => $entry ) {
-						
-		$radio = isset( $entry['radio_inline'] ) ? $entry['radio_inline'] : '';
-		$media = '';
 		
-		// evaluate if its an image or a movie
+		// check if select menu value is set
+		$radio = isset( $entry['select'] ) ? $entry['select'] : '';
+		
+		// resets the array
+		$media = null;
+		
+		// IMAGE (file_list)
 		if ( isset( $entry['image'] ) && !empty( $entry['image'] ) && $radio === 'img' ) {
-			// special case 'image_id' (!) _id needs to be added to get the value
-			$media = wp_get_attachment_image( $entry['image_id'], 'share-pick', null, array(
-				'class' => 'thumb',
-			) );
+			
+			// Loop through the file_list and fill it in the $media array
+			foreach ( (array) $entry['image'] as $attachment_id => $attachment_url ) {
+				$media[] = wp_get_attachment_image( $attachment_id, $img_size );
+			}
 		}						
-
+		
+		// MOVIE (oembed)
 		if ( isset( $entry['movie'] ) && !empty( $entry['movie'] ) && $radio === 'mov' ) {
-			$media = wp_oembed_get( esc_url( $entry['movie'] ) );
+			$media[] = wp_oembed_get( esc_url( $entry['movie'] ) );
 		}
 
-		// return the value
-		print '<div class="' . $class . ' itm-' . $radio . '">' . $media . '</div><!-- .' . $class . ' -->';
+		// final check if a value exists
+		if ( ! empty( $media ) ){
+			// print the images, in start page print only the 1st image
+			$media = ( is_home() ) ?  array_slice( $media, 0, 1 ) : $media;
+			print '<div class="' . $class . ' itm-' . $radio . '">' .  implode( '', $media ) . '</div><!-- .' . $class . ' -->';
+		}
 	}	
 }
 add_filter( 'tct_custom_fields', 'tct_get_media_group_entries' );
@@ -328,7 +365,8 @@ function tct_get_portfolio_data_bundle( $class ) {
 
 			case 'method' :
 				// checks if the field contains a value, returns "–" if not
-				$field_output = !( $field_value == '' ) ?  $field_value : '–';
+				$field_output = !( $field_value == '' ) ?  get_term( $field_value ) : '–';
+				$field_output = $field_output->name;
 				$field_title = 'method';
 				break;
 				
@@ -395,14 +433,6 @@ function tct_get_sample_tile_images( $meta_key, $class, $img_size = '' ) {
 add_filter( 'tct_custom_fields', 'tct_get_sample_tile_images' );
 
 
-/** SF:
- * Register Custom Menu: Tile filter
- */
-function tct_register_custom_new_menu() {
-  register_nav_menu('tct-tile-filter-menu',__( 'Sample Tile Filter Menu' ));
-}
-add_action( 'init', 'tct_register_custom_new_menu' );
-
 
 /** SF:
  *  tct_tile_filter_menu_attributes: adds a data-slug attribute to the naviagtion links
@@ -452,11 +482,58 @@ function tct_get_child_category($field, $parent, $taxonomy) {
 			
 			$parent_name = get_term_by( 'id', $term->parent, $taxonomy );
 			
-			print '<span class="' . $parent . '">'. $parent_name->name . ' – ' . $term->name . '</span>';
+			print '<span class="' . $parent . '">' /* . $parent_name->name . ' – ' */ . $term->name . '</span>';
 			break;
 		}
 	}	
 	
+}
+
+
+/** SF:
+ * display tile filter menu
+ */
+function tct_display_tile_filter_menu() { 
+ 	
+	if( is_page('sample-tiles') ){
+		wp_nav_menu( array( 'theme_location' => 'tct-tile-filter-menu' ) );
+	}
+}
+add_action( 'wp_head', 'tct_display_tile_filter_menu' ); 
+
+
+
+/** SF:
+ * display footer menu
+ */
+function tct_display_footer_menu() { 
+ 
+	wp_nav_menu( array( 'theme_location' => 'tct-footer-menu' ) );
+	
+}
+add_action( 'wp_footer', 'tct_display_footer_menu' ); 
+
+
+/** SF:
+ *  Sort Posts by Taxonomy Term
+ */
+add_filter('posts_clauses', 'tct_posts_clauses_with_tax', 10, 2);
+function tct_posts_clauses_with_tax( $clauses, $wp_query ) {
+	global $wpdb;
+	//array of sortable taxonomies
+	$taxonomies = array( 'tile_category' );
+	if( isset( $wp_query->query[ 'orderby' ] ) && in_array( $wp_query->query[ 'orderby' ], $taxonomies ) ) {
+		$clauses[ 'join' ] .= "
+			LEFT OUTER JOIN {$wpdb->term_relationships} AS rel2 ON {$wpdb->posts}.ID = rel2.object_id
+			LEFT OUTER JOIN {$wpdb->term_taxonomy} AS tax2 ON rel2.term_taxonomy_id = tax2.term_taxonomy_id
+			LEFT OUTER JOIN {$wpdb->terms} USING (term_id)
+		";
+		$clauses[ 'where' ] .= " AND (taxonomy = '{$wp_query->query[ 'orderby'] }' OR taxonomy IS NULL)";
+		$clauses[ 'groupby' ] = "rel2.object_id";
+		$clauses[ 'orderby' ]  = "GROUP_CONCAT({$wpdb->terms}.name ORDER BY name ASC) ";
+		$clauses[ 'orderby' ] .= ( 'ASC' == strtoupper( $wp_query->get('order') ) ) ? 'ASC' : 'DESC';
+	}
+	return $clauses;
 }
 
 
@@ -517,8 +594,8 @@ function ajax_filter_posts_by_category() {
 					'terms'    => $terms
 				)
 			),
-			'order'   => 'asc',
-			'orderby' => 'title',
+			'orderby' => 'tile_category',
+			'order'   => 'ASC',
 		);
 			
 	}	
@@ -527,8 +604,8 @@ function ajax_filter_posts_by_category() {
 			'post_type' => 'sample_tile',
 			'showposts' => $posts,
 			'paged'     => $paged,
-			'order'   => 'asc',
-			'orderby' => 'title',				
+//			'orderby' => 'title',
+			'order'   => 'DSC',
 		);
 	}
 
@@ -599,7 +676,7 @@ function tct_form_response(){
 	if( isset( $_POST['tct_contact_form_nonce'] ) && wp_verify_nonce( $_POST['tct_contact_form_nonce'], 'tct_add_contact_form_nonce') && 'POST' == $_SERVER['REQUEST_METHOD'] && !empty($_POST) &&  empty($_POST['name']) ) {
 		
 		
-		// BULK CHEK / SANITIZE
+		// BULK CHEK and SANITIZE
 		
 		$fields = array( 'first_name', 'last_name', 'email', 'company', 'message' );
 
@@ -713,7 +790,6 @@ function tct_form_response(){
 		
 //temporarely		
 //		print_r( $_FILES );
-		wp_die();
 		
 		// RESPONSE (admin Post)
 		
@@ -772,4 +848,34 @@ function tct_display_home_posts( $query ) {
 }
 
 add_action( 'pre_get_posts', 'tct_display_home_posts' );
+
+
+
+/** SF:
+ * Chose a custom template in homepage
+ */
+function tct_choose_template( $template ) {
+
+	if ( !is_admin() && is_home() ) {
+		$new_template = locate_template( array( 'tmpl_start_page.php' ) );
+		if ( !empty( $new_template ) ) {
+			return $new_template;
+		}
+	}
+
+	return $template;
+}
+add_filter( 'template_include', 'tct_choose_template', 99 );
+
+
+
+/** SF:
+ * Limiting Gutenbergs Block elements
+ */
+function tct_gutenberg_blocks() {
+  return array(
+    'core/paragraph',
+  );
+}
+add_filter( 'allowed_block_types', 'tct_gutenberg_blocks' );
 

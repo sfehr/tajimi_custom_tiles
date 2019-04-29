@@ -53,7 +53,7 @@ jQuery(document).ready(function(){
 				
 				
 				// LOADER: insert a loading status
-				var loader_msg = '<div class="loader-state">Loading Posts</div>';
+				var loader_msg = '<div class="loader-state">Loading Tiles</div>';
                 jQuery( loader_msg ).insertAfter( '.entry-content' );
 				
             },

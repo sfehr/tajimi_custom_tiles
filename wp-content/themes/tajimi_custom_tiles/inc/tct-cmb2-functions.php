@@ -23,9 +23,10 @@
  *
  * CUSTOM POST TYPE: PORTFOLIO
  * * * PORTFOLIO DATA BOX
- *
+ * 
+ * cmb2_get_term_options
+ *  
  */
-
 
 
 
@@ -98,7 +99,8 @@ function tct_register_translation_metabox() {
 		'id'      => $prefix . 'wysiwyg_JP',
 		'type'    => 'wysiwyg',
 		'options' => array(
-			'textarea_rows' => 5,
+			'media_buttons' => false, // show insert/upload button(s)			
+			'teeny' => true // output the minimal editor config used in Press This
 		),
 	) );	
 }
@@ -116,7 +118,7 @@ function tct_register_translation_metabox() {
 *
 * Repeatable Field Groups:
 * [radio] switch between image or movie
-* [images] content images
+* [file_list] content images
 * [oembed] content movies
 */
 add_action( 'cmb2_admin_init', 'tct_register_repeatable_brand_story_group_metabox' );
@@ -159,22 +161,28 @@ function tct_register_repeatable_brand_story_group_metabox() {
 	
 	// RADIO BUTTON FIELD
 	$cmb_brand_story_group->add_group_field( $group_field_id, array(
-		'name'    => 'Image or Movie',
-		'id'      => 'radio_inline',
-		'type'    => 'radio_inline',
+		'name'    => __( 'Media Type', 'cmb2' ),
+		'id'      => 'select',
+		'type'    => 'select',
 		'options' => array(
 			'img' => __( 'Image', 'cmb2' ),
-			'mov'   => __( 'Movie', 'cmb2' ),
+			'mov' => __( 'Movie', 'cmb2' ),
 		),
 		'default' => 'img',
 	) );	
 	
-	
 	// IMAGE FIELD
 	$cmb_brand_story_group->add_group_field( $group_field_id, array(
-		'name' => esc_html__( 'Image', 'cmb2' ),
+		'name' => esc_html__( 'Image(s)', 'cmb2' ),
 		'id'   => 'image',
-		'type' => 'file',
+		'type' => 'file_list',
+		'preview_size' => array( 0, 0 ), // Default: array( 50, 50 )
+		// 'query_args' => array( 'type' => 'image' ), // Only images attachment
+		'attributes' => array(
+		//	'required'               => true, // Will be required only if visible.
+			'data-conditional-id'    => $prefix . 'select',
+			'data-conditional-value' => 'mov',
+		),		
 	) );	
 	
 	// MOVIE FIELD
@@ -294,8 +302,15 @@ function tct_register_portfolio_data_metabox() {
 		'name' => 'Method used',
 		'desc' => 'which production method?',
 //		'default' => 'standard value (optional)',
-		'type' => 'text',
-		'id'   => $prefix . 'method'
+		'type' => 'select',
+		'id'   => $prefix . 'method',
+		'options_cb'     => 'cmb2_get_term_options',
+		// Same arguments you would pass to `get_terms`.
+		'get_terms_args' => array(
+			'taxonomy'   => 'tile_category',
+			'hide_empty' => false,
+			'child_of'   => '14'
+		),		
 	) );
 	
 	// VOLUME FIELD
@@ -314,8 +329,7 @@ function tct_register_portfolio_data_metabox() {
 		'escape_cb'       => 'absint',
 	) );
 }
-
-
+	 
 
 /*
 *
@@ -397,4 +411,46 @@ function tct_register_sample_tiles_metabox() {
 	) );	
 	
 }
+
+
+/**
+ * Gets a number of terms and displays them as options
+ * @param  CMB2_Field $field 
+ * @return array An array of options that matches the CMB2 options array
+ */
+function cmb2_get_term_options( $field ) {
+	$args = $field->args( 'get_terms_args' );
+	$args = is_array( $args ) ? $args : array();
+
+	$args = wp_parse_args( $args, array( 'taxonomy' => 'category' ) );
+
+	$taxonomy = $args['taxonomy'];
+
+	$terms = (array) cmb2_utils()->wp_at_least( '4.5.0' )
+		? get_terms( $args )
+		: get_terms( $taxonomy, $args );
+
+	// Initate an empty array
+	$term_options = array();
+	if ( ! empty( $terms ) ) {
+		foreach ( $terms as $term ) {
+			$term_options[ $term->term_id ] = $term->name;
+		}
+	}
+
+	return $term_options;
+}
+
+
+/*
+add_action( 'admin_enqueue_scripts', 'tct_admin_enqueue_scripts' );
+
+function tct_admin_enqueue_scripts( ) {
+	
+	$screen = get_current_screen();
+	if ( ! isset( $screen->post_type ) || 'brand_story' !== $screen->post_type ) return;
+
+	wp_enqueue_script( 'cmb2-js', get_template_directory_uri() . '/js/cmb2.js', array( 'jquery' ), '', true );
+}
+*/
 

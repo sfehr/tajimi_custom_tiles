@@ -65,14 +65,14 @@ Nicolas Gallagher and Jonathan Neal https://necolas.github.io/normalize.css/
 	--basic-color: black;
 	
 	/* TYPO */
-	--font-typeface: neue-haas-grotesk-display, sans-serif;
-	--font-weight: 400;
+	--font-typeface: neue-haas-grotesk-text, sans-serif;
+	--font-weight: 500;
 	--font-size-l: 30.5px;
 	--font-size-m: 24px;
 	--font-size-s: 18px;
-	--font-size-xs: 13px;
-	--font-lheight-l: 105%;
-	--font-lheight-m: 110%;	
+	--font-size-xs: 12px;
+	--font-lheight-l: 100%;
+	--font-lheight-m: 120%;	
 	--font-lheight-s: 115%;
 	--font-lheight-xs: 115%;
 	
@@ -90,7 +90,7 @@ Nicolas Gallagher and Jonathan Neal https://necolas.github.io/normalize.css/
 	/* 1-1 */
 	--item-m-xspan: 7; /* 6 + 1 */
 	--item-m-yspan: 5; /* 4 + 1 */
-	--item-l-xspan: 9; /* 8 + 1 */
+	--item-l-xspan: 10; /* 9 + 1 */
 	--item-l-yspan: 7; /* 6 + 1 */
 	/* 1-2 */
 	--item-txt-xspan: 4; /* 3 + 1 */
@@ -129,11 +129,6 @@ html {
 
 body {
 	margin: 0;
-	
-font-family: neue-haas-grotesk-display, sans-serif;
-font-style: normal;
-font-weight: 100;	
-	
 	overflow-x: hidden;
 	font-family: var(--font-typeface);
 	font-weight: var(--font-weight);
@@ -1082,6 +1077,7 @@ p{
 h1 {
 	margin: 0px;
 	font-size: var(--font-size-l);
+	font-weight: 400;
 }
 
 
@@ -1091,13 +1087,15 @@ h1 {
 
 /* SUB PAGE */
 
-.site-header{	
+.site-header{
+	z-index: 5;
 	height: var(--logo-size-small);
 	margin-top: var(--grid-gap);
 	margin-bottom: var(--grid-gap);
 }
 
 .custom-logo-link{
+	z-index: 5;
 	position: fixed;
 	display: flex;
 	top: var(--grid-gap);
@@ -1156,12 +1154,14 @@ h1 {
 }
 
 .main-navigation{
+	z-index: 5;
 	position: fixed;
 	width: auto;
 	height: auto;
 	top: var(--grid-gap);
 	right: var(--grid-gap);
 	font-size: var(--font-size-m);
+	font-weight: 400;
 }
 
 .main-navigation li{
@@ -1182,14 +1182,37 @@ h1 {
 	height: calc( (var(--grid-row) * 4.6) + (var(--grid-gap) * 5) + 1px ); /* keep 3:2 ratio */
 }
 
-.brand_story .itm-mov iframe{
-	width: calc( (var(--grid-column) * 9) + (var(--grid-gap) * 8) + 3px ); /* + 3px to seamlessly cut the vide */
-	height: calc( (var(--grid-row) * 6) + (var(--grid-gap) * 5) + 3px );
+
+.entry-media.itm-img{
+	display: flex;
+	position: relative;
+	flex-direction: column;
+}
+
+.entry-media.itm-img img{
+	display: none;
+}
+
+.entry-media.itm-img img:first-child{
+	display: unset;
+}
+
+.slide-active{
+	display: block !important;
+}
+
+.slide-button{
+	position: absolute;
+	width: 100%;
+	height: 100%;
+}
+
+.slide-button.prev{
+	display: none;
 }
 
 .entry-header h1{
 	font-size: var(--font-size-l);
-	font-weight: 500;
 	text-transform: uppercase;
 	line-height: var(--font-lheight-l);
 	hyphens: auto;
@@ -1200,9 +1223,22 @@ h1 {
 .entry-content p{	
 	font-size: var(--font-size-s);
 	line-height: var(--font-lheight-s);
-	font-weight: 600;
 	margin-top: -1px;
 }
+
+/* FRONT PAGE */
+
+.home .entry-content{		
+	background: white;
+}
+
+
+/* CUSTOM POST TYPE: Brand Story */
+.brand_story .itm-mov iframe{
+	width: calc( (var(--grid-column) * 9) + (var(--grid-gap) * 8) + 3px ); /* + 3px to seamlessly cut the vide */
+	height: calc( (var(--grid-row) * 6) + (var(--grid-gap) * 5) + 3px );
+}
+
 
 /* CUSTOM POST TYPE: Production Method, Collaborations */
 
@@ -1220,6 +1256,7 @@ h1 {
 .portfolio p
 {
 	font-size: var(--font-size-xs);
+	font-weight: var(--font-weight);
 	line-height: var(--font-lheight-xs);
 	text-transform: capitalize;
 }
@@ -1248,6 +1285,10 @@ h1 {
 
 /* CUSTOM POST TYPE: Sample Tiles */
 
+#tct-sample-tiles{
+	margin-top: calc( var(--grid-gap) * 2 + var(--logo-size-small) );
+}
+
 .page-template-tmpl_sample_tiles .site-header{
 	position: fixed;
 	z-index: 10;
@@ -1265,7 +1306,7 @@ h1 {
 }
 
 .menu-tct-sample-tile-filter-container{
-	z-index: 10;
+	z-index: 11;
 	position: fixed;
 	top: calc( var(--logo-size-small) + 1px );	
 	font-size: var(--font-size-xs);
@@ -1289,8 +1330,97 @@ h1 {
 }
 
 .selected-cat{
-	font-weight: 600;
 	font-style: italic;
+}
+
+
+/* PAGE: Contact */
+
+.page-template-page-contact .entry-content{
+	margin-top: calc( var(--grid-row) );
+}
+
+#tct-contact-form{
+	margin-top: var(--logo-size-small);
+}
+
+#tct-contact-form input[type=text],
+#tct-contact-form input[type=email],
+#tct-contact-form textarea
+{
+	border: 1.5px black solid;
+	border-radius: 0px;
+}
+
+#tct-contact-form textarea{
+	height: calc(var(--grid-row) * 2 + var(--grid-gap));
+}
+
+#tct-form-respond{
+	grid-area: 1 / 4 / span 15 / span 3 !important;
+}
+
+.message_tile_selection{
+	position: relative;
+}
+
+.message_tile_selection input{
+	width: 100%;
+}
+
+.message_tile_selection:first-of-type,
+#tct-contact-form textarea
+{
+	margin-top: 30px;
+}
+
+.button-delete{
+	position: absolute;
+	right: 10px;
+	font-size: 140%;
+	color: white !important;
+}
+
+.button-delete:before,
+.button-delete:after{
+	position: absolute;
+	z-index: 5;
+	top: 4px;
+	right: 6px;
+	content: '';
+	height: 25px;
+	width: 2px;
+	background-color: black;
+}
+
+.button-delete:before{
+	transform: rotate(45deg);  
+}
+
+.button-delete:after{
+	transform: rotate(-45deg);  
+}
+
+#tct-contact-form input[name="tct_name"]{
+	height: 0px;
+	width: 0px;
+	font-size: 0px;
+	line-height: 0px;
+	border: 0px;
+	margin: 0px;
+	padding: 0px;
+	visibility: hidden;
+}
+
+#tct-contact-form input[type="submit"]{
+	font-size: var(--font-size-s);
+	background: rgba(0,0,0,0.1);
+	border-radius: 0px;
+	border: 0px
+}
+
+#tct-contact-form input[type="submit"]:active{
+	background: rgba(0,0,0,0.2);
 }
 
 
@@ -1316,10 +1446,27 @@ h1 {
 	margin-bottom: calc(var(--grid-gap) * 4);
 }
 
-#tct-sample-tiles{
-	margin-top: calc( var(--grid-gap) * 2 + var(--logo-size-small) );
+/* Hero */
+
+.tmpl_hero_entry .entry-header h1{
+	font-family: neue-haas-grotesk-display, sans-serif;
+	font-weight: 400;
+	font-style: normal;
+	font-size: 48px;
+	line-height: 95%;
+	background: white;
+	width: 100%;
+	height: 100%;
 }
 
+.tmpl_hero_entry .container-content{
+	margin-top: -2px;
+}
+
+.tmpl_hero_entry .entry-content p{
+	font-size: var(--font-size-m);
+	line-height: var(--font-lheight-m);
+}
 
 
 /*--------------------------------------------------------------
@@ -1338,9 +1485,8 @@ h1 {
 	}
 	
 	.home .site-main article{
-		
 		/* as child item */
-		grid-area: 1 / 1 / 1 / -1;
+		grid-area: auto / 1 / auto / -1;
 	
 		/* as parent container */
 		display: grid;
@@ -1396,6 +1542,20 @@ h1 {
 	}
 	
 	
+	/* HERO */
+	.tmpl_hero_entry .container-content{
+		grid-template-columns: var(--grid-setting);
+	}	
+	
+	.tmpl_hero_entry .entry-header{
+		grid-column: 1 / 5;
+	}	
+	
+	.tmpl_hero_entry .entry-content{
+		grid-area: 1 / 5 / auto / -1;
+	}
+	
+	
 	/* CUSTOM POST TYPE: Production Method, Collaborations */
 	.production_method .entry-media,
 	.collaborations .entry-media
@@ -1445,8 +1605,9 @@ h1 {
 	
 	.menu-tct-sample-tile-filter-container{
 		display: grid;
-		grid-template-columns: repeat(auto-fill, calc(var(--grid-column) * 2 + var(--grid-gap)) );
-		grid-gap: var(--grid-gap);
+/*		grid-template-columns: repeat(auto-fill, calc(var(--grid-column) * 2 + var(--grid-gap)) ); */
+		grid-template-columns: repeat(auto-fill, calc(var(--grid-column) * 2) );
+		grid-gap: 0px;
 	}
 	
 	.menu-tct-sample-tile-filter-container .menu{
@@ -1457,8 +1618,8 @@ h1 {
 		display: grid;
 		grid-template-columns: var(--grid-setting);  
 		grid-auto-rows: var(--grid-row); 
-		grid-gap: var(--grid-gap);	
-/*		grid-gap: 2px; */
+/*		grid-gap: var(--grid-gap);	*/
+		grid-gap: 0px;
 	}	
 	
 	.sample-tile{
@@ -1485,6 +1646,41 @@ h1 {
 	
 	#tct-contact-form *{
 		grid-column: 1 / span 3;
+	}
+	
+	
+	/* FRONT PAGE: Content (unspecifyed elements are inherited from the content pages) */
+	
+	/* general / fallback */
+	.home .entry-media{
+		grid-area: auto / auto / span 2 / span 3;
+	}	
+	
+	.home .entry-header{
+		display: none;
+	}
+	
+	.home .entry-content{
+		display: block;
+		grid-area: auto / auto / auto / span var(--item-txt-xspan);
+	}
+
+	.home .entry-content p{;
+		max-width: calc( (var(--grid-column) * 3 ) + (var(--grid-gap) * 2) );
+	}
+	
+	/* Hero */
+	.home .tmpl_hero_entry .entry-header{
+		display: unset;
+	}
+	
+	.home .tmpl_hero_entry .entry-content{
+		grid-area: auto / 5 / auto / -1;
+		place-self: unset;
+	}
+	
+	.home .tmpl_hero_entry .entry-content p{
+		max-width: unset;
 	}
 	
 }

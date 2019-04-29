@@ -5,8 +5,6 @@
 
 get_header();
 
-// add custom menu
-wp_nav_menu( array( 'theme_location' => 'tct-tile-filter-menu' ) );
 
 
 ?>

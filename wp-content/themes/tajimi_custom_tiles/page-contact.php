@@ -1,11 +1,7 @@
 <?php
 /**
- * The template for displaying all pages
+ * Template Name: Contact
  *
- * This is the template that displays all pages by default.
- * Please note that this is the WordPress construct of pages
- * and that other 'pages' on your WordPress site may use a
- * different template.
  *
  * @link https://developer.wordpress.org/themes/basics/template-hierarchy/
  *
@@ -22,10 +18,7 @@ get_header();
 		<?php	
 			
 		while ( have_posts() ) :
-			the_post();
-
-			get_template_part( 'template-parts/content', 'contact' );
-			
+			the_post();			
 			
 			// VARIABLES
 			$selected_tiles = $_POST['tct_tile'];
@@ -34,13 +27,12 @@ get_header();
 			$tct_add_contact_nonce = wp_create_nonce( 'tct_add_contact_form_nonce' );
 			?>
 			
-			<div class="message_tile_selection">
 			<?php
+			// INPUT FIELDS TILE SELECTION
 			foreach ( (array) $selected_tiles as $key => $tile ) {
-				echo $tile . '<br>';
+				$input_html[] = '<div class="message_tile_selection"><input type="text" name="tct[selected_tile]" value="' . $tile . '" readonly><a class="button-delete" href="#">x</a></div>';
 			}
 			?>
-			</div>
 			
 			
   			<?php 
@@ -50,10 +42,14 @@ get_header();
 			?>
   			<form action="<?php /* the_permalink(); */ echo esc_url( admin_url('admin-post.php') );  ?>" method="post" enctype="multipart/form-data" id="tct-contact-form" name="tct_contact_form">
 				
-    			<input type="text" name="tct[first_name]" placeholder="First Name" value="<?php echo esc_attr( $_POST['tct']['first_name'] ); ?>">
-				<input type="text" name="tct[last_name]" placeholder="Last Name" value="<?php echo esc_attr( $_POST['tct']['last_name'] ); ?>">
-				<input type="email" name="tct[email]" placeholder="yourname@example.com" value="<?php echo esc_attr( $_POST['tct']['email'] ); ?>">
+    			<input type="text" name="tct[full_name]" placeholder="Full Name" value="<?php echo esc_attr( $_POST['tct']['full_name'] ); ?>">
 				<input type="text" name="tct[company]" placeholder="Company" value="<?php echo esc_attr( $_POST['tct']['company'] ); ?>">
+				<input type="text" name="tct[address]" placeholder="Adress" value="<?php echo esc_attr( $_POST['tct']['address'] ); ?>">
+				<input type="text" name="tct[postal_code]" placeholder="Postal Code" value="<?php echo esc_attr( $_POST['tct']['postal_code'] ); ?>">
+				<input type="text" name="tct[country]" placeholder="Country" value="<?php echo esc_attr( $_POST['tct']['country'] ); ?>">
+				<input type="text" name="tct[subject]" placeholder="Subject" value="<?php echo esc_attr( $_POST['tct']['subject'] ); ?>">
+				<input type="email" name="tct[email]" placeholder="yourname@example.com" value="<?php echo esc_attr( $_POST['tct']['email'] ); ?>">
+				<?php echo implode('', $input_html) ?>	
     			<textarea type="text" name="tct[message]" placeholder="Message"><?php echo esc_textarea( $_POST['tct']['message'] ); ?></textarea>
 				<label> Attach your file </label> 
 				<input type="file" name="tct_multiple_attachments[]" id="tct_file" multiple="multiple">
@@ -63,11 +59,13 @@ get_header();
 				
 				<input type="hidden" name="action" value="tct_form_response">				
     			<input type="submit" name="contact_submit" id="contact_submit" class="button button-primary" value="Send Message">
+				<div id="tct-form-respond"></div>
   			</form>
-			<div id="tct-form-respond">
-			</div>
 
 			<?php
+	
+			get_template_part( 'template-parts/content', 'contact' );		
+	
 			// If comments are open or we have at least one comment, load up the comment template.
 			if ( comments_open() || get_comments_number() ) :
 				comments_template();

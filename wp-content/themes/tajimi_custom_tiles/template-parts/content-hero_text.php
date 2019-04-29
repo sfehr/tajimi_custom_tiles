@@ -1,20 +1,17 @@
 <?php
 /**
- * Template part for displaying posts
+ * Template part for highlighting post content
  *
+ * Template Post Type: brand_story, production_method, collaborations
+ * 
  * @link https://developer.wordpress.org/themes/basics/template-hierarchy/
  *
  * @package Tajimi_Custom_Tiles
  */
 
-
-// if any template is applied, print template slug as css class (in the loop)
-if ( get_page_template_slug( get_the_ID() ) ){
-	$template = pathinfo(get_page_template_slug( get_the_ID() ) );
-}
 ?>
 
-<article id="post-<?php the_ID(); ?>" <?php post_class( $template['filename'] ); ?>>
+<article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
 	
 	<div class="container-media">
 	

@@ -1,10 +1,13 @@
 /**
  * File contact-form-processor.js
  *
- * Handles interaction with the contact form
+ * FORM SUBMISSION: Handles interaction with the contact form
+ * FORM INTERACTION TILE SELECTION: Removes selected input fields when button is clicked
  * 
  */
-	
+
+
+// FORM SUBMISSION
 jQuery( document ).ready( function( $ ) {
 
         "use strict";
@@ -40,12 +43,12 @@ jQuery( document ).ready( function( $ ) {
             })
             
             .done( function( response ) { // response from the PHP action
-                $(' #tct-form-respond ').html( "<h2>The request was successful </h2><br>" + response );
+                $( '#tct-form-respond' ).html( "<h2>The request was successful </h2><br>" + response );
             })
             
             // something went wrong  
             .fail( function() {
-                $(' #tct-form-respond ').html( "<h2>Something went wrong.</h2><br>" );                  
+                $( '#tct-form-respond' ).html( "<h2>Something went wrong.</h2><br>" );                  
             })
         
             // after all this time?
@@ -54,3 +57,19 @@ jQuery( document ).ready( function( $ ) {
             });
        });
 });
+
+
+// FORM INTERACTION TILE SELECTION: Removes selected input fields when button is clicked
+jQuery( document ).ready( function( $ ) {
+	
+	$( '#tct-contact-form' ).on( 'click', 'a.button-delete', function( event ){
+		
+		event.preventDefault();
+		// remove the parent container field
+		$( this ).parent( '.message_tile_selection' ).remove();
+		// remove the delete button
+//		$( this ).remove();
+	});
+	
+});	
+	
