@@ -21,6 +21,9 @@
  * CUSTOM POST TYPE: BRAND STORY
  * * * MEDIA META BOX
  *
+ * CUSTOM POST TYPE: COLLABORATION
+ * * * PROFILE BOX
+ *  
  * CUSTOM POST TYPE: PORTFOLIO
  * * * PORTFOLIO DATA BOX
  * 
@@ -195,6 +198,84 @@ function tct_register_repeatable_brand_story_group_metabox() {
 }
 
 
+/*
+*
+* CUSTOM POST TYPE: COLLABORATION //////////////////////////////////////////////
+* 
+* [file] profile image
+* [wysiwyg] profile text
+* [wysiwyg] profile text JP
+*
+*/
+add_action( 'cmb2_admin_init', 'tct_register_profile_metabox' );
+
+function tct_register_profile_metabox() {
+	$prefix = 'tct_profile_';
+
+	$cmb_profile = new_cmb2_box( array(
+		'id'            => $prefix . 'metabox',
+		'title'         => esc_html__( 'Profile', 'cmb2' ),
+		'object_types'  => array( 'collaborations' ), // Post type
+		// 'show_on_cb' => 'yourprefix_show_if_front_page', // function should return a bool value
+		// 'context'    => 'normal',
+		// 'priority'   => 'high',
+		// 'show_names' => true, // Show field names on the left
+		// 'cmb_styles' => false, // false to disable the CMB stylesheet
+		// 'closed'     => true, // true to keep the metabox closed by default
+		// 'classes'    => 'extra-class', // Extra cmb2-wrap classes
+		// 'classes_cb' => 'yourprefix_add_some_classes', // Add classes through a callback.
+	) );
+	
+	// FILE FIELD
+	$cmb_profile->add_field( array(
+		'name'    => esc_html__( 'Profile Photo', 'cmb2' ),
+		'desc'    => esc_html__( 'Select a profile photo', 'cmb2' ),
+		'id'      => $prefix . 'file',
+		'type'    => 'file',
+		// Optional:
+		'options' => array(
+			'url' => false, // Hide the text input for the url
+		),
+		'text'    => array(
+			'add_upload_file_text' => 'Add File' // Change upload button text. Default: "Add or Upload File"
+		),
+		// query_args are passed to wp.media's library query.
+		//'query_args' => array(
+			//'type' => 'application/pdf', // Make library only display PDFs.
+			// Or only allow gif, jpg, or png images
+			// 'type' => array(
+			// 	'image/gif',
+			// 	'image/jpeg',
+			// 	'image/png',
+			// ),
+		// ),
+		// 'preview_size' => 'large', // Image size to use when previewing in the admin.
+	) );	
+	
+	// TEXT EDITOR FIELD
+	$cmb_profile->add_field( array(
+		'name'    => esc_html__( 'Profile Text', 'cmb2' ),
+		'id'      => $prefix . 'wysiwyg',
+		'type'    => 'wysiwyg',
+		'options' => array(
+			'media_buttons' => false, // show insert/upload button(s)			
+			'teeny' => true // output the minimal editor config used in Press This
+		),
+	) );
+	
+	// TEXT EDITOR FIELD JP
+	$cmb_profile->add_field( array(
+		'name'    => esc_html__( 'Profile Text JP', 'cmb2' ),
+		'id'      => $prefix . 'wysiwyg_JP',
+		'type'    => 'wysiwyg',
+		'options' => array(
+			'media_buttons' => false, // show insert/upload button(s)			
+			'teeny' => true // output the minimal editor config used in Press This
+		),
+	) );	
+}
+
+	
 
 /*
 *
@@ -204,12 +285,11 @@ function tct_register_repeatable_brand_story_group_metabox() {
 * [text] city
 * [text] prefecture
 * [text] country
-* [text] architect
+* [text] architectv
 * [text] production method
 * [text_small] volume
 *
 */
-
 
 add_action( 'cmb2_admin_init', 'tct_register_portfolio_data_metabox' );
 
@@ -440,17 +520,4 @@ function cmb2_get_term_options( $field ) {
 
 	return $term_options;
 }
-
-
-/*
-add_action( 'admin_enqueue_scripts', 'tct_admin_enqueue_scripts' );
-
-function tct_admin_enqueue_scripts( ) {
-	
-	$screen = get_current_screen();
-	if ( ! isset( $screen->post_type ) || 'brand_story' !== $screen->post_type ) return;
-
-	wp_enqueue_script( 'cmb2-js', get_template_directory_uri() . '/js/cmb2.js', array( 'jquery' ), '', true );
-}
-*/
 

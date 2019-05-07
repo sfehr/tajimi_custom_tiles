@@ -22,7 +22,6 @@ if ( get_page_template_slug( get_the_ID() ) ){
 
 			/* CUSTOM FIELDS */
 			tct_get_media_group_entries( 'tct_brand_story_group', 'entry-media' ); // ($meta_key, $class)
-		
 		?>
 	
 	</div><!-- .media-container -->
@@ -72,6 +71,11 @@ if ( get_page_template_slug( get_the_ID() ) ){
 			) );
 			?>
 		</div><!-- .entry-content -->
+		
+		<?php
+			/* CUSTOM FIELDS */
+			tct_get_profile_entries( 'tct_profile', 'entry-profile' ); // ($meta_key, $class) profile entry for collaboration post type
+		?>
 		
 	</div><!-- .container-content -->		
 

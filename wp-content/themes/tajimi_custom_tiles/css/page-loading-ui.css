@@ -1,0 +1,468 @@
+/*!
+Theme Name: Tajimi Custom Tiles
+Theme URI: http://underscores.me/
+Author: Sebastian Fehr
+Author URI: http://www.sebastianfehr.com
+Description: css for pace.js
+*/
+
+.pace {
+	-webkit-pointer-events: none;
+	pointer-events: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	user-select: none;
+}
+
+.pace-active + .site #content
+{
+    opacity: 0;
+}
+
+.pace-inactive + .site #content
+{
+    opacity: 1;
+    -webkit-transition: opacity 0.5s linear;
+    -moz-transition: opacity 0.5s linear;
+    -o-transition: opacity 0.5s linear;
+    transition: opacity 0.5s linear;
+}
+
+.pace-inactive {
+ 	display: none;
+}
+
+.pace .pace-progress {
+	background-color: white;
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	transform: unset!important;
+	
+	display: grid;
+	z-index: 5;
+	width: 100vw;
+	height: 100vh;
+	align-content: stretch;
+	padding-top: var(--grid-gap);
+	margin-left: var(--grid-gap);
+	grid-template-columns: var(--grid-setting);
+	grid-gap: var(--grid-gap);
+	background: white;
+}
+
+.pace .pace-progress:after{
+	content: "";
+	position: fixed;
+	width: 100vw;
+	height: 100vh;
+	background: white;
+	z-index: -1;
+}
+
+.pace .pace-progress .pace-progress-inner {
+	grid-area: auto / 1 / auto / -1;
+	
+	display: grid;
+	grid-template-columns: var(--grid-setting);  
+	grid-auto-rows: var(--grid-row); 
+	grid-gap: var(--grid-gap);
+		
+	background-color: rgba(0,0,0,0.025);
+	background-image: 
+linear-gradient(white var(--grid-gap), transparent 2px),
+				linear-gradient(90deg, white var(--grid-gap), transparent 2px);
+	background-size: calc( var(--grid-column) + var(--grid-gap) ) calc( var(--grid-row) + var(--grid-gap) );
+	background-position: calc( var(--grid-gap) * -1 ) calc( var(--grid-gap) * -1 );	
+}
+
+.pace .pace-progress[data-progress-text="1%"]{ 
+	width: 1vw;
+}
+.pace .pace-progress[data-progress-text="1%"] .pace-progress-inner{
+	grid-area: auto / 1 / auto / 1;
+}
+.pace .pace-progress[data-progress-text="2%"]{ 
+	width: 2vw;
+}
+.pace .pace-progress[data-progress-text="2%"] .pace-progress-inner{
+	grid-area: auto / 1 / auto / 1;
+}
+.pace .pace-progress[data-progress-text="3%"]{ 
+	width: 3vw;
+}
+.pace .pace-progress[data-progress-text="3%"] .pace-progress-inner{
+	grid-area: auto / 1 / auto / 1;
+}
+.pace .pace-progress[data-progress-text="4%"]{ 
+	width: 4vw;
+}
+.pace .pace-progress[data-progress-text="4%"] .pace-progress-inner{
+	grid-area: auto / 1 / auto / 1;
+}
+.pace .pace-progress[data-progress-text="5%"]{ 
+	width: 5vw;
+}
+.pace .pace-progress[data-progress-text="5%"] .pace-progress-inner{
+	grid-area: auto / 1 / auto / 1;
+}
+.pace .pace-progress[data-progress-text="6%"]{ 
+	width: 6vw;
+}
+.pace .pace-progress[data-progress-text="6%"] .pace-progress-inner{
+	grid-area: auto / 1 / auto / 1;
+}
+.pace .pace-progress[data-progress-text="7%"]{ 
+	width: 7vw;
+}
+.pace .pace-progress[data-progress-text="7%"] .pace-progress-inner{
+	grid-area: auto / 1 / auto / 1;
+}
+.pace .pace-progress[data-progress-text="8%"]{ 
+	width: 8vw;
+}
+.pace .pace-progress[data-progress-text="8%"] .pace-progress-inner{
+	grid-area: auto / 1 / auto / 1;
+}
+.pace .pace-progress[data-progress-text="9%"]{ 
+	width: 9vw;
+}
+.pace .pace-progress[data-progress-text="9%"] .pace-progress-inner{
+	grid-area: auto / 1 / auto / 1;
+}
+.pace .pace-progress[data-progress-text="10%"]{ 
+	width: 10vw;
+}
+.pace .pace-progress[data-progress-text="10%"] .pace-progress-inner{
+	grid-area: auto / 1 / auto / 1;
+}
+.pace .pace-progress[data-progress-text="11%"]{ 
+	width: 11vw;
+}
+.pace .pace-progress[data-progress-text="11%"] .pace-progress-inner{
+	grid-area: auto / 1 / auto / 1;
+}
+.pace .pace-progress[data-progress-text="12%"]{ 
+	width: 12vw;
+}
+.pace .pace-progress[data-progress-text="12%"] .pace-progress-inner{
+	grid-area: auto / 1 / auto / 1;
+}
+.pace .pace-progress[data-progress-text="13%"]{ 
+	width: 13vw;
+}
+.pace .pace-progress[data-progress-text="13%"] .pace-progress-inner{
+	grid-area: auto / 1 / auto / 1;
+}
+.pace .pace-progress[data-progress-text="14%"]{ 
+	width: 14vw;
+}
+.pace .pace-progress[data-progress-text="14%"] .pace-progress-inner{
+	grid-area: auto / 1 / auto / 1;
+}
+.pace .pace-progress[data-progress-text="15%"]{ 
+	width: 15vw;
+}
+.pace .pace-progress[data-progress-text="15%"] .pace-progress-inner{
+	grid-area: auto / 1 / auto / 1;
+}
+.pace .pace-progress[data-progress-text="16%"]{ 
+	width: 16vw;
+}
+.pace .pace-progress[data-progress-text="16%"] .pace-progress-inner{
+	grid-area: auto / 1 / auto / 1;
+}
+.pace .pace-progress[data-progress-text="17%"]{ 
+	width: 17vw;
+}
+.pace .pace-progress[data-progress-text="17%"] .pace-progress-inner{
+	grid-area: auto / 1 / auto / 1;
+}
+.pace .pace-progress[data-progress-text="18%"]{ 
+	width: 18vw;
+}
+.pace .pace-progress[data-progress-text="18%"] .pace-progress-inner{
+	grid-area: auto / 1 / auto / 3;
+}
+.pace .pace-progress[data-progress-text="19%"]{ 
+	width: 19vw;
+}
+.pace .pace-progress[data-progress-text="19%"] .pace-progress-inner{
+	grid-area: auto / 1 / auto / 3;
+}
+.pace .pace-progress[data-progress-text="20%"]{ 
+	width: 20vw;
+}
+.pace .pace-progress[data-progress-text="20%"] .pace-progress-inner{
+	grid-area: auto / 1 / auto / 3;
+}
+.pace .pace-progress[data-progress-text="21%"]{ 
+	width: 21vw;
+}
+.pace .pace-progress[data-progress-text="21%"] .pace-progress-inner{
+	grid-area: auto / 1 / auto / 3;
+}
+.pace .pace-progress[data-progress-text="22%"]{ 
+	width: 22vw;
+}
+.pace .pace-progress[data-progress-text="22%"] .pace-progress-inner{
+	grid-area: auto / 1 / auto / 3;
+}
+.pace .pace-progress[data-progress-text="23%"]{ 
+	width: 23vw;
+}
+.pace .pace-progress[data-progress-text="23%"] .pace-progress-inner{
+	grid-area: auto / 1 / auto / 3;
+}
+.pace .pace-progress[data-progress-text="24%"]{ 
+	width: 24vw;
+}
+.pace .pace-progress[data-progress-text="24%"] .pace-progress-inner{
+	grid-area: auto / 1 / auto / 3;
+}
+.pace .pace-progress[data-progress-text="25%"]{ 
+	width: 25vw;
+}
+.pace .pace-progress[data-progress-text="25%"] .pace-progress-inner{
+	grid-area: auto / 1 / auto / 3;
+}
+.pace .pace-progress[data-progress-text="26%"]{ 
+	width: 26vw;
+}
+.pace .pace-progress[data-progress-text="26%"] .pace-progress-inner{
+	grid-area: auto / 1 / auto / 3;
+}
+.pace .pace-progress[data-progress-text="27%"]{ 
+	width: 27vw;
+}
+.pace .pace-progress[data-progress-text="27%"] .pace-progress-inner{
+	grid-area: auto / 1 / auto / 3;
+}
+.pace .pace-progress[data-progress-text="28%"]{ 
+	width: 28vw;
+}
+.pace .pace-progress[data-progress-text="29%"]{ 
+	width: 29vw;
+}
+.pace .pace-progress[data-progress-text="30%"]{ 
+	width: 30vw;
+}
+.pace .pace-progress[data-progress-text="31%"]{ 
+	width: 31vw;
+}
+.pace .pace-progress[data-progress-text="32%"]{ 
+	width: 32vw;
+}
+.pace .pace-progress[data-progress-text="33%"]{ 
+	width: 33vw;
+}
+.pace .pace-progress[data-progress-text="34%"]{ 
+	width: 34vw;
+}
+.pace .pace-progress[data-progress-text="35%"]{ 
+	width: 35vw;
+}
+.pace .pace-progress[data-progress-text="36%"]{ 
+	width: 36vw;
+}
+.pace .pace-progress[data-progress-text="37%"]{ 
+	width: 37vw;
+}
+.pace .pace-progress[data-progress-text="38%"]{ 
+	width: 38vw;
+}
+.pace .pace-progress[data-progress-text="39%"]{ 
+	width: 39vw;
+}
+.pace .pace-progress[data-progress-text="40%"]{ 
+	width: 40vw;
+}
+.pace .pace-progress[data-progress-text="41%"]{ 
+	width: 41vw;
+}
+.pace .pace-progress[data-progress-text="42%"]{ 
+	width: 42vw;
+}
+.pace .pace-progress[data-progress-text="43%"]{ 
+	width: 43vw;
+}
+.pace .pace-progress[data-progress-text="44%"]{ 
+	width: 44vw;
+}
+.pace .pace-progress[data-progress-text="45%"]{ 
+	width: 45vw;
+}
+.pace .pace-progress[data-progress-text="46%"]{ 
+	width: 46vw;
+}
+.pace .pace-progress[data-progress-text="47%"]{ 
+	width: 47vw;
+}
+.pace .pace-progress[data-progress-text="48%"]{ 
+	width: 48vw;
+}
+.pace .pace-progress[data-progress-text="49%"]{ 
+	width: 49vw;
+}
+.pace .pace-progress[data-progress-text="50%"]{ 
+	width: 50vw;
+}
+.pace .pace-progress[data-progress-text="51%"]{ 
+	width: 51vw;
+}
+.pace .pace-progress[data-progress-text="52%"]{ 
+	width: 52vw;
+}
+.pace .pace-progress[data-progress-text="53%"]{ 
+	width: 53vw;
+}
+.pace .pace-progress[data-progress-text="54%"]{ 
+	width: 54vw;
+}
+.pace .pace-progress[data-progress-text="52%"]{ 
+	width: 52vw;
+}
+.pace .pace-progress[data-progress-text="53%"]{ 
+	width: 53vw;
+}
+.pace .pace-progress[data-progress-text="54%"]{ 
+	width: 54vw;
+}
+.pace .pace-progress[data-progress-text="55%"]{ 
+	width: 55vw;
+}
+.pace .pace-progress[data-progress-text="56%"]{ 
+	width: 56vw;
+}
+.pace .pace-progress[data-progress-text="57%"]{ 
+	width: 57vw;
+}
+.pace .pace-progress[data-progress-text="58%"]{ 
+	width: 58vw;
+}
+.pace .pace-progress[data-progress-text="59%"]{ 
+	width: 59vw;
+}
+.pace .pace-progress[data-progress-text="60%"]{ 
+	width: 60vw;
+}
+.pace .pace-progress[data-progress-text="61%"]{ 
+	width: 61vw;
+}
+.pace .pace-progress[data-progress-text="62%"]{ 
+	width: 62vw;
+}
+.pace .pace-progress[data-progress-text="63%"]{ 
+	width: 63vw;
+}
+.pace .pace-progress[data-progress-text="64%"]{ 
+	width: 64vw;
+}
+.pace .pace-progress[data-progress-text="65%"]{ 
+	width: 65vw;
+}
+.pace .pace-progress[data-progress-text="66%"]{ 
+	width: 66vw;
+}
+.pace .pace-progress[data-progress-text="67%"]{ 
+	width: 67vw;
+}
+.pace .pace-progress[data-progress-text="68%"]{ 
+	width: 68vw;
+}
+.pace .pace-progress[data-progress-text="69%"]{ 
+	width: 69vw;
+}
+.pace .pace-progress[data-progress-text="70%"]{ 
+	width: 70vw;
+}
+.pace .pace-progress[data-progress-text="71%"]{ 
+	width: 71vw;
+}
+.pace .pace-progress[data-progress-text="72%"]{ 
+	width: 72vw;
+}
+.pace .pace-progress[data-progress-text="73%"]{ 
+	width: 73vw;
+}
+.pace .pace-progress[data-progress-text="74%"]{ 
+	width: 74vw;
+}
+.pace .pace-progress[data-progress-text="75%"]{ 
+	width: 75vw;
+}
+.pace .pace-progress[data-progress-text="76%"]{ 
+	width: 76vw;
+}
+.pace .pace-progress[data-progress-text="77%"]{ 
+	width: 77vw;
+}
+.pace .pace-progress[data-progress-text="78%"]{ 
+	width: 78vw;
+}
+.pace .pace-progress[data-progress-text="79%"]{ 
+	width: 79vw;
+}
+.pace .pace-progress[data-progress-text="80%"]{ 
+	width: 80vw;
+}
+.pace .pace-progress[data-progress-text="81%"]{ 
+	width: 81vw;
+}
+.pace .pace-progress[data-progress-text="82%"]{ 
+	width: 82vw;
+}
+.pace .pace-progress[data-progress-text="83%"]{ 
+	width: 83vw;
+}
+.pace .pace-progress[data-progress-text="84%"]{ 
+	width: 84vw;
+}
+.pace .pace-progress[data-progress-text="85%"]{ 
+	width: 85vw;
+}
+.pace .pace-progress[data-progress-text="86%"]{ 
+	width: 86vw;
+}
+.pace .pace-progress[data-progress-text="87%"]{ 
+	width: 87vw;
+}
+.pace .pace-progress[data-progress-text="88%"]{ 
+	width: 88vw;
+}
+.pace .pace-progress[data-progress-text="89%"]{ 
+	width: 89vw;
+}
+.pace .pace-progress[data-progress-text="90%"]{ 
+	width: 90vw;
+}
+.pace .pace-progress[data-progress-text="91%"]{ 
+	width: 91vw;
+}
+.pace .pace-progress[data-progress-text="92%"]{ 
+	width: 92vw;
+}
+.pace .pace-progress[data-progress-text="93%"]{ 
+	width: 93vw;
+}
+.pace .pace-progress[data-progress-text="94%"]{ 
+	width: 94vw;
+}
+.pace .pace-progress[data-progress-text="95%"]{ 
+	width: 95vw;
+}
+.pace .pace-progress[data-progress-text="96%"]{ 
+	width: 96vw;
+}
+.pace .pace-progress[data-progress-text="97%"]{ 
+	width: 97vw;
+}
+.pace .pace-progress[data-progress-text="98%"]{ 
+	width: 98vw;
+}
+.pace .pace-progress[data-progress-text="99%"]{ 
+	width: 99vw;
+}
+.pace .pace-progress[data-progress-text="100%"]{ 
+	width: 100vw;
+}

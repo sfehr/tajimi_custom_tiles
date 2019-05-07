@@ -12,10 +12,14 @@
  * Load CMB2 Functions  
  * Add Meta Tags
  * Template Selection for Custom Post Types
+ * Get Custom Field Values: Media Group
+ * Get Custom Field Values: Profile 
  * Get Custom Field Values: File List
  * Get Custom Field Values: Portfolio Data Bundle
+ * Get Custom Field Values: Image (Sample Tile)
  * tct_tile_filter_menu_attributes: adds a data-slug attribute to the naviagtion links
  * get children of category
+ * display additional header menu
  * display footer menu
  * Sort Posts by Taxonomy Term
  * Register Ajax Scripts
@@ -64,8 +68,9 @@ if ( ! function_exists( 'tajimi_custom_tiles_setup' ) ) :
 		// This theme uses wp_nav_menu() in one location.
 		register_nav_menus( array(
 			'menu-1' => esc_html__( 'Primary', 'tajimi_custom_tiles' ),
-			'tct-tile-filter-menu' => esc_html__( 'Sample Tile Filter Menu', 'tct-tile-filter-menu' ),
-			'tct-footer-menu' => esc_html__( 'Footer Menu', 'tct-footer-menu' ),
+			'tct-tile-filter-menu' => esc_html__( 'Sample Tile Filter Menu', 'tajimi_custom_tiles' ),
+			'tct-production-method-menu' => esc_html__( 'Production Method Menu', 'tajimi_custom_tiles' ),
+			'tct-footer-menu' => esc_html__( 'Footer Menu', 'tajimi_custom_tiles' ),
 		) );
 
 		/*
@@ -147,6 +152,10 @@ function tajimi_custom_tiles_scripts() {
 
 	wp_enqueue_script( 'tajimi_custom_tiles-skip-link-focus-fix', get_template_directory_uri() . '/js/skip-link-focus-fix.js', array(), '20151215', true );
 	
+	//SF: load pace.js for page loading progress UI (in Header)
+	wp_enqueue_script( 'page-loading-ui-js', get_template_directory_uri() . '/js/pace.js', array(), '', false );
+	wp_enqueue_style( 'page-loading-ui-css', get_template_directory_uri() . '/css/page-loading-ui.css' );
+	
 	//SF: load sample tiles css on sample tile page
 	if ( is_page( 'sample-tiles' ) ) {
 		wp_enqueue_style( 'sample_tiles_css', get_template_directory_uri() . '/css/sample-tiles.css' );
@@ -156,13 +165,18 @@ function tajimi_custom_tiles_scripts() {
 	//SF: on home: load extra css,
 	if ( is_home() ) {
 		wp_enqueue_style( 'home_page_css', get_template_directory_uri() . '/css/home-page.css' );
-		wp_enqueue_script( 'home-grid-layout-scripts', get_template_directory_uri() . '/js/home-grid-layout.js', array('jquery'), '', true );
-//		wp_enqueue_script( 'sample-tiles-scripts', get_template_directory_uri() . '/js/home-shrinking-header.js', array('jquery'), '', true );		
+		wp_enqueue_script( 'sample-tiles-scripts', get_template_directory_uri() . '/js/home-grid-layout.js', array('jquery'), '', true );
+		wp_enqueue_script( 'sample-tiles-scripts', get_template_directory_uri() . '/js/home-shrinking-header.js', array('jquery'), '', true );		
 	}
 	
 	//SF: on designated post-type-archive: load media image slider skript
 	if ( is_post_type_archive( array( 'brand_story', 'production_method', 'collaborations' ) ) ) {
 		wp_enqueue_script( 'sample-tiles-scripts', get_template_directory_uri() . '/js/media-image-slider.js', array('jquery'), '', true );
+	}
+	
+	//SF: on production method page: load sub navigation anchour slider
+	if ( is_post_type_archive( 'production_method' ) ) {
+		wp_enqueue_script( 'production-methods-scripts', get_template_directory_uri() . '/js/production-method-sub-menu.js', array('jquery'), '', true );
 	}	
 		
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
@@ -215,7 +229,7 @@ require_once( dirname(__FILE__) . '/inc/tct-cmb2-functions.php');
  * Add Meta Tags
  */
 function tct_add_meta_tags() {
-  echo '<link rel="stylesheet" href="https://use.typekit.net/wlv6frg.css">';
+	echo '<link rel="stylesheet" href="https://use.typekit.net/wlv6frg.css">';
 }
 add_action('wp_head', 'tct_add_meta_tags');
 
@@ -290,6 +304,45 @@ function tct_get_media_group_entries( $file_list_meta_key, $class, $img_size = '
 }
 add_filter( 'tct_custom_fields', 'tct_get_media_group_entries' );
 
+
+/** SF:
+ * Get Custom Field Values: Profile
+ */
+function tct_get_profile_entries( $file_list_meta_key, $class ) {
+	
+	$prefix = 'tct_profile_';
+	$fields = array( 'file_id', 'wysiwyg' );
+	
+	//GET FIELD VALUES
+	foreach ( (array) $fields as $field) {
+		$field_value = get_post_meta( get_the_ID(), $prefix . $field, true );
+		
+		
+		// SWITCH CASE:
+		switch ( $field ) {
+			
+			case 'file_id' :
+				// checks if the field contains a value, converts value into a readable format, returns "–" if not
+				$field_output = !( $field_value == '' ) ? wp_get_attachment_image( $field_value, '' ) : '';
+				$field_title = 'profile-photo';
+				break;
+				
+			case 'wysiwyg' :
+				// checks if the field contains a value, converts value into a readable format, returns "–" if not
+				$field_output = !( $field_value == '' ) ? wpautop( $field_value ) : '';
+				$field_title = 'profile-text';
+				break;				
+		}
+		
+		// checks weather a field value exist or not
+		if ( !empty( $field_output ) ) {
+
+			echo '<div class="' . $class . ' '. $field_title . '">';
+			echo $field_output;
+			echo '</div><!-- .' . $class . ' '. $field_title . ' -->';			
+		}		
+	}	
+}
 
 
 /** SF:
@@ -388,9 +441,11 @@ function tct_get_portfolio_data_bundle( $class ) {
 			$specific_class = !( $field_title == '' ) ? $class . '-' . $field_title : '';
 			
 			//WRAPPER OPENING TAG
+/*			
 			if( $field_title == 'architect'){
 				echo '<div class="portfolio-entry-group">';
 			}
+*/			
 			
 			echo '<div class="' . $specific_class . '">';
 			// checks weather a field title exist or not
@@ -398,10 +453,12 @@ function tct_get_portfolio_data_bundle( $class ) {
 			echo wpautop( esc_html( $field_output ) );
 			echo '</div><!-- .' . $specific_class . ' -->';
 			
+/*			
 			//WRAPPER CLOSING TAG
 			if( $field_title == 'volume'){
 				echo '</div><!-- .portfolio-entry-group -->';
-			}			
+			}
+*/			
 		}
 	}
 }
@@ -441,6 +498,7 @@ add_filter( 'nav_menu_link_attributes', 'tct_tile_filter_menu_attributes', 10, 3
 
 function tct_tile_filter_menu_attributes( $atts, $item, $args ) {
 
+	// TILE FILTER MENU
 	// checks which menu object the filter will be applyed on (note: using $args)
 	if ($args->theme_location == 'tct-tile-filter-menu') {
 		
@@ -491,16 +549,19 @@ function tct_get_child_category($field, $parent, $taxonomy) {
 
 
 /** SF:
- * display tile filter menu
+ * display additional header menu
  */
-function tct_display_tile_filter_menu() { 
+function tct_display_additional_menu_in_header() { 
  	
-	if( is_page('sample-tiles') ){
+	if( is_page( 'sample-tiles' ) ){
 		wp_nav_menu( array( 'theme_location' => 'tct-tile-filter-menu' ) );
 	}
+	
+	if( is_post_type_archive( 'production_method' ) ){
+		wp_nav_menu( array( 'theme_location' => 'tct-production-method-menu' ) );
+	}	
 }
-add_action( 'wp_head', 'tct_display_tile_filter_menu' ); 
-
+add_action( 'wp_head', 'tct_display_additional_menu_in_header' ); 
 
 
 /** SF:
