@@ -18,8 +18,8 @@ if ( get_page_template_slug( get_the_ID() ) ){
 	
 		/* CUSTOM FIELDS */
 		tct_get_media_group_entries( 'tct_brand_story_group', 'entry-media' ); // ($meta_key, $class)
-//		$media_group_entries = get_post_meta( get_the_ID(), 'tct_brand_story_group', true );
 	
+	/*
 	?>	
 	
 	<header class="entry-header">
@@ -36,25 +36,24 @@ if ( get_page_template_slug( get_the_ID() ) ){
 			</div><!-- .entry-meta -->
 		<?php endif; ?>
 	</header><!-- .entry-header -->
+	*/ ?>
 
 	<?php tajimi_custom_tiles_post_thumbnail(); ?>
-
+	
 	<div class="entry-content">
-		<?php
 		
-		the_content( sprintf(
-			wp_kses(
-				/* translators: %s: Name of current post. Only visible to screen readers */
-				__( 'Continue reading<span class="screen-reader-text"> "%s"</span>', 'tajimi_custom_tiles' ),
-				array(
-					'span' => array(
-						'class' => array(),
-					),
-				)
-			),
-			get_the_title()
-		) );
-
+		<a href="<?php echo get_post_type_archive_link( get_post_type() ) ?>">
+			<?php
+			the_title( '<h1 class="entry-title">', '</h1>' );
+			the_content();
+			?>
+		</a>
+		
+		<div class="entry-link">
+			<a href="<?php echo get_post_type_archive_link( get_post_type() ) ?>"><?php _e( 'Read More', 'tajimi_custom_tiles'  ) ?><i></i></a>
+		</div><!-- .entry-link -->
+			
+		<?php
 		wp_link_pages( array(
 			'before' => '<div class="page-links">' . esc_html__( 'Pages:', 'tajimi_custom_tiles' ),
 			'after'  => '</div>',

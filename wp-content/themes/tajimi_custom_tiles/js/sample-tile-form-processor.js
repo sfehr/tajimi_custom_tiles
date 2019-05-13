@@ -8,7 +8,7 @@
 jQuery(document).ready(function () {
 	
 	// VARIABLES
-	var checkbox_limit = 3;	
+	var checkbox_limit = 10;	
 	
     jQuery( 'body' ).on( 'change', 'input.tile-checkbox', function(event) {
 		
@@ -18,13 +18,21 @@ jQuery(document).ready(function () {
 		//Limits the amount of selectable checkboxes
 		if( jQuery( 'input.tile-checkbox:checked' ).length > checkbox_limit ) {
 			this.checked = false;
-			
-			//hide tooltip and pointer
 		}
 		//Toggles the selected class, while limit is not exceeded
 		else{
 			jQuery( this ).parent().toggleClass( 'tile-selected' );
+			jQuery( '#tct-sample-tiles' ).removeClass( 'max-selection' );
 		}
+		
+		// UX CONTROL: Hide tooltip and pointer when maximum tiles are selected
+		if( jQuery( 'input.tile-checkbox:checked' ).length === checkbox_limit ) {
+			jQuery( '#tct-sample-tiles' ).addClass( 'max-selection' );
+		}
+		else{
+			jQuery( '#tct-sample-tiles' ).removeClass( 'max-selection' );
+		}
+		
 		
 		//RESET RADIO BUTTON ON CLOSING
 		if ( ! this.checked ){

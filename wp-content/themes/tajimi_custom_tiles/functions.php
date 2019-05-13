@@ -25,6 +25,8 @@
  * Register Ajax Scripts
  * Ajax Filter Posts by Category (sample tiles)
  * tct_form_response: handles the post submission form 
+ * Display Post Types in homepage
+ * Chose a custom template in homepage 
  * Limiting Gutenbergs Block elements
  * 
  */
@@ -166,7 +168,7 @@ function tajimi_custom_tiles_scripts() {
 	if ( is_home() ) {
 		wp_enqueue_style( 'home_page_css', get_template_directory_uri() . '/css/home-page.css' );
 		wp_enqueue_script( 'sample-tiles-scripts', get_template_directory_uri() . '/js/home-grid-layout.js', array('jquery'), '', true );
-		wp_enqueue_script( 'sample-tiles-scripts', get_template_directory_uri() . '/js/home-shrinking-header.js', array('jquery'), '', true );		
+		wp_enqueue_script( 'home-layout-scripts', get_template_directory_uri() . '/js/home-shrinking-header.js', array('jquery'), '', true );		
 	}
 	
 	//SF: on designated post-type-archive: load media image slider skript
@@ -894,16 +896,24 @@ function tct_display_home_posts( $query ) {
 	  
     if ( $query->is_home() ) {
 		$query->set( 'post_type', array( 'brand_story', 'production_method', 'collaborations' ) );
-
+		
+		// checks if the post is featured
 		$meta_query = array(
 						 array(
-							'key'=>'tct_show_in_startpage_options_checkbox',
-							'value'=> true,
-							'compare'=>'!=',
+							'key' => 'tct_show_in_startpage_options_checkbox',
+							'value' => true,
+							'compare' => '!=',
 						 ),
 		);
 		$query->set( 'meta_query', $meta_query );
 		
+		// orders the post by post_type ASC and by date DESC
+		$post_order = array(
+			'post_type' => 'ASC',
+			'date' => 'DESC',
+		);
+
+		$query->set( 'orderby', $post_order );
     }
   }
 }

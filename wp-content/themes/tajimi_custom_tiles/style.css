@@ -44,6 +44,7 @@ Nicolas Gallagher and Jonathan Neal https://necolas.github.io/normalize.css/
 # Basic Styling
 # Header
 # Content
+# UX Elements
 # Grid Enhancement
 --------------------------------------------------------------*/
 
@@ -1057,6 +1058,11 @@ a:hover,
 a:visited
 {
 	color: var(--basic-color);
+	text-decoration: none;
+}
+
+a:hover{
+	
 }
 
 p{
@@ -1242,7 +1248,9 @@ h1 {
 	margin-top: var(--middle-spacing);
 }
 
-.entry-header h1{
+.entry-header h1,
+.entry-title,
+.home .entry-content > h1{
 	font-size: var(--font-size-m);
 	line-height: var(--font-lheight-m);
 	text-transform: uppercase;
@@ -1265,8 +1273,16 @@ h1 {
 
 /* FRONT PAGE */
 
+.home .entry-content h1{
+	margin-bottom: 12px
+}
+
 .home .entry-content{		
-	background: white;
+	background: white;	
+}
+
+.home .entry-content > a{		
+	display: block;
 }
 
 
@@ -1481,7 +1497,7 @@ h1 {
 
 /* Hero */
 
-.tmpl_hero_entry .entry-header h1{
+.home .tmpl_hero_entry h1{
 	font-family: neue-haas-grotesk-display, sans-serif;
 	font-weight: 400;
 	font-style: normal;
@@ -1489,16 +1505,66 @@ h1 {
 	line-height: 95%;
 	background: white;
 	width: 100%;
-	height: 100%;
+	margin-bottom: 23px;
 }
 
-.tmpl_hero_entry .container-content{
+.home .tmpl_hero_entry .container-content{
 	margin-top: -2px;
 }
 
-.tmpl_hero_entry .entry-content p{
+.home .tmpl_hero_entry .entry-content p{
 	font-size: var(--font-size-m);
 	line-height: var(--font-lheight-m);
+}
+
+/*--------------------------------------------------------------
+# UX Elements
+--------------------------------------------------------------*/
+
+/* UX arrow */
+.entry-link,
+.entry-link a{
+	display: block;
+	float: right;
+	width: var(--grid-column);
+	height: 60px;
+	font-size: 0px;
+}
+
+.entry-link{
+	margin-top: 20px;
+}
+
+.entry-link i,
+.tile-submit-container i{
+	position: relative;
+	top: 50%;
+	border: solid black;
+	border-width: 2.0px 60px 0px 0px;
+	font-size: 0px;
+}
+	
+.entry-link i:before,
+.entry-link i:after,
+.tile-submit-container i:before,
+.tile-submit-container i:after
+{
+	content: "";
+    right: -90px;
+    top: -2px;
+    position: absolute;
+    height: 2.1px;
+    box-shadow: inset 0 0 0 32px;
+    transform: rotate(-45deg);
+    width: 43px;
+    transform-origin: right top;
+  }
+
+.entry-link i:after,
+.tile-submit-container i:after{
+    transform: rotate(45deg);
+	top: -1.5px;
+	right: -90.5px;	
 }
 
 
@@ -1580,6 +1646,7 @@ h1 {
 	
 	
 	/* HERO */
+/*	
 	.tmpl_hero_entry .container-content{
 		grid-template-columns: var(--grid-setting);
 	}	
@@ -1591,7 +1658,7 @@ h1 {
 	.tmpl_hero_entry .entry-content{
 		grid-area: 1 / 5 / auto / -1;
 	}
-	
+*/	
 	
 	/* CUSTOM POST TYPE: Production Method, Collaborations */
 	.production_method .entry-media
@@ -1602,7 +1669,7 @@ h1 {
 	
 	.production_method .entry-header,
 	.production_method .entry-content{
-		grid-column: 1 / -1;
+		grid-column: 1 / span 7;
 	}
 	
 	/* CUSTOM POST TYPE: Portfolio */
@@ -1715,19 +1782,14 @@ h1 {
 	}
 	
 	/* Hero */
-	.home .tmpl_hero_entry .entry-header{
-		display: unset;
-	}
-	
 	.home .tmpl_hero_entry .entry-content{
-		grid-area: auto / 5 / auto / -1;
+		grid-area: 1 / -5 / auto / -1;
 		place-self: unset;
 	}
 	
 	.home .tmpl_hero_entry .entry-content p{
 		max-width: unset;
 	}
-	
 }
 
 

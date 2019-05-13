@@ -26,7 +26,7 @@ jQuery( document ).ready( function( $ ) {
 	$( '.entry-content' ).each( function() {
 	
 		// 1-2 offset
-		var itm_dimensions = grid_aligner( $(this).children(), 1, 2 );		
+		var itm_dimensions = grid_aligner( $( this ), 1, 2 );		
 		
 		//container height in px
 		$(this).height( (itm_dimensions[1] * (grid_row_height + grid_gap) - grid_gap) );
@@ -100,10 +100,17 @@ jQuery( document ).ready( function( $ ) {
 	// GRID ALIGNER FUNCTION (TEXT)
 
 	function grid_aligner(itm, x_off = '0', y_off = '0'){
-		//get dimensions
-		var itm_w = itm.width();
-		var itm_h = itm.height();
 
+		var itm_w = 0;
+		var itm_h = 0;		
+		
+		//get dimensions of all children and summarize
+
+		itm.children().each( function() {
+			itm_w += $( this ).outerWidth( true );
+			itm_h += $( this ).outerHeight( true );
+		});
+		
 		//aligne dimension to grid by rounding up
 		var aligned_w = Math.ceil( itm_w / (grid_col_width + grid_gap) );
 		var aligned_h = Math.ceil( itm_h / (grid_row_height + grid_gap) );
