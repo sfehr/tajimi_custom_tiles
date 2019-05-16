@@ -1417,10 +1417,34 @@ h1 {
 	width: 100%;
 }
 
+.message_tile_selection :not(.tile-selection){
+	color: black;
+}
+
 .message_tile_selection:first-of-type,
 #tct-contact-form textarea
 {
 	margin-top: 30px;
+}
+
+.page-template-page-contact .sample-tile{
+	position: absolute;
+ 	left: 100%;
+	top: 0px;
+	margin-left: var(--grid-gap);
+/*	width: 35px; */
+}
+
+.message_tile_selection:hover > .sample-tile,
+.message_tile_selection input:focus ~ .sample-tile{
+	display: block;
+	top: calc( var(--grid-column) * -1 + var(--grid-gap) );
+	width: calc( var(--grid-column) * 2 + var(--grid-gap) );
+	height: calc( var(--grid-column) * 2 + var(--grid-gap) );
+}
+
+.message_tile_selection:hover > .sample-tile{
+	z-index: 6;
 }
 
 .button-delete{
@@ -1461,6 +1485,7 @@ h1 {
 	visibility: hidden;
 }
 
+/*
 #tct-contact-form input[type="submit"]{
 	font-size: var(--font-size-s);
 	background: rgba(0,0,0,0.1);
@@ -1471,7 +1496,30 @@ h1 {
 #tct-contact-form input[type="submit"]:active{
 	background: rgba(0,0,0,0.2);
 }
+*/
+#tct-contact-form input[type="submit"]{
+	-moz-box-shadow: 0px 12px 32px -7px #b3b3b3;
+	-webkit-box-shadow: 0px 12px 32px -7px #b3b3b3;
+	box-shadow: 0px 12px 32px -7px #b3b3b3;
+	background-color:transparent;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+	border: none;
+	cursor: pointer;
+	padding: 12px 76px;
+	font-size: var(--font-size-s);
+}
 
+#tct-contact-form input[type="submit"]:active{
+	background: rgba(0,0,0,0.1);
+}
+
+.page-template-page-contact article{
+	position: absolute;
+	top: 6px;
+	right: 9px;
+}
 
 /* GENERAL */
 .home .site-main,

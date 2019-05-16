@@ -17,43 +17,41 @@ jQuery( document ).ready( function( $ ) {
         $( '#tct-contact-form' ).submit( function( event ) {
             
             event.preventDefault(); // Prevent the default form submit.            
-            
-            // serialize the form data
-//            var ajax_form_data = $( '#tct-contact-form' ).serialize();
-			var ajax_form_data = new FormData($(this)[0]);
-//			var ajax_form_data = new FormData();    
 			
-			$.each( $( '#tct_file' )[0].files, function( i, file ) {
-				ajax_form_data.append( 'tct_multiple_attachments[]', file );
-			});
+			// FORM DATA OBJECT
+			var data = new FormData( $( this )[0] );						
             
-            //add our own ajax check as X-Requested-With is not always reliable
-//            ajax_form_data = ajax_form_data + '&ajaxrequest=true&submit=Submit+Form';
-			
-			console.log('ajax_form_data:' + ajax_form_data );
+            // add our own ajax check as X-Requested-With is not always reliable
+            //data = data + '&ajaxrequest=true&submit=Submit+Form';
+			data.append( 'tct_ajaxrequest', 'true' );
 			
             $.ajax({
                 url:			ajaxObject.ajax_url, // domain/wp-admin/admin-ajax.php
-                type:			'post',
-                data:			ajax_form_data,
+                type:			'POST',
+                data:			data,
 				cache:			false,
-				contentType:	false,
+				dataType:		'json',
 				processData:	false,
-//				dataType:		'json'
+				contentType:	false,
             })
             
             .done( function( response ) { // response from the PHP action
-                $( '#tct-form-respond' ).html( "<h2>The request was successful </h2><br>" + response );
+				$( '#tct-form-respond' ).html( response.message );
+				
+				//reset the input fields on success
+				if( ( response.fields && response.mail ) == 'SUCCESS' ){
+					event.target.reset();
+				}
             })
             
             // something went wrong  
             .fail( function() {
-                $( '#tct-form-respond' ).html( "<h2>Something went wrong.</h2><br>" );                  
+                $( '#tct-form-respond' ).html( "Something went wrong.<br>" );                  
             })
         
             // after all this time?
             .always( function() {
-                event.target.reset();
+//				event.target.reset();
             });
        });
 });

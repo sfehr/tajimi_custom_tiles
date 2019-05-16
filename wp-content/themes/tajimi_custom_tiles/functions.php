@@ -486,6 +486,11 @@ function tct_get_sample_tile_images( $meta_key, $class, $img_size = '' ) {
 		echo '<div class="' . $class . ' itm-' . $count . '">';
 		echo wp_get_attachment_image( $image, $img_size );
 		echo '</div><!-- .' . $class . ' itm-' . $count . ' -->';
+		
+		// In the contact page, only 1 image is needed
+		if( is_page( 'contact' ) ){
+			return;
+		}
 	}
 	
 }
@@ -684,7 +689,7 @@ function ajax_filter_posts_by_category() {
 		?>
 		<div class="sample-tile">
 			
-			<input id="tct_sample_tile_checkbox_<?php the_ID(); ?>" type="checkbox" name="tct_tile[]" class="tile-checkbox" value="<?php the_title(); ?>">
+			<input id="tct_sample_tile_checkbox_<?php the_ID(); ?>" type="checkbox" name="tct_tile[]" class="tile-checkbox" value="<?php the_ID(); ?>">
 			<label class="tile-checkbox-label" ><?php the_title(); ?></label>
 			
 			<input id="tct_sample_tile_radio_<?php the_ID(); ?>_1" type="radio" name="tct_tile_image_<?php the_ID(); ?>" class="tile-radio-1" checked="checked" value="">
@@ -730,161 +735,160 @@ add_action( 'wp_ajax_nopriv_tct_form_response', 'tct_form_response');
 function tct_form_response(){
 	
 	//VARIABLES
-	$tct_subject = "Incoming message via " . get_bloginfo('name');
-	$tct_errors = array();
-	$tct_mail_recipient = 'sebastianfehr1@gmail.com';
+	$tct_subject = __( 'New Message via ', 'tajimi_custom_tiles' ) . get_bloginfo( 'name' );
+	$tct_to = 'sebastianfehr1@gmail.com';
+	$tct_fields = array( 'full_name', 'company', 'address', 'postal_code', 'subject', 'email', 'message' );
+	$tct_tile_selection = array();
+	$tct_tile_message = '[' . __( 'TILE ORDER', 'tajimi_custom_tiles' ) . ']';
+	$tct_message = '[' . __( 'MESSAGE', 'tajimi_custom_tiles' ) . ']';
+	$tct_response = array();
+	$posted_data = isset( $_POST ) ? $_POST : array();
+	$file_data = isset( $_FILES ) ? $_FILES : array();
+  
+	$data = array_merge( $posted_data, $file_data );
+	
 	
 	// SECURITY CHECKS: nonce field, Server Request, if $_POST is not empty, if invisible "name" field is empty
-	
-	if( isset( $_POST['tct_contact_form_nonce'] ) && wp_verify_nonce( $_POST['tct_contact_form_nonce'], 'tct_add_contact_form_nonce') && 'POST' == $_SERVER['REQUEST_METHOD'] && !empty($_POST) &&  empty($_POST['name']) ) {
-		
-		
-		// BULK CHEK and SANITIZE
-		
-		$fields = array( 'first_name', 'last_name', 'email', 'company', 'message' );
+	if( isset( $_POST[ 'tct_contact_form_nonce' ] ) && wp_verify_nonce( $_POST[ 'tct_contact_form_nonce' ], 'tct_add_contact_form_nonce') && 'POST' == $_SERVER[ 'REQUEST_METHOD' ] && !empty( $_POST ) && empty( $_POST[ 'tct_name' ]) ) {
 
-		foreach ($fields as $field) {
-			if( isset($_POST['tct'][$field] ) ) $posted[$field] = strip_tags( trim( $_POST['tct'][$field] ) ); else $posted[$field] = '';
-		}		
+
+		// POST FIELDS
+		foreach ( $tct_fields as $field ) {
+			//Sanitize by stripping tags
+			if( isset( $data[ 'tct' ][ $field ] ) ) $posted[ $field ] = strip_tags( trim( $data[ 'tct' ][ $field ] ) ); else $posted[ $field ] = '';
+		}
+
+		// Check fields content
+		$errors_posted = array();
+		if( $posted[ 'full_name' ] == null ) array_push( $errors_posted, __( 'Please enter a full name.', 'tajimi_custom_tiles' ) );
+		if( $posted[ 'company' ] == null ) array_push( $errors_posted, __( 'Please enter a company.', 'tajimi_custom_tiles' ) );
+		if( $posted[ 'address' ] == null ) array_push( $errors_posted, __( 'Please enter a adress.', 'tajimi_custom_tiles' ) );
+		if( $posted[ 'postal_code' ] == null ) array_push( $errors_posted, __( 'Please enter your postal code.', 'tajimi_custom_tiles' ) );
+		if( $posted[ 'subject' ] == null ) array_push( $errors_posted, __( 'Please enter a subject.', 'tajimi_custom_tiles' ) );
+		if( $posted[ 'email' ] == null ) array_push( $errors_posted, __( 'Please enter a email address.', 'tajimi_custom_tiles' ) );
+		if( $posted[ 'message' ] == null ) array_push( $errors_posted, __( 'Please enter a message.', 'tajimi_custom_tiles' ) );
 		
-		
-		// SANITIZE
-		
-		// Individual field check and sanitize
-//use specific santize function 
-		if( $posted['first_name'] == null ) array_push( $tct_errors,  sprintf( 'Notice: Please enter Your First Name.', 'tajimi_custom_tiles' ) );
-		if( $posted['last_name'] == null ) array_push( $tct_errors,  sprintf( 'Notice: Please enter Your Last Name.', 'tajimi_custom_tiles' ) );
-		if( $posted['email'] == null ) array_push( $tct_errors,  sprintf( 'Notice: Please enter Your Email.', 'tajimi_custom_tiles' ) );
-		if( $posted['company'] == null ) array_push( $tct_errors,  sprintf( 'Notice: Please enter Your Company.', 'tajimi_custom_tiles' ) );
-		if( $posted['message'] == null ) array_push( $tct_errors,  sprintf( 'Notice: Please enter a Message.', 'tajimi_custom_tiles' ) );
-		
-		$errors = array_filter( $tct_errors );
-		
-		
-		// FILE HANDLE
-		
-		// If no errors, handles the upload file
-		if( empty( $errors ) ) { 
-			
-			/*
-			// gets the install path
-			if ( ! function_exists( 'wp_handle_upload' ) ) {
-				require_once( ABSPATH . 'wp-admin/includes/file.php' );
+		// Check Sample Tile Fields
+		if( isset( $data[ 'tct' ][ 'selected_tiles' ] ) ){
+			foreach ( $data[ 'tct' ][ 'selected_tiles' ] as $tile) {
+				//Sanitize by stripping tags
+				$tct_tile_selection[] = strip_tags( $tile ) ;
 			}			
-			
-			//file from the superglobal
-			
-			$uploadedfile = $_FILES['attachmentFile'];
-			
-			$upload_overrides = array( 'test_form' => false );
-			
-			$movefile = wp_handle_upload( $uploadedfile, $upload_overrides );
+		}
+		
+		// collect errors in array
+		$errors_fields = array_filter( $errors_posted );
 
-			if ( $movefile && ! isset( $movefile['error'] ) ) { 
-				$movefile['url'];
+		// CHECK POST FIELDS: If no errors, proceed with upload file
+		if( empty( $errors_fields ) ) {
+			// response regarding fields
+			$tct_response[ 'fields' ] = 'SUCCESS';
+			
+			// FILES
+			$uploaded_files = array();
+			// manually handle of equal: $data[ 'tct_multiple_attachments' ]['name'][$i] but array can be only 2 arrays deep
+			$files = $data[ 'tct_multiple_attachments' ];
+
+			foreach( $files[ 'name' ] as $key => $value ) {			
+
+				if( $files[ 'name' ][ $key ]) {
+				$file = array(
+					'name'     => $files[ 'name' ][ $key ],
+					'type'     => $files[ 'type' ][ $key ],
+					'tmp_name' => $files[ 'tmp_name' ][ $key ],
+					'error'    => $files[ 'error' ][ $key ],
+					'size'     => $files[ 'size' ][ $key ]
+				);
+				$uploaded_files[] = wp_handle_upload( $file, array( 'test_form' => false ) );
+			  }
 			}
-			*/
-			
-			if ( 'POST' == $_SERVER['REQUEST_METHOD']  ) {
-				
-				if ( $_FILES ) {
-					
-					$files = $_FILES["tct_multiple_attachments"]; 
-					
-					foreach ( $files['name'] as $key => $value ) {
-						
-						if ( $files['name'][$key] ) { 
-							$file = array( 
-										'name' => $files['name'][$key],
-										'type' => $files['type'][$key], 
-										'tmp_name' => $files['tmp_name'][$key], 
-										'error' => $files['error'][$key],
-										'size' => $files['size'][$key]
-									); 
-								
-							$_FILES = array ( "tct_multiple_attachments" => $file );
-								
-							
-							foreach ( $_FILES as $file => $array ) {
-								
-								var_dump( $file );
-								
-								$newupload = tct_handle_attachment( $file ); 
-							}
-						}
-					} 
-				}
-			}			
 
+			// RESPONSE FILES
+			$response_files = array();
+
+			foreach( $uploaded_files as $key => $up_file ) {
+
+				if( $up_file && ! isset( $up_file[ 'error' ] ) ) {
+					$response_files[ $key ][ 'response' ] = 'SUCCESS';
+					$response_files[ $key ][ 'filename' ] = basename( $up_file[ 'url' ] );
+					$response_files[ $key ][ 'file' ] = $up_file[ 'file' ];
+					$response_files[ $key ][ 'url' ] = $up_file[ 'url' ];
+					$response_files[ $key ][ 'type' ] = $up_file[ 'type' ];
+				} else {
+					$response_files[ $key ][ 'response' ] = 'ERROR';
+					$response_files[ $key ][ 'error' ] = $up_file[ 'error' ];
+				}
+			}
+			// Response regarding Files
+			$tct_response[ 'files' ] = array_column( $response_files, 'response' );
 			
-//var_dump($newupload);
+			// merge to 1 value if all values are SUCCESS
+			if( count( array_unique( $tct_response[ 'files' ] ) ) === 1 && end( $tct_response[ 'files' ] ) === 'SUCCESS') {
+				$tct_response[ 'files' ] = 'SUCCESS';
+			}
 			
-			$attachments = array( $movefile['file'] );
+			// PROCESSING
+			// get all file names into the attachement array
+			$tct_attachments = array_column( $response_files, 'file' );
+			$tct_headers = 'From: '. $posted[ 'full_name' ] . ', ' . $posted[ 'company' ] .' <'. $posted[ 'email' ] .'>' . "\r\n";
 			
-			$headers = 'From: '. $posted['first_name'] . $posted['last_name'] .' <'. $posted['email'] .'>' . "\r\n";
+			// checks if tiles were selected
+			if( ! empty( $tct_tile_selection ) ){
+				$tct_tile_selection = implode( "\r\n", $tct_tile_selection );
+				$tct_tile_selection =  $tct_tile_message . "\r\n" . $tct_tile_selection;
+			}
+			// preparing the email message
+			$tct_message .=  "\r\n" . $posted[ 'message' ] . "\r\n\r\n" . $tct_tile_selection;
 			
-			
-			if( wp_mail( $tct_mail_recipient, $tct_subject , $posted['message'], $headers, $attachments ) ){
-//				die( 'success!' );
-// prepare a Server side response				
+			// send wp mail
+			if( wp_mail( $tct_to, $tct_subject , $tct_message, $tct_headers, $tct_attachments ) ){
+				$tct_response[ 'mail' ] = 'SUCCESS';
 			}
 			else{
-//				die( 'no success!' );
+				$tct_response[ 'mail' ] = 'ERROR';
 			}
-			
-			// delete file 
-			unlink( $movefile['file'] );
+
+			// delete file from server
+			foreach( $tct_attachments as $key => $file ){
+				unlink( $file );
+			}
 		}
 		else{
-			die( implode('<br>', $errors) );
+			// Response regarding Input fields
+			$tct_response[ 'message' ] = implode( '<br>', $errors_fields );
 		}
 		
-	
-		// RESPONSE (AJAX)
-		
-		// if JS/Ajax is available -> message 
-		if( isset( $_POST['ajaxrequest'] ) && $_POST['ajaxrequest'] === 'true' ) {
-			// server response
-			echo '<pre>';					
-			  print_r( $_POST );
-			echo '</pre>';				
-			wp_die();
-		  }	
-		
-//temporarely		
-//		print_r( $_FILES );
-		
-		// RESPONSE (admin Post)
-		
-		$url = $_SERVER['HTTP_REFERER'];
-		wp_redirect( $url );
-		die();
-	}
+	} //END SECURITY
 	else{
+		$tct_response[ 'security' ] = 'Security failure';
+		
+		die( $tct_response[ 'security' ] );
+	}	
 
-		wp_die( __( 'Invalid nonce specified', '{text-domain}' ), __( 'Error', '{text-domain}' ), array(
-					'response' 	=> 403,
-//					'back_link' => 'admin.php?page=' . $this->plugin_name,
-		) );	
+	// RESPONSE
+	// simple mail
+	if( $tct_response[ 'fields' ] === 'SUCCESS' && $tct_response[ 'mail' ] === 'SUCCESS' ){
+		$tct_response[ 'message' ] = __( 'Thank you for your message.', 'tajimi_custom_tiles' );
 	}
-}
-
-
-function tct_handle_attachment( $file_handler ) {	
+		
+	// mail including attachement, overwrite message if true
+	if( $tct_response[ 'fields' ] === 'SUCCESS' && $tct_response[ 'mail' ] === 'SUCCESS' && $tct_response[ 'files' ] === 'SUCCESS' ) {
+		$tct_response[ 'message' ] = __( 'Thank you for your message. Your files has been submitted', 'tajimi_custom_tiles' );
+	}
 	
-	// check to make sure its a successful upload
-	if ( $_FILES[$file_handler]['error'] !== UPLOAD_ERR_OK) __return_false();
-
-		require_once(ABSPATH . "wp-admin" . '/includes/image.php');
-		require_once(ABSPATH . "wp-admin" . '/includes/file.php');
-		require_once(ABSPATH . "wp-admin" . '/includes/media.php');
-
-//		$attach_id = media_handle_upload( $file_handler, $post_id );
-		$movefile = wp_handle_upload( $file_handler, array( 'test_form' => false ) );
-
-	return $movefile;
+	
+	// CHECK IF AJAX CALL
+	if( isset( $data[ 'tct_ajaxrequest' ] ) && $data[ 'tct_ajaxrequest' ] === 'true' ) {
+		echo json_encode( $tct_response );
+		
+		die();
+	}	
+	
+	// FALLBACK (admin_post only)
+	
+	die( $tct_response );
+	
 }
-
 
 
 /** SF:
