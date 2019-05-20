@@ -19,24 +19,7 @@ if ( get_page_template_slug( get_the_ID() ) ){
 		/* CUSTOM FIELDS */
 		tct_get_media_group_entries( 'tct_brand_story_group', 'entry-media' ); // ($meta_key, $class)
 	
-	/*
-	?>	
-	
-	<header class="entry-header">
-		<?php
-			the_title( '<h1 class="entry-title">', '</h1>' );
-
-		if ( 'post' === get_post_type() ) :
-			?>
-			<div class="entry-meta">
-				<?php
-				tajimi_custom_tiles_posted_on();
-				tajimi_custom_tiles_posted_by();
-				?>
-			</div><!-- .entry-meta -->
-		<?php endif; ?>
-	</header><!-- .entry-header -->
-	*/ ?>
+	?>
 
 	<?php tajimi_custom_tiles_post_thumbnail(); ?>
 	

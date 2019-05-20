@@ -228,7 +228,6 @@ input[type="radio"]:checked + .tile-radio-label {
 	bottom: 0px;
 	right: 0px;
 	height: calc(var(--grid-row) * 2);
-/*	width: calc(var(--grid-row) * 1); */
 	width: calc(var(--grid-row) * 2 + var(--grid-gap));
 	background: white;
 	font-size: var(--font-size-m);

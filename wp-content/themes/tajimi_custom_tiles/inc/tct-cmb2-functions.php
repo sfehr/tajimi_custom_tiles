@@ -179,12 +179,10 @@ function tct_register_repeatable_brand_story_group_metabox() {
 		'name' => esc_html__( 'Image(s)', 'cmb2' ),
 		'id'   => 'image',
 		'type' => 'file_list',
-		'preview_size' => array( 0, 0 ), // Default: array( 50, 50 )
+		'preview_size' => array( 100, 100 ), // Default: array( 50, 50 )
 		// 'query_args' => array( 'type' => 'image' ), // Only images attachment
 		'attributes' => array(
 		//	'required'               => true, // Will be required only if visible.
-			'data-conditional-id'    => $prefix . 'select',
-			'data-conditional-value' => 'mov',
 		),		
 	) );	
 	

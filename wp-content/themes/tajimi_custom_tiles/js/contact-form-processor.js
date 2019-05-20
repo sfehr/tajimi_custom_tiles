@@ -18,6 +18,8 @@ jQuery( document ).ready( function( $ ) {
             
             event.preventDefault(); // Prevent the default form submit.            
 			
+			$( '#contact_submit' ).attr( 'disabled', true ); // Disable Button while AJAX processing
+			
 			// FORM DATA OBJECT
 			var data = new FormData( $( this )[0] );						
             
@@ -34,6 +36,7 @@ jQuery( document ).ready( function( $ ) {
 				processData:	false,
 				contentType:	false,
             })
+			
             
             .done( function( response ) { // response from the PHP action
 				$( '#tct-form-respond' ).html( response.message );
@@ -41,6 +44,7 @@ jQuery( document ).ready( function( $ ) {
 				//reset the input fields on success
 				if( ( response.fields && response.mail ) == 'SUCCESS' ){
 					event.target.reset();
+					$( '.message_tile_selection' ).remove();
 				}
             })
             
@@ -51,7 +55,7 @@ jQuery( document ).ready( function( $ ) {
         
             // after all this time?
             .always( function() {
-//				event.target.reset();
+				$( '#contact_submit' ).attr( 'disabled', false ); // Enable Button while AJAX processing
             });
        });
 });

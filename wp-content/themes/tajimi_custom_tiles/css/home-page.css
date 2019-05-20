@@ -29,7 +29,7 @@ Description: Additional CSS for the front page classes injected by JS
 
 /* grid container right end position (-1) */
 .home .rpos-s{
-	grid-column: calc(var(--item-s-xspan) * -1) / -1;
+	grid-area: auto / -1 / span var(--item-s-yspan) / calc(var(--item-s-xspan) * -1);
 }
 	
 /* 1-1 */
@@ -71,95 +71,115 @@ Description: Additional CSS for the front page classes injected by JS
 /* MEDIA ITEM PLACING */
 
 .pl-t-l{
-  place-self: start start; 
+	place-self: start start; 
 }
 
 .pl-t-r{
-  place-self: start end;
+	place-self: start end;
 }
 
 .pl-b-l{
-  place-self: end start;
+	place-self: end start;
 }
 
 .pl-b-r{
-  place-self: end end;
+	place-self: end end;
 }
 
 .pl-c-l{
-  place-self: center start;
+	place-self: center start;
 }
 
 .pl-c-r{
-  place-self: center end;
+	place-self: center end;
 }
 
 .pl-c-c{
-  place-self: center center;
+	place-self: center center;
 }
 
 
 /* MEDIA QUERIES */
 
-@media screen and (max-width: 848px) {
-	.wrapper {
-		background: lightblue;
+@media screen and (max-width: 1124px) {
+	
+	:root{
+		--item-s-xspan: 3;
+    	--item-s-yspan: 2;     
+    	--item-m-xspan: 3;
+    	--item-m-yspan: 2; 
+    	--item-l-xspan: 6;
+    	--item-l-yspan: 4;
+    	--item-txt-xspan: 3;
 	}
   
-  :root{
-    --item-s-xspan: 3;
-    --item-s-yspan: 2;     
-    --item-m-xspan: 3;
-    --item-m-yspan: 2; 
-    --item-l-xspan: 6;
-    --item-l-yspan: 4;
-    --item-txt-xspan: 3;
-  }
+	.home .entry-media {
+    	/* unsets the '.pl-' classes */
+		place-self: unset;
+	}
   
-  .itm {
-    /* unsets the '.pl-' classes */
-    place-self: unset; /* JS toggle class, that contains pl- */
-  }
+	.home .rpos-s{
+		grid-area: auto / -1 / span var(--item-s-yspan) / calc( ( var(--item-s-xspan) + 1 ) * -1);
+	}
   
-  .rpos-s{
-    /* -1 is adjusting to same with like the left pos item */
-    grid-column: calc((var(--item-s-xspan) * -1) - 1 ) / -1;
-  }
+	.home .rpos-m{
+		grid-area: auto / -1 / span var(--item-m-yspan) / calc( ( var(--item-m-xspan) + 1 ) * -1);
+  	}
   
-  .rpos-m{
-    grid-column: calc((var(--item-m-xspan) * -1) - 1 ) / -1;
-  }
-  
-  .rpos-l{
-    grid-column: calc((var(--item-l-xspan) * -1) - 1 ) / -1;
-  }
-
-  
+	.home .rpos-l{
+		grid-area: auto / -1 / span var(--item-l-yspan) / calc( ( var(--item-l-xspan) + 1 ) * -1);
+  	}
 }
 
 /* item-l: (6 * col) + (5 * gap) + margin-left */
-@media screen and (max-width: 636px) {
-	.wrapper {
-		background: lightgreen;
+@media screen and (max-width: 753px) {
+  
+	:root{
+		--item-l-xspan: 3;
+		--item-l-yspan: 2;    
 	}
   
-  :root{
-    --item-l-xspan: 3;
-    --item-l-yspan: 2;    
-  }
-  
-  .rpos-l{
-    grid-column: calc((var(--item-l-xspan) * -1) - 1 ) / -1;
-  }
+	.home .rpos-l{
+		grid-area: auto / -1 / span var(--item-l-yspan) / calc( ( var(--item-l-xspan) + 1 ) * -1);
+	}
 }
   
 /* item-l: (3 * col) + (2 * gap) + margin-left + margin-right */
-@media screen and (max-width: 636px) {
-	.wrapper{
-		background: beige;
-	}
+@media screen and (max-width: 505px) {
   
-  :root{
-    --grid-gap: 5px;
-  }  
+	:root{
+		--item-s-xspan: 6;
+    	--item-s-yspan: 4;     
+    	--item-m-xspan: 6;
+    	--item-m-yspan: 4; 
+    	--item-l-xspan: 6;
+    	--item-l-yspan: 4;		
+		
+	}
+	
+	.home .entry-content{
+		place-self: unset;
+		grid-area: 1 / auto / auto / -1;
+		grid-row-start: 1 !important;
+		grid-column-start: 1 !important;
+	}	
+	
+	.home .entry-content p,
+	.home .entry-content h1
+	{
+		width: 100%;
+		max-width: 100%;
+	}
+
+	.home .entry-media img,
+	.home .entry-media iframe
+	{
+		width: 100%;
+		height: 100%;
+	}
+	
+	.home .entry-link a{
+		width: 100px;
+	}
+
 }

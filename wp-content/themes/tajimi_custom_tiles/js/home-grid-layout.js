@@ -8,13 +8,10 @@
  * RIGHT HAND POSITION IN GRID
  * GRID ALIGNER FUNCTION (TEXT)
  * MEDIA ITEM PLACING FUNCTION 
+ * MEDIA QUERIES
  */
 
 // VARIABLES
-var html_styles = window.getComputedStyle(document.querySelector( 'html' ) );
-var grid_col_width = parseInt(html_styles.getPropertyValue( '--grid-column' ) );
-var grid_row_height = parseInt(html_styles.getPropertyValue( '--grid-row' ) );
-var grid_gap = parseInt(html_styles.getPropertyValue( '--grid-gap' ) );
 var n_random_sizing = '';
 var n_random_placing = '';
 
@@ -22,22 +19,47 @@ var n_random_placing = '';
 jQuery( document ).ready( function( $ ) {
 	'use strict';
 	
-	// TEXT ITEM AUTO HEIGHT (adapting to the grid)
-	$( '.entry-content' ).each( function() {
+	txt_elements_init();
 	
-		// 1-2 offset
-		var itm_dimensions = grid_aligner( $( this ), 1, 2 );		
+	// TEXT ITEM AUTO HEIGHT (adapting to the grid)
+	function txt_elements_init(){
 		
-		//container height in px
-		$(this).height( (itm_dimensions[1] * (grid_row_height + grid_gap) - grid_gap) );
-
-		//container height in unit (depending on content)
-		$(this).css('grid-row-end', 'span ' + itm_dimensions[3] );
-
-		//add content aligning class for txt item
-		$(this).addClass('pl-c-l');
+		var html_styles = window.getComputedStyle( document.querySelector( 'html' ) );
+		var grid_col_width = parseInt( html_styles.getPropertyValue( '--grid-column' ) );
+		var grid_row_height = parseInt( html_styles.getPropertyValue( '--grid-row' ) );
+		var grid_gap = parseInt( html_styles.getPropertyValue( '--grid-gap' ) );		
+		var itm_dimensions;
+		var x_off = 1;
+		var y_off = 2;
 		
-	});
+		// Breakpoint Check
+		if( $( window ).width() < 506 ) {
+			
+			grid_col_width = 15.5;
+			
+			// convert vw/vh units into px
+			grid_col_width = ( $( window ).width() * grid_col_width ) / 100;
+			grid_row_height = grid_col_width;
+			grid_gap = ( $( window ).width() * grid_gap ) / 100;
+			x_off = y_off = 0;
+		}		
+		
+		$( 'body .entry-content' ).each( function() {
+				
+			itm_dimensions = grid_aligner( $( this ), grid_col_width, grid_row_height, grid_gap, x_off, y_off );
+
+			//container height in px
+			$(this).height( (itm_dimensions[1] * (grid_row_height + grid_gap) - grid_gap) );
+
+			//container height in unit (depending on content)
+			$(this).css('grid-row-end', 'span ' + itm_dimensions[3] );
+
+			//add content aligning class for txt item
+			$(this).addClass('pl-c-l');
+		});		
+		
+	}
+
 	
 	
 	// ENTRY MEDIA INIT: distributes different sizes and placing options via css class
@@ -98,8 +120,8 @@ jQuery( document ).ready( function( $ ) {
 	
 	
 	// GRID ALIGNER FUNCTION (TEXT)
-
-	function grid_aligner(itm, x_off = '0', y_off = '0'){
+	
+	function grid_aligner( itm, grid_col_width, grid_row_height, grid_gap, x_off = '0', y_off = '0' ){
 
 		var itm_w = 0;
 		var itm_h = 0;		
@@ -180,8 +202,18 @@ jQuery( document ).ready( function( $ ) {
 		
 		return css_align;		
 		
-	}	
+	}
 	
+
+	// MEDIA QUERIES
+	$( window ).on( 'resize', function(){
+		
+//		if( $( window ).width() < 700 ){
+		   txt_elements_init();
+//		}
+		
+	});
+	 
 });
 
 

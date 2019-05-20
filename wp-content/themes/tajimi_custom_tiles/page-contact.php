@@ -47,17 +47,17 @@ get_header();
 			?>
   			<form action="<?php /* the_permalink(); */ echo esc_url( admin_url('admin-post.php') );  ?>" method="post" enctype="multipart/form-data" id="tct-contact-form" name="tct_contact_form">
 				
-    			<input type="text" name="tct[full_name]" placeholder="<?php _e( 'Full Name', 'tajimi_custom_tiles' ); ?>" value="<?php echo esc_attr( $_POST['tct']['full_name'] ); ?>">
-				<input type="text" name="tct[company]" placeholder="<?php _e( 'Company', 'tajimi_custom_tiles' ); ?>" value="<?php echo esc_attr( $_POST['tct']['company'] ); ?>">
-				<input type="text" name="tct[address]" placeholder="<?php _e( 'Address', 'tajimi_custom_tiles' ); ?>" value="<?php echo esc_attr( $_POST['tct']['address'] ); ?>">
-				<input type="text" name="tct[postal_code]" placeholder="<?php _e( 'Postal Code', 'tajimi_custom_tiles' ); ?>" value="<?php echo esc_attr( $_POST['tct']['postal_code'] ); ?>">
-				<input type="text" name="tct[country]" placeholder="<?php _e( 'Country', 'tajimi_custom_tiles' ); ?>" value="<?php echo esc_attr( $_POST['tct']['country'] ); ?>">
-				<input type="text" name="tct[subject]" placeholder="<?php _e( 'Subject', 'tajimi_custom_tiles' ); ?>" value="<?php echo esc_attr( $_POST['tct']['subject'] ); ?>">
-				<input type="email" name="tct[email]" placeholder="<?php _e( 'yourname@example.com', 'tajimi_custom_tiles' ); ?>" value="<?php echo esc_attr( $_POST['tct']['email'] ); ?>">
-				<?php echo implode('', $input_html) ?>
-    			<textarea type="text" name="tct[message]" placeholder="<?php _e( 'Message', 'tajimi_custom_tiles' ); ?>"><?php echo esc_textarea( $_POST['tct']['message'] ); ?></textarea>
-				<label><?php _e( 'Attache your File', 'tajimi_custom_tiles' ); ?></label> 
+    			<input type="text" name="tct[full_name]" placeholder="<?php _e( 'Full Name', 'tajimi_custom_tiles' ); ?>" value="<?php echo esc_attr( $_POST['tct']['full_name'] ); ?>" required>
+				<input type="text" name="tct[company]" placeholder="<?php _e( 'Company', 'tajimi_custom_tiles' ); ?>" value="<?php echo esc_attr( $_POST['tct']['company'] ); ?>" required>
+				<input type="text" name="tct[address]" placeholder="<?php _e( 'Address', 'tajimi_custom_tiles' ); ?>" value="<?php echo esc_attr( $_POST['tct']['address'] ); ?>" required>
+				<input type="text" name="tct[postal_code]" placeholder="<?php _e( 'Postal Code', 'tajimi_custom_tiles' ); ?>" value="<?php echo esc_attr( $_POST['tct']['postal_code'] ); ?>" required>
+				<input type="text" name="tct[country]" placeholder="<?php _e( 'Country', 'tajimi_custom_tiles' ); ?>" value="<?php echo esc_attr( $_POST['tct']['country'] ); ?>" required>
+				<input type="text" name="tct[subject]" placeholder="<?php _e( 'Subject', 'tajimi_custom_tiles' ); ?>" value="<?php echo esc_attr( $_POST['tct']['subject'] ); ?>" required>
+				<input type="email" name="tct[email]" placeholder="<?php _e( 'yourname@example.com', 'tajimi_custom_tiles' ); ?>" value="<?php echo esc_attr( $_POST['tct']['email'] ); ?>" required>
+				<?php if( isset( $input_html ) && !empty( $input_html ) ) echo implode('', $input_html) ?>
+    			<textarea type="text" name="tct[message]" placeholder="<?php _e( 'Message', 'tajimi_custom_tiles' ); ?>" required><?php echo esc_textarea( $_POST['tct']['message'] ); ?></textarea>
 				<input type="file" name="tct_multiple_attachments[]" id="tct_file" multiple="multiple">
+				<label for="tct_file"><?php _e( 'Attach Files', 'tajimi_custom_tiles' ); ?></label> 
 				
 				<input type="text" name="tct_name" placeholder="Name">
 				<input type="hidden" name="tct_contact_form_nonce" value="<?php echo $tct_add_contact_nonce ?>" />

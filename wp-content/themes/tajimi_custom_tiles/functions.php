@@ -11,6 +11,7 @@
  *  
  * Load CMB2 Functions  
  * Add Meta Tags
+ * TCT Custom Image Sizes
  * Template Selection for Custom Post Types
  * Get Custom Field Values: Media Group
  * Get Custom Field Values: Profile 
@@ -235,8 +236,16 @@ function tct_add_meta_tags() {
 }
 add_action('wp_head', 'tct_add_meta_tags');
 
-	 
-	 
+
+
+/** SF:
+ * TCT Custom Image Sizes
+ */
+function tct_add_custom_img_sizes() {
+	add_image_size( 'extra-large', 1500, 9999 ); // 300px wide unlimited height
+}
+add_action( 'after_setup_theme', 'tct_add_custom_img_sizes' );
+
 /** SF:
  * Template Selection for Custom Post Types (Custom Post Types to inherit same template)
  */
@@ -380,7 +389,7 @@ function tct_get_portfolio_data_bundle( $class ) {
 		
 		
 		// SWITCH CASE:
-		switch ($field) {
+		switch ( $field ) {
 			
 			case 'year' :
 				// checks if the field contains a value, converts value into a readable format, returns "–" if not
@@ -736,11 +745,9 @@ function tct_form_response(){
 	
 	//VARIABLES
 	$tct_subject = __( 'New Message via ', 'tajimi_custom_tiles' ) . get_bloginfo( 'name' );
-	$tct_to = 'sebastianfehr1@gmail.com';
+	$tct_to = 'contact@tajimicustomtiles.jp';
 	$tct_fields = array( 'full_name', 'company', 'address', 'postal_code', 'subject', 'email', 'message' );
 	$tct_tile_selection = array();
-	$tct_tile_message = '[' . __( 'TILE ORDER', 'tajimi_custom_tiles' ) . ']';
-	$tct_message = '[' . __( 'MESSAGE', 'tajimi_custom_tiles' ) . ']';
 	$tct_response = array();
 	$posted_data = isset( $_POST ) ? $_POST : array();
 	$file_data = isset( $_FILES ) ? $_FILES : array();
@@ -754,8 +761,24 @@ function tct_form_response(){
 
 		// POST FIELDS
 		foreach ( $tct_fields as $field ) {
-			//Sanitize by stripping tags
+			// sanitize by stripping HTML, PHP tags
 			if( isset( $data[ 'tct' ][ $field ] ) ) $posted[ $field ] = strip_tags( trim( $data[ 'tct' ][ $field ] ) ); else $posted[ $field ] = '';
+			
+			switch ( $field ) {
+				// Email
+				case 'email' :
+					$posted[ $field ] = sanitize_email( $posted[ $field ] );
+					break;
+					
+				// Textarea
+				case 'message' :
+					$posted[ $field ] = sanitize_textarea_field( $posted[ $field ] );
+					break;					
+					
+				// Textfields
+				default : 
+					$posted[ $field ] = sanitize_text_field( $posted[ $field ] );
+			}
 		}
 
 		// Check fields content
@@ -768,7 +791,7 @@ function tct_form_response(){
 		if( $posted[ 'email' ] == null ) array_push( $errors_posted, __( 'Please enter a email address.', 'tajimi_custom_tiles' ) );
 		if( $posted[ 'message' ] == null ) array_push( $errors_posted, __( 'Please enter a message.', 'tajimi_custom_tiles' ) );
 		
-		// Check Sample Tile Fields
+		// Sanitize / check Sample Tile Fields
 		if( isset( $data[ 'tct' ][ 'selected_tiles' ] ) ){
 			foreach ( $data[ 'tct' ][ 'selected_tiles' ] as $tile) {
 				//Sanitize by stripping tags
@@ -779,10 +802,12 @@ function tct_form_response(){
 		// collect errors in array
 		$errors_fields = array_filter( $errors_posted );
 
+		
 		// CHECK POST FIELDS: If no errors, proceed with upload file
 		if( empty( $errors_fields ) ) {
 			// response regarding fields
 			$tct_response[ 'fields' ] = 'SUCCESS';
+			
 			
 			// FILES
 			$uploaded_files = array();
@@ -803,6 +828,7 @@ function tct_form_response(){
 			  }
 			}
 
+			
 			// RESPONSE FILES
 			$response_files = array();
 
@@ -827,20 +853,34 @@ function tct_form_response(){
 				$tct_response[ 'files' ] = 'SUCCESS';
 			}
 			
+			
 			// PROCESSING
 			// get all file names into the attachement array
 			$tct_attachments = array_column( $response_files, 'file' );
+			$tct_attachment_names = array_column( $response_files, 'filename' );
 			$tct_headers = 'From: '. $posted[ 'full_name' ] . ', ' . $posted[ 'company' ] .' <'. $posted[ 'email' ] .'>' . "\r\n";
 			
-			// checks if tiles were selected
-			if( ! empty( $tct_tile_selection ) ){
-				$tct_tile_selection = implode( "\r\n", $tct_tile_selection );
-				$tct_tile_selection =  $tct_tile_message . "\r\n" . $tct_tile_selection;
-			}
-			// preparing the email message
-			$tct_message .=  "\r\n" . $posted[ 'message' ] . "\r\n\r\n" . $tct_tile_selection;
 			
-			// send wp mail
+			// EMAIL MESSAGE
+			$tct_message = '[' . __( 'DETAILS', 'tajimi_custom_tiles' ) . ']' . "\r\n";
+			$tct_message .= __( 'Name: ', 'tajimi_custom_tiles' ) . $posted[ 'full_name' ] . "\r\n";
+			$tct_message .= __( 'Company: ', 'tajimi_custom_tiles' ) . $posted[ 'company' ] . "\r\n";
+			$tct_message .= __( 'Address: ', 'tajimi_custom_tiles' ) . $posted[ 'address' ] . "\r\n";
+			$tct_message .= __( 'Postal Code: ', 'tajimi_custom_tiles' ) . $posted[ 'postal_code' ] . "\r\n";
+			$tct_message .= __( 'Subject: ', 'tajimi_custom_tiles' ) . $posted[ 'subject' ] . "\r\n";
+			$tct_message .= __( 'Email: ', 'tajimi_custom_tiles' ) . $posted[ 'email' ] . "\r\n";
+			
+			$tct_message .=  "\r\n" . '[' . __( 'MESSAGE', 'tajimi_custom_tiles' ) . ']' . "\r\n";
+			$tct_message .= $posted[ 'message' ] . "\r\n";
+			
+			$tct_message .= "\r\n" . '[' . __( 'ATTACHEMENTS', 'tajimi_custom_tiles' ) . ']' . "\r\n";
+			$tct_message .= ( isset( $tct_attachments ) && !empty( $tct_attachments ) ) ? implode( "\r\n", $tct_attachment_names ) : '–';
+			
+			$tct_message .= "\r\n\r\n" . '[' . __( 'SAMPLE TILE ORDER', 'tajimi_custom_tiles' ) . ']' . "\r\n";
+			$tct_message .= ( isset( $tct_tile_selection ) && !empty( $tct_tile_selection ) ) ? implode( "\r\n", $tct_tile_selection ) : '–';
+			
+			
+			// SEND MAIL
 			if( wp_mail( $tct_to, $tct_subject , $tct_message, $tct_headers, $tct_attachments ) ){
 				$tct_response[ 'mail' ] = 'SUCCESS';
 			}
@@ -873,7 +913,7 @@ function tct_form_response(){
 		
 	// mail including attachement, overwrite message if true
 	if( $tct_response[ 'fields' ] === 'SUCCESS' && $tct_response[ 'mail' ] === 'SUCCESS' && $tct_response[ 'files' ] === 'SUCCESS' ) {
-		$tct_response[ 'message' ] = __( 'Thank you for your message. Your files has been submitted', 'tajimi_custom_tiles' );
+		$tct_response[ 'message' ] = __( 'Thank you for your message.', 'tajimi_custom_tiles' ) . '<br>' . __( 'Your files has been submitted.', 'tajimi_custom_tiles' );
 	}
 	
 	
