@@ -46,6 +46,7 @@ Nicolas Gallagher and Jonathan Neal https://necolas.github.io/normalize.css/
 # Content
 # Footer
 # UX Elements
+# Lazyloading
 # Grid Enhancement
 # Media Queries
 --------------------------------------------------------------*/
@@ -78,7 +79,7 @@ Nicolas Gallagher and Jonathan Neal https://necolas.github.io/normalize.css/
 	--font-lheight-l: 100%;
 	--font-lheight-m: 120%;	
 	--font-lheight-s: 115%;
-	--font-lheight-xs: 115%;
+	--font-lheight-xs: 120%;
 	
 	/* GRID */
 	--grid-column: 115px;
@@ -1262,7 +1263,7 @@ h1 {
 --------------------------------------------------------------*/
 
 .site-main{
-	min-height: 100vh;
+	min-height: 80vh;
 }
 
 .itm-mov{
@@ -1316,9 +1317,6 @@ h1 {
 /*	line-height: var(--font-lheight-m); */
 	line-height: 100%;
 	text-transform: uppercase;
-	hyphens: auto;
-	-webkit-hyphens: auto;
-	-ms-hyphens: auto;
 }
 
 .entry-content p{	
@@ -1400,9 +1398,9 @@ h1 {
 	margin-top: calc( var(--grid-gap) * 2 + var(--logo-size-small) );
 }
 
-.page-template-tmpl_sample_tiles .site-header{
+.page-template-tmpl_sample_tiles.pace-done .site-header{
 	position: fixed;
-	z-index: 10;
+	z-index: 4;
 	top: 0px;
 	left: 0px;
 	height: calc( var(--grid-gap) * 2 + var(--logo-size-small) );
@@ -1568,29 +1566,60 @@ h1 {
 	background: rgba(0,0,0,0.1);
 }
 
+#tct-contact-form input[type="submit"]:hover{
+	-moz-box-shadow: 0px 12px 32px -3px #b3b3b3;
+	-webkit-box-shadow: 0px 12px 32px -3px #b3b3b3;
+	box-shadow: 0px 12px 32px -3px #b3b3b3;
+}
+
 #tct-contact-form input[type="submit"]:disabled,
 #tct-contact-form input[type="submit"][disabled=disabled]
 {
 	background: rgba(0,0,0,0.1);
+	-moz-box-shadow: 0px 12px 32px -7px #b3b3b3;
+	-webkit-box-shadow: 0px 12px 32px -7px #b3b3b3;
+	box-shadow: 0px 12px 32px -7px #b3b3b3;
+	cursor: default;
 }
 
-#tct-contact-form input[type="file"]{
-	height: 0;
+#tct_file{
+	width: 0.1px;
+	height: 0.1px;
+	opacity: 0;
 	overflow: hidden;
-	width: 0;
+	position: absolute;
+	z-index: -1;
 }
 
-#tct-contact-form input[type="file"] + label {
+#tct_file + label {
 	background: white;
 	border: 1.5px solid black;
 	border-radius: 0px;
 	color: black;
 	cursor: pointer;
-	display: inline-block;
 	font-size: 15px;
 	font-weight: 400;
-	padding: 8px 30px;
-	width: 150px;
+	width: 50%;
+	height: 40px;
+	overflow: hidden;
+	padding: 0px 10px;
+	text-overflow: ellipsis;
+	text-align: center;
+}
+
+#tct_file + label span {
+	position: relative;
+	top: 20%;
+	bottom: 25%;
+}
+
+#tct_file:focus + label,
+#tct_file + label:hover {
+}
+
+#tct_file:focus + label {
+	outline: 1px dotted #000;
+	outline: -webkit-focus-ring-color auto 5px;
 }
 
 .page-template-page-contact article{
@@ -1676,7 +1705,8 @@ h1 {
 	right: calc( var(--grid-column) * 1 );
 	right: var(--grid-gap);
 	bottom: var(--grid-gap);
-	margin-bottom: unset;
+	margin: unset;
+	padding: unset;
 }
 
 #menu-tct-footer-navi .menu-item{
@@ -1736,6 +1766,60 @@ h1 {
 	right: -90.5px;	
 }
 
+/*--------------------------------------------------------------
+# Lazyloading
+--------------------------------------------------------------*/
+
+img[data-lazy-src]{
+	-webkit-transition: opacity 500ms ease-in-out;
+	-moz-transition: opacity 500ms ease-in-out;
+	-o-transition: opacity 500ms ease-in-out;
+	transition: opacity 500ms ease-in-out;
+	max-width: 100%;
+	opacity: 0;
+}
+
+img.lazyloading ~ span {
+	
+	width: 100%;
+	height: 100%;
+	
+	background-color: rgba(0,0,0,0.025);
+	background-image: 
+					linear-gradient(white var(--grid-gap), transparent 2px),
+					linear-gradient(90deg, white var(--grid-gap), transparent 2px);
+	background-size: calc( var(--grid-column) + var(--grid-gap) ) calc( var(--grid-row) + var(--grid-gap) );
+	background-size: calc( var(--grid-column) + var(--grid-gap) ) calc( var(--grid-row) + var(--grid-gap) ) no-repeat;
+	background-position: 50% 50%;
+
+	-webkit-animation: loading-state 4s ease infinite;
+	-moz-animation: loading-state 4s ease infinite;
+	animation: loading-state 4s ease infinite;
+}
+
+@-webkit-keyframes loading-state {
+    0%{background-color: rgba(0,0,0,0.025)}
+    50%{background-color: rgba(0,0,0,0.0)}
+    100%{background-color: rgba(0,0,0,0.025)}
+}
+@-moz-keyframes loading-state {
+    0%{background-color: rgba(0,0,0,0.025)}
+    50%{background-color: rgba(0,0,0,0.0)}
+    100%{background-color: rgba(0,0,0,0.025)}
+}
+@keyframes loading-state {
+    0%{background-color: rgba(0,0,0,0.025)}
+    50%{background-color: rgba(0,0,0,0.0)}
+    100%{background-color: rgba(0,0,0,0.025)}
+}
+
+
+img.loaded,
+img.lazyloaded
+{
+	opacity: 1;
+}
+
 
 /*--------------------------------------------------------------
 # Grid Enhancement
@@ -1749,7 +1833,6 @@ h1 {
 		display: grid;
 		grid-template-columns: var(--grid-setting);
 		grid-gap: var(--grid-gap);
-/*		margin-left: var(--grid-gap); */
 	}
 	
 	.home .site-main article{
@@ -1769,6 +1852,17 @@ h1 {
 				linear-gradient(90deg, white var(--grid-gap), transparent 2px);
 		background-size: calc( var(--grid-column) + var(--grid-gap) ) calc( var(--grid-row) + var(--grid-gap) );
 		background-position: calc( var(--grid-gap) * -1 ) calc( var(--grid-gap) * -1 );	
+	}
+	
+	
+	.home .sample-tile {
+		grid-area: auto / auto / span 4 / span 4;
+		width: calc( ( var(--grid-column) * 2 ) + var(--grid-gap) );
+		place-self: center center;
+	}
+	
+	.home .sample-tile .tile-image.itm-2{
+		display: none;
 	}
 	
 	
@@ -1895,9 +1989,7 @@ h1 {
 	}
 	
 	#tct-sample-tiles .entry-content{
-		grid-area: 1 / 1 / span 4 / span 2;
-
-		display: none;
+		grid-area: auto / auto / span 4 / span 2;
 	}
 	
 	/* CUSTOM POST TYPE: Contact */
@@ -1997,7 +2089,7 @@ h1 {
 		left: 0px;
 		top: 0px;
 		height: 70px;
-		z-index: 10;
+		z-index: 4;
 	}
 	
 	.menu-tct-sample-tile-filter-container .menu{
@@ -2035,7 +2127,7 @@ h1 {
 	:root{
 		--font-size-xl: 36px;
 		--font-size-l: 24px;
-		--font-size-m: 18px;
+		--font-size-m: 22px;
 		--font-size-s: 14px;
 		--font-size-xs: 12px;
 		--font-lheight-xl: 95%;
@@ -2121,15 +2213,22 @@ h1 {
 	
 	.entry-profile {
 		grid-column: 1 / span 5;
+		font-size: var(--font-size-s);
+		line-height: var(--font-lheight-s);
 	}
 	
 	#tct-sample-tiles{
-		grid-template-columns: repeat(6, 16.66vw);
-		grid-auto-rows: 16.66vw; 
+		grid-template-columns: repeat(6, calc(16.66vw - 0.33vw) );
+		grid-auto-rows: calc(16.66vw - 0.33vw); 
 	}
 	
+	#tct-sample-tiles .entry-content{
+		grid-area: 1 / 1 / span 2 / span 4;
+		padding-right: 5px;
+	}	
+	
 	.page-template-tmpl_sample_tiles .site-main{
-		margin-top: calc( var(--grid-column) * 3 );
+		margin-top: calc( var(--grid-column) * 1.6 );
 	}	
 	
 	.menu-tct-sample-tile-filter-container{
@@ -2147,6 +2246,8 @@ h1 {
 	
 	.menu-tct-sample-tile-filter-container .menu .menu-item{
 		font-size: var(--font-size-m);
+		line-height: 140%;
+		font-weight: 400;
 		margin-left: unset;
 		margin-right: 10px;
 	}
@@ -2215,7 +2316,29 @@ h1 {
 	{
 		grid-area: auto / 1 / auto / -1;
 	}		
-	
 }
 
+
+@media screen and (max-width: 420px) {
+	
+	#tct-sample-tiles .entry-content{
+		grid-area: 1 / 1 / span 3 / -1;
+	}
+	
+	.page-template-tmpl_sample_tiles .site-main{
+		margin-top: calc( var(--grid-column) * 3.2 );
+	}
+}
+
+
+@media screen and (max-width: 320) {
+	
+	#tct-sample-tiles .entry-content{
+		grid-area: 1 / 1 / span 4 / -1;
+	}
+	
+	.page-template-tmpl_sample_tiles .site-main{
+		margin-top: calc( var(--grid-column) * 3.5 );
+	}
+}
 

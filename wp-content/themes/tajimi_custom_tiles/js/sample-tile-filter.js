@@ -54,18 +54,21 @@ jQuery(document).ready(function(){
 				
 				// LOADER: insert a loading status
 				var loader_msg = '<div class="loader-state">Loading Tiles</div>';
-                jQuery( loader_msg ).insertAfter( '.entry-content' );
+				
+				if( jQuery( '.loader-state' ).length === 0 ){
+					jQuery( loader_msg ).insertAfter( '.entry-content' );	
+				}
+                
 				
             },
             success: function(result){
-				
+	
 				// LOADER: Remove loading status
 				jQuery( '.loader-state' ).remove();
 
 				
 				// HTML: output the markup
 				jQuery( result ).insertAfter( '.entry-content' );				
-				
 				
             },
             error: function(xhr,status,error){

@@ -18,7 +18,9 @@ jQuery( document ).ready( function( $ ) {
             
             event.preventDefault(); // Prevent the default form submit.            
 			
+			// PROGRESSING STATE
 			$( '#contact_submit' ).attr( 'disabled', true ); // Disable Button while AJAX processing
+			$( '#tct-form-respond' ).html( "Progressing...<br>" );                  
 			
 			// FORM DATA OBJECT
 			var data = new FormData( $( this )[0] );						
@@ -42,15 +44,17 @@ jQuery( document ).ready( function( $ ) {
 				$( '#tct-form-respond' ).html( response.message );
 				
 				//reset the input fields on success
-				if( ( response.fields && response.mail ) == 'SUCCESS' ){
+				if( ( response.fields && response.mail ) === 'SUCCESS' ){
 					event.target.reset();
+					
+					// remove the selected tiles
 					$( '.message_tile_selection' ).remove();
 				}
             })
             
             // something went wrong  
             .fail( function() {
-                $( '#tct-form-respond' ).html( "Something went wrong.<br>" );                  
+                $( '#tct-form-respond' ).html( "Something went wrong.<br>" );
             })
         
             // after all this time?
@@ -69,8 +73,7 @@ jQuery( document ).ready( function( $ ) {
 		event.preventDefault();
 		// remove the parent container field
 		$( this ).parent( '.message_tile_selection' ).remove();
-		// remove the delete button
-//		$( this ).remove();
+		
 	});
 	
 });	

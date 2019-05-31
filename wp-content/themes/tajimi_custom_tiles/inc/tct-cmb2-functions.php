@@ -45,7 +45,7 @@ function tct_register_show_in_startpage_option_metabox() {
 	$cmb_show_options = new_cmb2_box( array(
 		'id'            => $prefix . 'metabox',
 		'title'         => esc_html__( 'Start Page Display Option', 'cmb2' ),
-		'object_types'  => array( 'brand_story', 'production_method', 'collaborations' ), // Post type
+		'object_types'  => array( 'brand_story', 'production_method', 'collaborations', 'sample_tile'), // Post type
 	) );
 	
 	// CHECK BOX FIELD

@@ -8,11 +8,11 @@
  */
 
 if ( get_page_template_slug( get_the_ID() ) ){
-	$template = pathinfo(get_page_template_slug( get_the_ID() ) );
+	$template = pathinfo( get_page_template_slug( get_the_ID() ) );
 }
 ?>
 
-<article id="post-<?php the_ID(); ?>" <?php post_class( $template['filename'] ); ?>>
+<article id="post-<?php the_ID(); ?>" <?php post_class( $template[ 'filename' ] ); ?>>
 	
 	<?php
 	

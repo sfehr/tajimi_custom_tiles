@@ -3,6 +3,7 @@
  * Layouting the grid items in the front page
  * 
  * VARIABLES 
+ * TILE LAYOUT DISTRIBUTION (across the DOM Tree)
  * TEXT ITEM INIT (adapting to the grid)
  * ENTRY MEDIA INIT: distributes different sizes and placing options via css class
  * RIGHT HAND POSITION IN GRID
@@ -15,9 +16,41 @@
 var n_random_sizing = '';
 var n_random_placing = '';
 
-
 jQuery( document ).ready( function( $ ) {
 	'use strict';
+	
+	// TILE LAYOUT DISTRIBUTION (across the DOM Tree)
+	var tiles = $( 'body .sample-tile' );
+	var tiles_total = tiles.length;
+	var tiles_count = 0;
+	var	tiles_per_article_quotient = Math.floor( tiles.length / $( 'body article' ).length );
+	var tiles_per_article_remainder = tiles.length % $( 'body article' ).length;
+
+	$( 'body article' ).each( function( ind ) {
+		
+		// previous articles (not last)
+		if( (ind + 1) < $( 'body article' ).length ){
+			
+			// distribute quotient amount of tiles to articles
+			for ( var q = 0; q < tiles_per_article_quotient; q++ ) {
+				$( this ).append( tiles[ tiles_count ] );
+				tiles_count++;
+			}			
+		}
+		
+		// last article
+		if( (ind + 1) === $( 'body article' ).length ){	
+			console.log( 'last one');
+			
+		 	// distribute remaining tiles and remainder amount of tiles to the last article
+			for ( var r = 0; r < ( 1 + tiles_per_article_remainder ); r++ ) {
+				$( this ).append( tiles[ tiles_count ] );
+				tiles_count++;
+			}			
+		}
+		
+	});
+	
 	
 	txt_elements_init();
 	

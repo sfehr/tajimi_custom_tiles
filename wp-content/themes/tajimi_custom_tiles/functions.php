@@ -165,6 +165,11 @@ function tajimi_custom_tiles_scripts() {
 		wp_enqueue_script( 'sample-tiles-scripts', get_template_directory_uri() . '/js/sample-tile-form-processor.js', array('jquery'), '', true );
 	}
 	
+	//SF: load file input js enhancement on contact page
+	if ( is_page( 'contact' ) ) {
+		wp_enqueue_script( 'sample-tiles-scripts', get_template_directory_uri() . '/js/tct-file-input.js', array('jquery'), '', true );
+	}	
+	
 	//SF: on home: load extra css,
 	if ( is_home() ) {
 		wp_enqueue_style( 'home_page_css', get_template_directory_uri() . '/css/home-page.css' );
@@ -176,6 +181,12 @@ function tajimi_custom_tiles_scripts() {
 	if ( is_post_type_archive( array( 'brand_story', 'production_method', 'collaborations' ) ) ) {
 		wp_enqueue_script( 'sample-tiles-scripts', get_template_directory_uri() . '/js/media-image-slider.js', array('jquery'), '', true );
 	}
+	
+	//SF: on designated pages: load vimeo player api
+	if ( is_home() || is_post_type_archive( array( 'brand_story', 'production_method', 'collaborations' ) ) ) {
+		wp_enqueue_script( 'vimeo-scripts-api', 'https://player.vimeo.com/api/player.js', array(), '', true );
+		wp_enqueue_script( 'vimeo-scripts-player', get_template_directory_uri() . '/js/tct-player.js', array(), '', true );
+	}	
 	
 	//SF: on production method page: load sub navigation anchour slider
 	if ( is_post_type_archive( 'production_method' ) ) {
@@ -242,7 +253,9 @@ add_action('wp_head', 'tct_add_meta_tags');
  * TCT Custom Image Sizes
  */
 function tct_add_custom_img_sizes() {
-	add_image_size( 'extra-large', 1500, 9999 ); // 300px wide unlimited height
+	add_image_size( 'medium-medium', 500, 500 );
+	add_image_size( 'medium-large', 768, 768 );
+	add_image_size( 'extra-large', 1500, 1500 );
 }
 add_action( 'after_setup_theme', 'tct_add_custom_img_sizes' );
 
@@ -492,8 +505,23 @@ function tct_get_sample_tile_images( $meta_key, $class, $img_size = '' ) {
 	// Loop through them and output an image
 	foreach ( (array) $images as $image) {
 		$count++;
+		
+		
 		echo '<div class="' . $class . ' itm-' . $count . '">';
-		echo wp_get_attachment_image( $image, $img_size );
+//		echo wp_get_attachment_image( $image, $img_size );
+		
+		// Altering the img markup to add lazyloading
+		echo wp_get_attachment_image( $image, $img_size, false, array(
+			'src' => "data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%202048%201366'%3E%3C/svg%3E",
+			'srcset' => ' ',
+			'data-lazy-src' => wp_get_attachment_image_url( $image, $img_size ),
+			'data-lazy-srcset' => wp_get_attachment_image_srcset( $image, $img_size ),
+			'data-lazy-sizes' => wp_calculate_image_sizes( $img_size, wp_get_attachment_image_url( $image, $img_size ), null, $image ),
+			'class' => 'rocket-lazyload'
+		) );		
+		
+		echo '<span></span>'; // additional element for displaying a loading state
+		
 		echo '</div><!-- .' . $class . ' itm-' . $count . ' -->';
 		
 		// In the contact page, only 1 image is needed
@@ -713,7 +741,7 @@ function ajax_filter_posts_by_category() {
 	
 
 			// TILE IMAGES: image1, image2
-			tct_get_sample_tile_images( 'tct_sample_tiles_', 'tile-image' ); 
+			tct_get_sample_tile_images( 'tct_sample_tiles_', 'tile-image', 'medium-medium' ); 
 			
 	
 			// TILE TOOLTIP
@@ -744,8 +772,10 @@ add_action( 'wp_ajax_nopriv_tct_form_response', 'tct_form_response');
 function tct_form_response(){
 	
 	//VARIABLES
-	$tct_subject = __( 'New Message via ', 'tajimi_custom_tiles' ) . get_bloginfo( 'name' );
-	$tct_to = 'contact@tajimicustomtiles.jp';
+//	$tct_subject = __( 'New Message via ', 'tajimi_custom_tiles' ) . get_bloginfo( 'name' );
+	$tct_subject = '['. get_bloginfo( 'name' ) . ']';
+//	$tct_to = 'contact@tajimicustomtiles.jp';
+	$tct_to = 'sebastianfehr1@gmail.com';
 	$tct_fields = array( 'full_name', 'company', 'address', 'postal_code', 'subject', 'email', 'message' );
 	$tct_tile_selection = array();
 	$tct_response = array();
@@ -791,11 +821,32 @@ function tct_form_response(){
 		if( $posted[ 'email' ] == null ) array_push( $errors_posted, __( 'Please enter a email address.', 'tajimi_custom_tiles' ) );
 		if( $posted[ 'message' ] == null ) array_push( $errors_posted, __( 'Please enter a message.', 'tajimi_custom_tiles' ) );
 		
+		
+		// SAMPLE TILES
 		// Sanitize / check Sample Tile Fields
 		if( isset( $data[ 'tct' ][ 'selected_tiles' ] ) ){
 			foreach ( $data[ 'tct' ][ 'selected_tiles' ] as $tile) {
-				//Sanitize by stripping tags
-				$tct_tile_selection[] = strip_tags( $tile ) ;
+				
+				// Sanitize by stripping tags and retrieve Tile Name
+				$tile = strip_tags( $tile ) ;
+				
+				// get tile Image
+				$tile_obj = get_page_by_title( $tile, OBJECT, 'sample_tile' );
+				$tile_meta = get_post_meta( $tile_obj->ID, 'tct_sample_tiles_image_1_id', 1 );
+				$tile_src = wp_get_attachment_image_src( $tile_meta, 'medium' );
+				$tile_img = '<img src="' . $tile_src[ 0 ] . '" width="200" height="200">';
+				
+				// Render the markup
+				$tile_markup .= '<div style="float: left;">';
+				$tile_markup .= $tile . '<br>';
+				$tile_markup .= $tile_img;
+				$tile_markup .= '</div>';
+				
+				// Save markup to selection
+				$tct_tile_selection[] = $tile_markup;
+				
+				// reset variable
+				$tile_markup = null;
 			}			
 		}
 		
@@ -858,26 +909,37 @@ function tct_form_response(){
 			// get all file names into the attachement array
 			$tct_attachments = array_column( $response_files, 'file' );
 			$tct_attachment_names = array_column( $response_files, 'filename' );
-			$tct_headers = 'From: '. $posted[ 'full_name' ] . ', ' . $posted[ 'company' ] .' <'. $posted[ 'email' ] .'>' . "\r\n";
+//			$tct_headers = 'From: '. $posted[ 'full_name' ] . ', ' . $posted[ 'company' ] .' <'. $posted[ 'email' ] .'>' . "\r\n";
+			$tct_headers[] = 'Content-Type: text/html; charset=UTF-8';
+			$tct_headers[] = 'From: '. $posted[ 'full_name' ];
+			$tct_headers[] = $posted[ 'company' ] .' <'. $posted[ 'email' ] .'>';
 			
 			
 			// EMAIL MESSAGE
-			$tct_message = '[' . __( 'DETAILS', 'tajimi_custom_tiles' ) . ']' . "\r\n";
-			$tct_message .= __( 'Name: ', 'tajimi_custom_tiles' ) . $posted[ 'full_name' ] . "\r\n";
-			$tct_message .= __( 'Company: ', 'tajimi_custom_tiles' ) . $posted[ 'company' ] . "\r\n";
-			$tct_message .= __( 'Address: ', 'tajimi_custom_tiles' ) . $posted[ 'address' ] . "\r\n";
-			$tct_message .= __( 'Postal Code: ', 'tajimi_custom_tiles' ) . $posted[ 'postal_code' ] . "\r\n";
-			$tct_message .= __( 'Subject: ', 'tajimi_custom_tiles' ) . $posted[ 'subject' ] . "\r\n";
-			$tct_message .= __( 'Email: ', 'tajimi_custom_tiles' ) . $posted[ 'email' ] . "\r\n";
+			$tct_message .= '<p>';
+			$tct_message = '[' . __( 'DETAILS', 'tajimi_custom_tiles' ) . ']' . '<br>';
+			$tct_message .= __( 'Name: ', 'tajimi_custom_tiles' ) . $posted[ 'full_name' ] . '<br>';
+			$tct_message .= __( 'Company: ', 'tajimi_custom_tiles' ) . $posted[ 'company' ] . '<br>';
+			$tct_message .= __( 'Address: ', 'tajimi_custom_tiles' ) . $posted[ 'address' ] . '<br>';
+			$tct_message .= __( 'Postal Code: ', 'tajimi_custom_tiles' ) . $posted[ 'postal_code' ] . '<br>';
+			$tct_message .= __( 'Subject: ', 'tajimi_custom_tiles' ) . $posted[ 'subject' ] . '<br>';
+			$tct_message .= __( 'Email: ', 'tajimi_custom_tiles' ) . $posted[ 'email' ] . '<br>';
+			$tct_message .= '</p>';
 			
-			$tct_message .=  "\r\n" . '[' . __( 'MESSAGE', 'tajimi_custom_tiles' ) . ']' . "\r\n";
-			$tct_message .= $posted[ 'message' ] . "\r\n";
+			$tct_message .= '<p>';
+			$tct_message .= '[' . __( 'MESSAGE', 'tajimi_custom_tiles' ) . ']' . '<br>';
+			$tct_message .= $posted[ 'message' ] . '<br>';
+			$tct_message .= '</p>';
 			
-			$tct_message .= "\r\n" . '[' . __( 'ATTACHEMENTS', 'tajimi_custom_tiles' ) . ']' . "\r\n";
-			$tct_message .= ( isset( $tct_attachments ) && !empty( $tct_attachments ) ) ? implode( "\r\n", $tct_attachment_names ) : '–';
+			$tct_message .= '<p>';
+			$tct_message .= '[' . __( 'ATTACHEMENTS', 'tajimi_custom_tiles' ) . ']' . '<br>';
+			$tct_message .= ( isset( $tct_attachments ) && !empty( $tct_attachments ) ) ? implode( '<br>', $tct_attachment_names ) : '–';
+			$tct_message .= '</p>';
 			
-			$tct_message .= "\r\n\r\n" . '[' . __( 'SAMPLE TILE ORDER', 'tajimi_custom_tiles' ) . ']' . "\r\n";
-			$tct_message .= ( isset( $tct_tile_selection ) && !empty( $tct_tile_selection ) ) ? implode( "\r\n", $tct_tile_selection ) : '–';
+			$tct_message .= '<p>';
+			$tct_message .= '[' . __( 'SAMPLE TILE ORDER', 'tajimi_custom_tiles' ) . ']' . '<br>';
+			$tct_message .= ( isset( $tct_tile_selection ) && !empty( $tct_tile_selection ) ) ? implode( '&nbsp;', $tct_tile_selection ) : '–';
+			$tct_message .= '</p>';
 			
 			
 			// SEND MAIL
@@ -899,6 +961,7 @@ function tct_form_response(){
 		}
 		
 	} //END SECURITY
+	
 	else{
 		$tct_response[ 'security' ] = 'Security failure';
 		
@@ -910,11 +973,16 @@ function tct_form_response(){
 	if( $tct_response[ 'fields' ] === 'SUCCESS' && $tct_response[ 'mail' ] === 'SUCCESS' ){
 		$tct_response[ 'message' ] = __( 'Thank you for your message.', 'tajimi_custom_tiles' );
 	}
-		
+	
 	// mail including attachement, overwrite message if true
 	if( $tct_response[ 'fields' ] === 'SUCCESS' && $tct_response[ 'mail' ] === 'SUCCESS' && $tct_response[ 'files' ] === 'SUCCESS' ) {
 		$tct_response[ 'message' ] = __( 'Thank you for your message.', 'tajimi_custom_tiles' ) . '<br>' . __( 'Your files has been submitted.', 'tajimi_custom_tiles' );
 	}
+	
+	// add to feedback to the response, in case of sample tile selection
+	if( isset( $tct_tile_selection ) && !empty( $tct_tile_selection ) ){
+		$tct_response[ 'message' ] .= '<br>' . __( 'Your Sample Tile Selection has been submitted.', 'tajimi_custom_tiles' );
+	}	
 	
 	
 	// CHECK IF AJAX CALL
@@ -939,7 +1007,7 @@ function tct_display_home_posts( $query ) {
   if ( !is_admin() && $query->is_main_query() ) {
 	  
     if ( $query->is_home() ) {
-		$query->set( 'post_type', array( 'brand_story', 'production_method', 'collaborations' ) );
+		$query->set( 'post_type', array( 'brand_story', 'production_method', 'collaborations', 'sample_tile' ) );
 		
 		// checks if the post is featured
 		$meta_query = array(
