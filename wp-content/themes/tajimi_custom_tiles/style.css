@@ -1779,6 +1779,13 @@ img[data-lazy-src]{
 	opacity: 0;
 }
 
+/*
+.entry-media img[data-lazy-src]{
+	opacity: 1;
+	background-color: rgba(0,0,0,0.025);
+}
+*/
+
 img.lazyloading ~ span {
 	
 	width: 100%;

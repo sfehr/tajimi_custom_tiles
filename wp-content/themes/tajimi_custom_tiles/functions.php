@@ -772,10 +772,8 @@ add_action( 'wp_ajax_nopriv_tct_form_response', 'tct_form_response');
 function tct_form_response(){
 	
 	//VARIABLES
-//	$tct_subject = __( 'New Message via ', 'tajimi_custom_tiles' ) . get_bloginfo( 'name' );
 	$tct_subject = '['. get_bloginfo( 'name' ) . ']';
-//	$tct_to = 'contact@tajimicustomtiles.jp';
-	$tct_to = 'sebastianfehr1@gmail.com';
+	$tct_to = 'contact@tajimicustomtiles.jp';
 	$tct_fields = array( 'full_name', 'company', 'address', 'postal_code', 'subject', 'email', 'message' );
 	$tct_tile_selection = array();
 	$tct_response = array();
@@ -910,10 +908,11 @@ function tct_form_response(){
 			$tct_attachments = array_column( $response_files, 'file' );
 			$tct_attachment_names = array_column( $response_files, 'filename' );
 //			$tct_headers = 'From: '. $posted[ 'full_name' ] . ', ' . $posted[ 'company' ] .' <'. $posted[ 'email' ] .'>' . "\r\n";
-			$tct_headers[] = 'Content-Type: text/html; charset=UTF-8';
-			$tct_headers[] = 'From: '. $posted[ 'full_name' ];
-			$tct_headers[] = $posted[ 'company' ] .' <'. $posted[ 'email' ] .'>';
 			
+			$tct_headers[] = 'Content-Type: text/html; charset=UTF-8';
+			$tct_headers[] = 'From: '. $posted[ 'full_name' ] . ', ' . $posted[ 'company' ] .' <'. $posted[ 'email' ] .'>' . "\r\n";
+			
+//			$tct_headers = array('Content-Type: text/html; charset=UTF-8');
 			
 			// EMAIL MESSAGE
 			$tct_message .= '<p>';
@@ -980,7 +979,7 @@ function tct_form_response(){
 	}
 	
 	// add to feedback to the response, in case of sample tile selection
-	if( isset( $tct_tile_selection ) && !empty( $tct_tile_selection ) ){
+	if( isset( $tct_tile_selection ) && !empty( $tct_tile_selection && $tct_response[ 'fields' ] === 'SUCCESS' && $tct_response[ 'mail' ] === 'SUCCESS') ){
 		$tct_response[ 'message' ] .= '<br>' . __( 'Your Sample Tile Selection has been submitted.', 'tajimi_custom_tiles' );
 	}	
 	

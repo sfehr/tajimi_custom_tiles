@@ -227,7 +227,7 @@ input[type="radio"]:checked + .tile-radio-label {
 	position: fixed;
 	bottom: 0px;
 	right: 0px;
-	height: calc(var(--grid-row) * 2);
+	height: 120px;
 	width: calc(var(--grid-row) * 2 + var(--grid-gap));
 	background: white;
 	font-size: var(--font-size-m);
@@ -282,7 +282,6 @@ input[type="radio"]:checked + .tile-radio-label {
 /* UX arrow */
 .tile-submit-container i{
 	position: absolute;
-	top: 82%;
-/*	left: 10px; */
+	top: 65%;
 	right: 50px;
 }
