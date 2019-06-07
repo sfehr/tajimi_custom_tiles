@@ -5,6 +5,13 @@
  * @package Tajimi_Custom_Tiles
  */
 
+
+// VARIABLES
+if ( function_exists( 'pll_current_language' ) ){
+	$lang = ( pll_current_language() === pll_default_language() ) ? '' : pll_current_language() . '/';
+}
+	
+
 ?>
 
 <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
@@ -17,10 +24,10 @@
 	// NONCE FIELD: for form security
 	$tct_add_tile_nonce = wp_create_nonce( 'tct_add_sample_tiles_form_nonce' );
 	?>
-	<form action="<?php echo esc_url( home_url('contact') ); ?>" method="post" id="tct-sample-tiles">
+	<form action="<?php echo esc_url( home_url( $lang . 'contact' ) ); ?>" method="post" id="tct-sample-tiles">
 		
 		<div class="tile-submit-container">
-			<p>Order Sample Tiles</p>
+			<p><?php _e( 'Proceed with Selection', 'tajimi_custom_tiles' ); ?></p>
 			<i></i>
 			<input type="submit" name="tile_submit" id="tile_submit" class="button button-primary" value="Order Sample Tiles">
 		</div>	

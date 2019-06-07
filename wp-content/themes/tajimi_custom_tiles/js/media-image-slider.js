@@ -57,7 +57,6 @@ jQuery(document).ready( function ( $ ) {
 				changeSlide( obj, 'prev' );
 			});
 		}
-
 	});
 
 
@@ -78,7 +77,7 @@ jQuery(document).ready( function ( $ ) {
 		//	  var nextSlide = currentSlideEnd.next( 'img' ); //2nd next
 		//	  var prevSlide = currentSlideStart.prev( 'img' ); //2nd prev
 		var nextSlide = currentSlide.nextAll( 'img' ).first();
-//		var nextSlide = currentSlide.nextUntil( 'img' ).last().next();
+		var prevSlide = currentSlide.prevAll( 'img' ).last();
 
 		// NEXT
 		if (direction === 'next') {
@@ -95,10 +94,23 @@ jQuery(document).ready( function ( $ ) {
 		// PREV
 		else {
 			if ( prevSlide.length ) {
-				prevSlide.addClass('slide-active');
+				prevSlide.addClass( 'slide-active' );
 			} else {
-				object.find('img').last().addClass('slide-active'); // do the rotation ?
+				object.find( 'img' ).last().addClass( 'slide-active' ); // do the rotation ?
 			}
 		}
 	}
+	
+	
+	// GET ALT TEXT: provides images alt text to the link
+	$( 'body .slide-button' ).each( function () {
+		
+		$( this ).on( 'mouseover, mousemove', function () {
+			var alt_text = $( this ).siblings( '.slide-active' ).attr( 'alt' );
+			$( this ).attr( 'title', alt_text );
+			
+		});
+	});
+	
+	
 });

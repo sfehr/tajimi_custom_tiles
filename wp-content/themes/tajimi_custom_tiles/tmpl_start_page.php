@@ -21,9 +21,8 @@ get_header();
 		while ( have_posts() ) :
 			the_post();
 		
-		// outputs selected sample tiles 
+		// outputs selected sample tiles 	
 		if ( get_post_type( get_the_ID() ) == 'sample_tile' ) {
-			
 			?>
 			
 			<div class="sample-tile">

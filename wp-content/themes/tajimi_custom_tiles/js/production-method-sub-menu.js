@@ -11,7 +11,7 @@ var grid_gap = Number( bodyStyles.getPropertyValue( '--grid-gap' ).replace( /px|
 
 jQuery( document ).ready(function( $ ){
 
-	$( '#menu-production-method-menu a' ).each(function(){
+	$( '#menu-production-method-menu a, #menu-production-method-menu-jp a' ).each(function(){
 		
 		$( this ).on( 'click', function( e ) {
 			// preventing the link to 'click'

@@ -20,33 +20,19 @@ jQuery( document ).ready( function( $ ) {
 	'use strict';
 	
 	// TILE LAYOUT DISTRIBUTION (across the DOM Tree)
-	var tiles = $( 'body .sample-tile' );
-	var tiles_total = tiles.length;
-	var tiles_count = 0;
-	var	tiles_per_article_quotient = Math.floor( tiles.length / $( 'body article' ).length );
-	var tiles_per_article_remainder = tiles.length % $( 'body article' ).length;
+	var articles = $( 'body article' );
+	var articles_ind = 0;
 
-	$( 'body article' ).each( function( ind ) {
+	$( 'body .sample-tile' ).each( function( ind, ele ) {	
 		
-		// previous articles (not last)
-		if( (ind + 1) < $( 'body article' ).length ){
-			
-			// distribute quotient amount of tiles to articles
-			for ( var q = 0; q < tiles_per_article_quotient; q++ ) {
-				$( this ).append( tiles[ tiles_count ] );
-				tiles_count++;
-			}			
+		articles[ articles_ind ].append( ele );
+//		console.log( 'tile: ' + ind + ', article: ' + articles_ind );		
+		
+		if( articles_ind < ( articles.length -1 )  ){
+			articles_ind++;
 		}
-		
-		// last article
-		if( (ind + 1) === $( 'body article' ).length ){	
-			console.log( 'last one');
-			
-		 	// distribute remaining tiles and remainder amount of tiles to the last article
-			for ( var r = 0; r < ( 1 + tiles_per_article_remainder ); r++ ) {
-				$( this ).append( tiles[ tiles_count ] );
-				tiles_count++;
-			}			
+		else{
+			articles_ind = 0;
 		}
 		
 	});

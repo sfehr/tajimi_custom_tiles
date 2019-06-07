@@ -29,6 +29,8 @@
  * Display Post Types in homepage
  * Chose a custom template in homepage 
  * Limiting Gutenbergs Block elements
+ * Unsync specified custom fields
+ * Adding Title Attribute to Images
  * 
  */
 
@@ -183,10 +185,10 @@ function tajimi_custom_tiles_scripts() {
 	}
 	
 	//SF: on designated pages: load vimeo player api
-	if ( is_home() || is_post_type_archive( array( 'brand_story', 'production_method', 'collaborations' ) ) ) {
-		wp_enqueue_script( 'vimeo-scripts-api', 'https://player.vimeo.com/api/player.js', array(), '', true );
-		wp_enqueue_script( 'vimeo-scripts-player', get_template_directory_uri() . '/js/tct-player.js', array(), '', true );
-	}	
+//	if ( is_home() || is_post_type_archive( array( 'brand_story', 'production_method', 'collaborations' ) ) ) {
+//		wp_enqueue_script( 'vimeo-scripts-api', 'https://player.vimeo.com/api/player.js', array(), '', true );
+//		wp_enqueue_script( 'vimeo-scripts-player', get_template_directory_uri() . '/js/tct-player.js', array('jquery'), '', true );
+//	}	
 	
 	//SF: on production method page: load sub navigation anchour slider
 	if ( is_post_type_archive( 'production_method' ) ) {
@@ -243,7 +245,24 @@ require_once( dirname(__FILE__) . '/inc/tct-cmb2-functions.php');
  * Add Meta Tags
  */
 function tct_add_meta_tags() {
+	// for EN typeface
 	echo '<link rel="stylesheet" href="https://use.typekit.net/wlv6frg.css">';
+	
+	// for JP typeface
+	if ( function_exists( 'pll_current_language' ) && ( pll_default_language() != pll_current_language() ) ){	
+		echo "
+			<script>
+			  (function(d) {
+				var config = {
+				  kitId: 'ept0bzo',
+				  scriptTimeout: 3000,
+				  async: true
+				},
+				h=d.documentElement,t=setTimeout(function(){h.className=h.className.replace(/\bwf-loading\b/g,\"\")+\" wf-inactive\";},config.scriptTimeout),tk=d.createElement(\"script\"),f=false,s=d.getElementsByTagName(\"script\")[0],a;h.className+=\" wf-loading\";tk.src='https://use.typekit.net/'+config.kitId+'.js';tk.async=true;tk.onload=tk.onreadystatechange=function(){a=this.readyState;if(f||a&&a!=\"complete\"&&a!=\"loaded\")return;f=true;clearTimeout(t);try{Typekit.load(config)}catch(e){}};s.parentNode.insertBefore(tk,s)
+			  })(document);
+			</script>
+		";
+	}		
 }
 add_action('wp_head', 'tct_add_meta_tags');
 
@@ -327,6 +346,25 @@ function tct_get_media_group_entries( $file_list_meta_key, $class, $img_size = '
 	}	
 }
 add_filter( 'tct_custom_fields', 'tct_get_media_group_entries' );
+
+
+
+function modify_vimeo_embed_url( $html ) {
+	
+	// GET HTML
+	preg_match('/src\s*=\s*"(.+?)"/', $html, $src);
+	
+	// OPTIONS
+	$params .= '&autoplay=1';
+	$params .= '&background=1';
+	
+	// RETURN HTML
+	$html = '<iframe src="' . $src[1] . $params . '" frameborder="0" allow="loop autoplay fullscreen" allowfullscreen></iframe>';
+	
+	return $html;
+}
+add_filter( 'oembed_result', 'modify_vimeo_embed_url' );
+
 
 
 /** SF:
@@ -544,47 +582,98 @@ function tct_tile_filter_menu_attributes( $atts, $item, $args ) {
 
 	// TILE FILTER MENU
 	// checks which menu object the filter will be applyed on (note: using $args)
-	if ($args->theme_location == 'tct-tile-filter-menu') {
+	if ( $args->theme_location == 'tct-tile-filter-menu' ) {
 		
 		// get term object by name as title
 		$name = $item->title;
-		$terms = get_term_by('name', $name, 'tile_category');
+//		$terms = get_term_by( 'name', $name, 'tile_category' ); // pll workaround: does not work with polylang as get_term_by is filtered
 		
-		// checks if there is a taxonomy term, returns 'no-filter' on false
-		if( !empty($terms) ){
-			$filter_by = $terms->slug;
+		// Get terms in default language
+		if( function_exists( 'pll_default_language' ) ){
+			$default_lang = pll_default_language();	
+		}
+		
+		$terms = get_terms( array( 'taxonomy' => 'tile_category', 'lang' => $default_lang ) );
+		
+		foreach( $terms as $value ){
+			if( $name === $value->name ){
+				$term_name = $value->name;
+				$term_id = $value->term_id;
+				$term_slug = $value->slug;
+				break;
+			}
+		}
+		
+		// checks if there is a taxonomy term, returns 'all' on false
+		if( !empty( $term_slug ) ){
+//			$filter_by = $terms->slug;
+			$filter_by = $term_slug;
 		}
 		else{
 			$filter_by = 'all';
 		}
 		
 		// insert the JS function called in the frontend
-//		$atts['data-slug'] = $filter_by;
 		$atts['href'] = 'javascript:void(0);';
 		$atts['onClick'] = 'filter_posts_by_category("' . $filter_by . '", 1)';
 		$atts['class'] = 'tile-filter-link filter-cat-' . $filter_by;
-	}
+
+	}		
 	
 	return $atts;
-
 }
 
+/** SF:
+ *  tct_tile_filter_menu_attributes: adds a data-slug attribute to the naviagtion links
+ */
+/*
+add_filter( 'wp_nav_menu_items', 'tct_tile_filter_menu_items_translations', 10, 3 );
+
+function tct_tile_filter_menu_items_translations( $item, $args ) {
+	
+	if ( $args->theme_location == 'tct-tile-filter-menu' ) {
+	
+		var_dump( $args );
+		if( function_exists( 'pll_default_language' ) ){
+
+			if ( pll_current_language() != pll_default_language() );
+
+		}
+	}
+	
+	return $item;
+	
+}
+*/
 
 /** SF:
  *  conditionally displays child category of a specific parent category (used in ajax_filter_posts_by_category)
  */
-function tct_get_child_category($field, $parent, $taxonomy) {
+function tct_get_child_category( $field, $parent, $taxonomy ) {
 	
 	global $post;
-	$parents_id = get_term_by($field, $parent, $taxonomy);
-
-	$terms = get_the_terms($post->ID, $taxonomy);
-	foreach ($terms as $term) {
-		if($term->parent === $parents_id->term_id) { 
+	
+	// checks ifs not default lang
+	$lang = function_exists( 'pll_default_language' ) &&  ( pll_current_language() != pll_default_language() ) ? '_' . pll_current_language() : '';
+	
+	$parents_id = get_term_by( $field, $parent . $lang, $taxonomy );
+//	$parents_id = get_term_by( $field, $parent, $taxonomy );
+	$terms = get_the_terms( $post->ID, $taxonomy );
+	
+	$parents_id->term_id;
+	$parents_id_trans = function_exists( 'pll_default_language' ) ? pll_get_term( $parents_id->term_id, pll_default_language() ) : '';
+	
+	foreach ( $terms as $term ) {
+		if( ( $term->parent === $parents_id->term_id ) || ( $term->parent === $parents_id_trans ) ) { 
 			
-			$parent_name = get_term_by( 'id', $term->parent, $taxonomy );
+			// default language
+			$term_name = $term->name;
 			
-			print '<span class="' . $parent . '">' /* . $parent_name->name . ' – ' */ . $term->name . '</span>';
+			// translation
+			$term_trans = get_term_by( 'id', pll_get_term( $term->term_id ), $taxonomy ) ;
+			$term_name = function_exists( 'pll_default_language' ) &&  ( pll_current_language() != pll_default_language() ) ? $term_trans->name : $term->name;
+			
+			print '<span class="' . $parent . '">' /* . $parent_name->name . ' – ' */ . $term_name . '</span>';
 			break;
 		}
 	}	
@@ -681,15 +770,17 @@ function ajax_filter_posts_by_category() {
 	////// CUSTOM WP QUERY (for sample tiles)
 	
 	// VARIABLES
-	$terms = isset($_POST['cat_slug']) && !empty($_POST['cat_slug']) ? $_POST['cat_slug'] : 'all';
-	$paged = $_POST['paged'];
-	$posts = $_POST['posts'];			
-
+	$terms = isset( $_POST[ 'cat_slug' ] ) && !empty( $_POST[ 'cat_slug' ] ) ? $_POST[ 'cat_slug' ] : 'all';
+	$paged = $_POST[ 'paged' ];
+	$posts = $_POST[ 'posts' ];
+	$default_lang = function_exists( 'pll_default_language' ) ? pll_default_language() : '';			
+		
 	// ARGS
-	if($terms != 'all'){
+	if( $terms != 'all' ){
 			
 		$args = array(
 			'post_type' => 'sample_tile',
+			'lang'		=> $default_lang,
 			'showposts' => $posts,
 			'paged'     => $paged,
 			'tax_query' => array(
@@ -707,6 +798,7 @@ function ajax_filter_posts_by_category() {
 	else{
 		$args = array(
 			'post_type' => 'sample_tile',
+			'lang'		=> $default_lang,			
 			'showposts' => $posts,
 			'paged'     => $paged,
 //			'orderby' => 'title',
@@ -716,7 +808,7 @@ function ajax_filter_posts_by_category() {
 
 	// LOOP
 	$tct_query = null;
-	$tct_query = new WP_Query($args);
+	$tct_query = new WP_Query( $args );
 	while( $tct_query -> have_posts() ) : $tct_query -> the_post();
 	
 	
@@ -737,7 +829,7 @@ function ajax_filter_posts_by_category() {
 			
 			<?php
 			// TILE PRODUCTION METHOD
-			tct_get_child_category('slug', 'tile_production_method', 'tile_category');
+			tct_get_child_category( 'slug', 'tile_production_method', 'tile_category' );
 	
 
 			// TILE IMAGES: image1, image2
@@ -1006,9 +1098,11 @@ function tct_display_home_posts( $query ) {
   if ( !is_admin() && $query->is_main_query() ) {
 	  
     if ( $query->is_home() ) {
+		
+		// POST TYPE
 		$query->set( 'post_type', array( 'brand_story', 'production_method', 'collaborations', 'sample_tile' ) );
 		
-		// checks if the post is featured
+		// META: checks if the post is featured
 		$meta_query = array(
 						 array(
 							'key' => 'tct_show_in_startpage_options_checkbox',
@@ -1018,13 +1112,16 @@ function tct_display_home_posts( $query ) {
 		);
 		$query->set( 'meta_query', $meta_query );
 		
-		// orders the post by post_type ASC and by date DESC
+		// ORDER: orders the post by post_type ASC and by date DESC
 		$post_order = array(
 			'post_type' => 'ASC',
 			'date' => 'DESC',
 		);
-
 		$query->set( 'orderby', $post_order );
+		
+		// LANGUAGE
+//		$lang = ( function_exists( 'pll_default_language' ) && pll_default_language() != pll_current_language() ) ? pll_current_language() : '';
+//		$query->set( 'lang', '' );
     }
   }
 }
@@ -1060,4 +1157,60 @@ function tct_gutenberg_blocks() {
   );
 }
 add_filter( 'allowed_block_types', 'tct_gutenberg_blocks' );
+
+
+/** SF:
+ * Unsync specified custom fields
+ */
+
+// filter to exclude specified post_meta from Polylang Sync ##
+add_filter( 'pll_copy_post_metas', 'q_pll_copy_post_metas' );
+/**
+* Remove defined custom fields from Polylang Sync
+*
+* @since       0.1
+* @param       Array       $metas
+* @return      Array       Array of meta fields
+*/
+function q_pll_copy_post_metas( $metas )
+{
+    // this needs to be added to the PolyLang Settings page as an option ##
+    $unsync = array (
+        'tct_portfolio_data_location_city',
+		'tct_portfolio_data_location_prefecture',
+		'tct_portfolio_data_location_country',
+		'tct_portfolio_data_architect',
+		'tct_portfolio_data_architect',
+    );
+    #var_dump( $unsync );
+    #var_dump( $metas );
+    if ( is_array( $metas ) && is_array( $unsync ) ) {
+        // loop over all passed metas ##
+        foreach ( $metas as $key => $value ) {
+            // loop over each unsynch item ##
+            foreach ( $unsync as $find ) {
+                if ( strpos( $value, $find ) !== false ) {
+                    unset( $metas[$key] );
+                }
+            }
+        }
+    }
+    #wp_die( var_dump( $metas ) );
+    // kick back the array ##
+    return $metas;
+}
+
+
+/** SF:
+ * Adding Title Attribute to Images
+ */
+add_filter( 'wp_get_attachment_image_attributes', 'tct_add_img_title', 10, 2 );
+
+function tct_add_img_title( $attr, $attachment = null ){
+	
+	// adding the title attribute to all images
+	$attr['title'] = $attr['alt'];
+	
+	return $attr;
+}
 

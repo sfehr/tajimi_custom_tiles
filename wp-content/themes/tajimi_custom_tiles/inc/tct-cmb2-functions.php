@@ -65,6 +65,7 @@ function tct_register_show_in_startpage_option_metabox() {
 * [title] content translation
 * [wysiwyg] content translation
 */
+/*
 add_action( 'cmb2_admin_init', 'tct_register_translation_metabox' );
 
 function tct_register_translation_metabox() {
@@ -107,7 +108,7 @@ function tct_register_translation_metabox() {
 		),
 	) );	
 }
-
+*/
 
 
 
@@ -202,7 +203,6 @@ function tct_register_repeatable_brand_story_group_metabox() {
 * 
 * [file] profile image
 * [wysiwyg] profile text
-* [wysiwyg] profile text JP
 *
 */
 add_action( 'cmb2_admin_init', 'tct_register_profile_metabox' );
@@ -254,17 +254,6 @@ function tct_register_profile_metabox() {
 	$cmb_profile->add_field( array(
 		'name'    => esc_html__( 'Profile Text', 'cmb2' ),
 		'id'      => $prefix . 'wysiwyg',
-		'type'    => 'wysiwyg',
-		'options' => array(
-			'media_buttons' => false, // show insert/upload button(s)			
-			'teeny' => true // output the minimal editor config used in Press This
-		),
-	) );
-	
-	// TEXT EDITOR FIELD JP
-	$cmb_profile->add_field( array(
-		'name'    => esc_html__( 'Profile Text JP', 'cmb2' ),
-		'id'      => $prefix . 'wysiwyg_JP',
 		'type'    => 'wysiwyg',
 		'options' => array(
 			'media_buttons' => false, // show insert/upload button(s)			
@@ -376,6 +365,14 @@ function tct_register_portfolio_data_metabox() {
 	) );
 	
 	// METHOD USED FIELD
+	
+	// PLL CHECKS FOR TRANSLATION
+	if ( function_exists( 'pll_current_language' ) ){
+		$lang = ( pll_current_language() === pll_default_language() ) ? '' : '_' . pll_current_language();
+	}
+	
+	$category = get_term_by( 'slug', 'tile_production_method' . $lang, 'tile_category' );
+	
 	$cmb_portfolio->add_field( array(
 		'name' => 'Method used',
 		'desc' => 'which production method?',
@@ -387,7 +384,7 @@ function tct_register_portfolio_data_metabox() {
 		'get_terms_args' => array(
 			'taxonomy'   => 'tile_category',
 			'hide_empty' => false,
-			'child_of'   => '14'
+			'child_of'   => $category->term_id
 		),		
 	) );
 	

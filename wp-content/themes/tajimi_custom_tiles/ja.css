@@ -1,0 +1,51 @@
+/*!
+Theme Name: Tajimi Custom Tiles
+Theme URI: http://underscores.me/
+Author: Sebastian Fehr
+Author URI: http://www.sebastianfehr.com
+Description: Style Sheet for Japanese language
+Version: 1.0.0
+License: GNU General Public License v2 or later
+License URI: LICENSE
+Text Domain: tajimi_custom_tiles
+*/
+
+.site-content *
+{
+	font-family: neue-haas-grotesk-text, source-han-sans-cjk-ja, sans-serif;
+	line-height: 155% !important;
+	text-align: justify;
+	font-variant-east-asian: proportional-width;
+}
+
+.site-content .entry-link a{
+	font-variant-east-asian: initial;
+}
+
+.site-content h1,
+.tile-submit-container p
+{
+	line-height: 120% !important;
+	text-align: initial;
+}
+
+.entry-content p{
+	font-size: calc( var(--font-size-s) - 1px );
+}
+
+.home .tmpl_hero_entry h1{
+	font-size: calc( var(--font-size-xl) - 1px );
+}
+
+.page-template-tmpl_sample_tiles .entry-content{
+	padding-right: 4px;
+}
+
+.page-template-tmpl_sample_tiles .entry-content p{
+	font-size: calc( var(--font-size-s) - 2px );
+	line-height: 145% !important;
+}
+
+.menu-tct-footer-navi-jp-container{
+	font-family: neue-haas-grotesk-text, source-han-sans-cjk-ja, sans-serif;
+}

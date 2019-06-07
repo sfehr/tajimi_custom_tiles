@@ -28,7 +28,11 @@ if ( get_page_template_slug( get_the_ID() ) ){
 		<a href="<?php echo get_post_type_archive_link( get_post_type() ) ?>">
 			<?php
 			the_title( '<h1 class="entry-title">', '</h1>' );
-			the_content();
+		   	//the_content();
+		   
+		   	// in english: 150words and 350 words in japanese
+		   	$words = ( function_exists( 'pll_current_language' ) && pll_current_language() == 'jp' ) ? 350 : 150;
+		   	echo '<p>' . wp_trim_words( get_the_content(), $words, ' ...' ) . '</p>';
 			?>
 		</a>
 		

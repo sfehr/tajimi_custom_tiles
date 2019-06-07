@@ -1183,6 +1183,12 @@ h1 {
 	line-height: 100%;
 }
 
+
+.main-navigation .current-menu-item a{
+  font-style: italic !important; 
+}
+
+
 /* hamburger menu */
 .menu-toggle{
 	position: fixed;
@@ -1241,13 +1247,17 @@ h1 {
 	position: absolute;
 }
 
-#menu-production-method-menu{
+#menu-production-method-menu,
+#menu-production-method-menu-jp
+{
 	margin-left: var(--grid-gap);
 	margin-top: calc( var(--logo-size-small) * 1.5 );
 	padding: 0px;
 }
 
-#menu-production-method-menu{
+#menu-production-method-menu,
+#menu-production-method-menu-jp
+{
 	font-size: var(--font-size-m);
 	line-height: var(--font-lheight-m);
 	font-weight: 400;
@@ -1414,7 +1424,9 @@ h1 {
 	display: none;
 }
 
-.menu-tct-sample-tile-filter-container{
+.menu-tct-sample-tile-filter-container,
+.menu-tct-sample-tile-filter-jp-container
+{
 	z-index: 11;
 	position: fixed;
 	top: calc( var(--logo-size-small) + 1px );	
@@ -1422,14 +1434,18 @@ h1 {
 	width: calc(100vw - (var(--grid-gap) * 2) );
 }
 
-.menu-tct-sample-tile-filter-container .menu{
+.menu-tct-sample-tile-filter-container .menu,
+.menu-tct-sample-tile-filter-jp-container .menu
+{
 	display: flex;
 	justify-content: flex-end;
 	margin: unset;
 	padding: unset;
 }
 
-.menu-tct-sample-tile-filter-container .menu-item{
+.menu-tct-sample-tile-filter-container .menu-item,
+.menu-tct-sample-tile-filter-jp-container .menu-item
+{
 	list-style-type: none;
 	margin-left: 50px;
 }
@@ -1560,6 +1576,7 @@ h1 {
 	margin-top: 20px;
 	margin-bottom: 20px;
 	height: 50px;
+	text-align: center;
 }
 
 #tct-contact-form input[type="submit"]:active{
@@ -1694,13 +1711,17 @@ h1 {
 	max-height: 100vh;
 }
 
-.menu-tct-footer-navi-container{
+.menu-tct-footer-navi-container,
+.menu-tct-footer-navi-jp-container
+{
 	position: absolute;
 	height: 65px;
 	width: 100%;
 }
 
-#menu-tct-footer-navi{
+#menu-tct-footer-navi,
+#menu-tct-footer-navi-jp
+{
 	position: absolute;
 	right: calc( var(--grid-column) * 1 );
 	right: var(--grid-gap);
@@ -1709,7 +1730,9 @@ h1 {
 	padding: unset;
 }
 
-#menu-tct-footer-navi .menu-item{
+#menu-tct-footer-navi .menu-item,
+#menu-tct-footer-navi-jp .menu-item
+{
 	float: left;
 	list-style: none;
 	margin-left: 25px;
@@ -1779,13 +1802,24 @@ img[data-lazy-src]{
 	opacity: 0;
 }
 
-/*
-.entry-media img[data-lazy-src]{
+/* general */
+.entry-media img[data-lazy-src],
+.entry-media iframe
+{
 	opacity: 1;
 	background-color: rgba(0,0,0,0.025);
+	
+	-webkit-animation: loading-state 3s ease infinite;
+	-moz-animation: loading-state 3s ease infinite;
+	animation: loading-state 3s ease infinite;	
 }
-*/
 
+/* home */
+.entry-media img[data-lazy-src]{
+	background-color: rgba(0,0,0,0.3);
+}
+
+/* sample tiles */
 img.lazyloading ~ span {
 	
 	width: 100%;
@@ -1793,15 +1827,14 @@ img.lazyloading ~ span {
 	
 	background-color: rgba(0,0,0,0.025);
 	background-image: 
-					linear-gradient(white var(--grid-gap), transparent 2px),
-					linear-gradient(90deg, white var(--grid-gap), transparent 2px);
-	background-size: calc( var(--grid-column) + var(--grid-gap) ) calc( var(--grid-row) + var(--grid-gap) );
-	background-size: calc( var(--grid-column) + var(--grid-gap) ) calc( var(--grid-row) + var(--grid-gap) ) no-repeat;
-	background-position: 50% 50%;
-
-	-webkit-animation: loading-state 4s ease infinite;
-	-moz-animation: loading-state 4s ease infinite;
-	animation: loading-state 4s ease infinite;
+					linear-gradient(white calc(var(--grid-gap) / 2 ), transparent 2px),
+					linear-gradient(90deg, white calc(var(--grid-gap) / 2 ), transparent 2px);
+/*	background-size: calc( var(--grid-column) + var(--grid-gap) ) calc( var(--grid-row) + var(--grid-gap) ) no-repeat;
+	background-position: calc( var(--grid-gap) / 2 *-1 ) calc( var(--grid-gap) / 2 *-1 );
+*/
+	-webkit-animation: loading-state 3s ease infinite;
+	-moz-animation: loading-state 3s ease infinite;
+	animation: loading-state 3s ease infinite;
 }
 
 @-webkit-keyframes loading-state {
@@ -1866,6 +1899,7 @@ img.lazyloaded
 		grid-area: auto / auto / span 4 / span 4;
 		width: calc( ( var(--grid-column) * 2 ) + var(--grid-gap) );
 		place-self: center center;
+		line-height: 0px;
 	}
 	
 	.home .sample-tile .tile-image.itm-2{
@@ -2283,6 +2317,7 @@ img.lazyloaded
 	.tile-submit-container{
 		width: 100% !important;
 		height: 75px !important;
+		bottom: 0px !important;
 	}
 	
 	.tile-submit-container p{
