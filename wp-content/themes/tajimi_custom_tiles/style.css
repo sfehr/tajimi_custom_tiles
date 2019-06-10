@@ -1450,7 +1450,9 @@ h1 {
 	margin-left: 50px;
 }
 
-.menu-tct-sample-tile-filter-container .menu-item a{
+.menu-tct-sample-tile-filter-container .menu-item a,
+.menu-tct-sample-tile-filter-jp-container .menu-item a
+{
 	text-decoration: none;
 }
 
@@ -1651,6 +1653,7 @@ h1 {
 .container-media,
 .portfolio,
 .menu-tct-sample-tile-filter-container,
+.menu-tct-sample-tile-filter-jp-container,
 .page .site-main
 {
 	margin-left: var(--grid-gap);
@@ -2003,14 +2006,18 @@ img.lazyloaded
 	
 	/* CUSTOM POST TYPE: Sample Tiles */
 	
-	.menu-tct-sample-tile-filter-container{
+	.menu-tct-sample-tile-filter-container,
+	.menu-tct-sample-tile-filter-jp-container
+	{
 		display: grid;
 /*		grid-template-columns: repeat(auto-fill, calc(var(--grid-column) * 2 + var(--grid-gap)) ); */
 		grid-template-columns: repeat(auto-fill, calc(var(--grid-column) * 2) );
 		grid-gap: 0px;
 	}
 	
-	.menu-tct-sample-tile-filter-container .menu{
+	.menu-tct-sample-tile-filter-container .menu,
+	.menu-tct-sample-tile-filter-jp-container .menu
+	{
 		grid-column: -1 / 1;
 	}	
 	
@@ -2124,7 +2131,9 @@ img.lazyloaded
 		margin-top: 90px;
 	}
 	
-	.menu-tct-sample-tile-filter-container{
+	.menu-tct-sample-tile-filter-container,
+	.menu-tct-sample-tile-filter-jp-container
+	{
 		display: unset;
 		position: fixed;
 		left: 0px;
@@ -2133,7 +2142,10 @@ img.lazyloaded
 		z-index: 4;
 	}
 	
-	.menu-tct-sample-tile-filter-container .menu{
+	.menu-tct-sample-tile-filter-container .menu,
+	.menu-tct-sample-tile-filter-jp-container .menu
+	
+	{
 		flex-wrap: wrap;
 		margin-top: 70px;
 		background: white;
@@ -2272,20 +2284,26 @@ img.lazyloaded
 		margin-top: calc( var(--grid-column) * 1.6 );
 	}	
 	
-	.menu-tct-sample-tile-filter-container{
+	.menu-tct-sample-tile-filter-container,
+	.menu-tct-sample-tile-filter-jp-container
+	{
 		width: 100%;
 		height: calc( var(--grid-column) * 1.7 );
 		background: white;
 	}
 	
-	.menu-tct-sample-tile-filter-container .menu{
+	.menu-tct-sample-tile-filter-container .menu,
+	.menu-tct-sample-tile-filter-jp-container .menu
+	{
 		flex-direction: row;
 		justify-content: unset;
 		flex-wrap: wrap;
 		margin-top: calc( var(--grid-column) * 1.4 );
 	}
 	
-	.menu-tct-sample-tile-filter-container .menu .menu-item{
+	.menu-tct-sample-tile-filter-container .menu .menu-item,
+	.menu-tct-sample-tile-filter-jp-container .menu .menu-item
+	{
 		font-size: var(--font-size-m);
 		line-height: 140%;
 		font-weight: 400;

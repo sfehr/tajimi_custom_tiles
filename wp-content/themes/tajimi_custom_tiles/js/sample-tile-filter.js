@@ -11,7 +11,7 @@ jQuery(document).ready(function(){
 	//initial loads all posts
 	filter_posts_by_category('all', 1);
 	
-	jQuery( '#menu-tct-sample-tile-filter a' ).each(function(){
+	jQuery( '#menu-tct-sample-tile-filter a, #menu-tct-sample-tile-filter-jp a' ).each(function(){
 		
 		// preventing the link to 'click'
 		jQuery(this).click(function( e ) {

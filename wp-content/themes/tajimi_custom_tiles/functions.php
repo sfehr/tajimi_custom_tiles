@@ -586,13 +586,29 @@ function tct_tile_filter_menu_attributes( $atts, $item, $args ) {
 		
 		// get term object by name as title
 		$name = $item->title;
-//		$terms = get_term_by( 'name', $name, 'tile_category' ); // pll workaround: does not work with polylang as get_term_by is filtered
+		$terms = get_term_by( 'name', $name, 'tile_category' ); // pll workaround: does not work with polylang as get_term_by is filtered
 		
-		// Get terms in default language
-		if( function_exists( 'pll_default_language' ) ){
-			$default_lang = pll_default_language();	
+		// Get terms in default language in case translation is active
+		if( function_exists( 'pll_default_language' ) && ( pll_current_language() != pll_default_language() ) ){
+			
+			$term_trans_id = pll_get_term( $terms->term_id, pll_default_language() );
+			$term_trans = get_terms( array( 'taxonomy' => 'tile_category', 'lang' => pll_default_language() ) );
+			
+			foreach( $term_trans as $value ){
+				
+				if( $term_trans_id === $value->term_id ){
+//					$default_term = pll_get_term( $term_trans_id, pll_default_language() );
+					$term_slug = $value->slug;
+					break;
+				}
+				
+			}			
 		}
-		
+		else{
+			$term_slug = $terms->slug;
+		}
+
+/*		
 		$terms = get_terms( array( 'taxonomy' => 'tile_category', 'lang' => $default_lang ) );
 		
 		foreach( $terms as $value ){
@@ -603,8 +619,10 @@ function tct_tile_filter_menu_attributes( $atts, $item, $args ) {
 				break;
 			}
 		}
-		
+*/		
+
 		// checks if there is a taxonomy term, returns 'all' on false
+//		if( !empty( $term ) ){
 		if( !empty( $term_slug ) ){
 //			$filter_by = $terms->slug;
 			$filter_by = $term_slug;
@@ -623,28 +641,6 @@ function tct_tile_filter_menu_attributes( $atts, $item, $args ) {
 	return $atts;
 }
 
-/** SF:
- *  tct_tile_filter_menu_attributes: adds a data-slug attribute to the naviagtion links
- */
-/*
-add_filter( 'wp_nav_menu_items', 'tct_tile_filter_menu_items_translations', 10, 3 );
-
-function tct_tile_filter_menu_items_translations( $item, $args ) {
-	
-	if ( $args->theme_location == 'tct-tile-filter-menu' ) {
-	
-		var_dump( $args );
-		if( function_exists( 'pll_default_language' ) ){
-
-			if ( pll_current_language() != pll_default_language() );
-
-		}
-	}
-	
-	return $item;
-	
-}
-*/
 
 /** SF:
  *  conditionally displays child category of a specific parent category (used in ajax_filter_posts_by_category)
@@ -654,7 +650,7 @@ function tct_get_child_category( $field, $parent, $taxonomy ) {
 	global $post;
 	
 	// checks ifs not default lang
-	$lang = function_exists( 'pll_default_language' ) &&  ( pll_current_language() != pll_default_language() ) ? '_' . pll_current_language() : '';
+	$lang = function_exists( 'pll_default_language' ) && ( pll_current_language() != pll_default_language() ) ? '_' . pll_current_language() : '';
 	
 	$parents_id = get_term_by( $field, $parent . $lang, $taxonomy );
 //	$parents_id = get_term_by( $field, $parent, $taxonomy );

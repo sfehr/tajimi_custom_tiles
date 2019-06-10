@@ -46,6 +46,17 @@ Text Domain: tajimi_custom_tiles
 	line-height: 145% !important;
 }
 
-.menu-tct-footer-navi-jp-container{
+.menu-tct-footer-navi-jp-container,
+.menu-tct-sample-tile-filter-jp-container
+{
 	font-family: neue-haas-grotesk-text, source-han-sans-cjk-ja, sans-serif;
 }
+
+/*
+.menu-tct-sample-tile-filter-jp-container .selected-cat,
+.menu-tct-footer-navi-jp-container .current-menu-item
+{
+	font-style: initial;
+	font-weight: 600;
+}
+*/
