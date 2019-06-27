@@ -18,6 +18,7 @@
  * Get Custom Field Values: File List
  * Get Custom Field Values: Portfolio Data Bundle
  * Get Custom Field Values: Image (Sample Tile)
+ * Get Custom Field Values: No Stock (Sample Tile)
  * tct_tile_filter_menu_attributes: adds a data-slug attribute to the naviagtion links
  * get children of category
  * display additional header menu
@@ -574,6 +575,27 @@ add_filter( 'tct_custom_fields', 'tct_get_sample_tile_images' );
 
 
 /** SF:
+ * Get Custom Field Values: No Stock (Sample Tile)
+ */
+function tct_get_no_stock_value() {
+	
+	$value = get_post_meta( get_the_ID(), 'tct_no_stock_option_nostock', 1 );
+	
+	if( isset( $value ) && ( ! empty( $value ) ) ) {
+		
+		if( $value === 'true' ){
+			return true;
+		}
+		else{
+			return false;
+		}
+	}	
+}
+add_filter( 'tct_custom_fields', 'tct_get_no_stock_value' );
+
+	
+
+/** SF:
  *  tct_tile_filter_menu_attributes: adds a data-slug attribute to the naviagtion links
  */
 add_filter( 'nav_menu_link_attributes', 'tct_tile_filter_menu_attributes', 10, 3 );
@@ -814,7 +836,15 @@ function ajax_filter_posts_by_category() {
 		?>
 		<div class="sample-tile">
 			
-			<input id="tct_sample_tile_checkbox_<?php the_ID(); ?>" type="checkbox" name="tct_tile[]" class="tile-checkbox" value="<?php the_ID(); ?>">
+			<?php
+	/*
+			// get No Stock field value
+			$no_stock_msg = __( 'Sample not available', 'tajimi_custom_tiles' );
+	 		$no_stock = ( tct_get_no_stock_value() == true ) ? 'data-no-stock="' . $no_stock_msg . '"' : '';
+	*/		
+			?>
+			
+			<input id="tct_sample_tile_checkbox_<?php the_ID(); ?>" type="checkbox" name="tct_tile[]" class="tile-checkbox" value="<?php the_ID(); ?>" <?php echo $no_stock; ?> >
 			<label class="tile-checkbox-label" ><?php the_title(); ?></label>
 			
 			<input id="tct_sample_tile_radio_<?php the_ID(); ?>_1" type="radio" name="tct_tile_image_<?php the_ID(); ?>" class="tile-radio-1" checked="checked" value="">
@@ -827,7 +857,7 @@ function ajax_filter_posts_by_category() {
 			// TILE PRODUCTION METHOD
 			tct_get_child_category( 'slug', 'tile_production_method', 'tile_category' );
 	
-
+	
 			// TILE IMAGES: image1, image2
 			tct_get_sample_tile_images( 'tct_sample_tiles_', 'tile-image', 'medium-medium' ); 
 			
@@ -838,6 +868,19 @@ function ajax_filter_posts_by_category() {
 			  <p><?php the_title(); ?></p>
 			</div>
 			
+			
+			<?php
+	/*
+			SELECT / OUT OF STOCK: CHECKBOX
+			<input id="tct_sample_tile_selection_<?php the_ID(); ?>" type="checkbox" name="tct_tile_selection[]" class="tile-checkbox-select" value="<?php the_ID(); ?>" >
+			<label class="tile-selection-label" for="tct_sample_tile_selection_<?php the_ID(); ?>" >Select</label>
+	
+			// OUT OF STOCK MESSAGE
+			if( tct_get_no_stock_value() == true ){
+				echo '<span class="tile-no-stock">' . $no_stock_msg . '</span>';
+			}
+	*/		?>
+	
 		</div>
 		
 	<?php
@@ -862,7 +905,7 @@ function tct_form_response(){
 	//VARIABLES
 	$tct_subject = '['. get_bloginfo( 'name' ) . ']';
 	$tct_to = 'contact@tajimicustomtiles.jp';
-	$tct_fields = array( 'full_name', 'company', 'address', 'postal_code', 'subject', 'email', 'message' );
+	$tct_fields = array( 'full_name', 'company', 'address', 'city_state', 'postal_code', 'country', 'phone', 'subject', 'email', 'message' );
 	$tct_tile_selection = array();
 	$tct_response = array();
 	$posted_data = isset( $_POST ) ? $_POST : array();
@@ -902,7 +945,10 @@ function tct_form_response(){
 		if( $posted[ 'full_name' ] == null ) array_push( $errors_posted, __( 'Please enter a full name.', 'tajimi_custom_tiles' ) );
 		if( $posted[ 'company' ] == null ) array_push( $errors_posted, __( 'Please enter a company.', 'tajimi_custom_tiles' ) );
 		if( $posted[ 'address' ] == null ) array_push( $errors_posted, __( 'Please enter a adress.', 'tajimi_custom_tiles' ) );
+		if( $posted[ 'city_state' ] == null ) array_push( $errors_posted, __( 'Please enter your City and State.', 'tajimi_custom_tiles' ) );
 		if( $posted[ 'postal_code' ] == null ) array_push( $errors_posted, __( 'Please enter your postal code.', 'tajimi_custom_tiles' ) );
+		if( $posted[ 'country' ] == null ) array_push( $errors_posted, __( 'Please enter your country.', 'tajimi_custom_tiles' ) );
+		if( $posted[ 'phone' ] == null ) array_push( $errors_posted, __( 'Please enter your phone number.', 'tajimi_custom_tiles' ) );
 		if( $posted[ 'subject' ] == null ) array_push( $errors_posted, __( 'Please enter a subject.', 'tajimi_custom_tiles' ) );
 		if( $posted[ 'email' ] == null ) array_push( $errors_posted, __( 'Please enter a email address.', 'tajimi_custom_tiles' ) );
 		if( $posted[ 'message' ] == null ) array_push( $errors_posted, __( 'Please enter a message.', 'tajimi_custom_tiles' ) );
@@ -1008,7 +1054,10 @@ function tct_form_response(){
 			$tct_message .= __( 'Name: ', 'tajimi_custom_tiles' ) . $posted[ 'full_name' ] . '<br>';
 			$tct_message .= __( 'Company: ', 'tajimi_custom_tiles' ) . $posted[ 'company' ] . '<br>';
 			$tct_message .= __( 'Address: ', 'tajimi_custom_tiles' ) . $posted[ 'address' ] . '<br>';
+			$tct_message .= __( 'City, State: ', 'tajimi_custom_tiles' ) . $posted[ 'city_state' ] . '<br>';			
 			$tct_message .= __( 'Postal Code: ', 'tajimi_custom_tiles' ) . $posted[ 'postal_code' ] . '<br>';
+			$tct_message .= __( 'Country: ', 'tajimi_custom_tiles' ) . $posted[ 'country' ] . '<br>';
+			$tct_message .= __( 'Phone: ', 'tajimi_custom_tiles' ) . $posted[ 'phone' ] . '<br>';
 			$tct_message .= __( 'Subject: ', 'tajimi_custom_tiles' ) . $posted[ 'subject' ] . '<br>';
 			$tct_message .= __( 'Email: ', 'tajimi_custom_tiles' ) . $posted[ 'email' ] . '<br>';
 			$tct_message .= '</p>';
@@ -1160,7 +1209,7 @@ add_filter( 'allowed_block_types', 'tct_gutenberg_blocks' );
  */
 
 // filter to exclude specified post_meta from Polylang Sync ##
-add_filter( 'pll_copy_post_metas', 'q_pll_copy_post_metas' );
+add_filter( 'pll_copy_post_metas', 'tct_pll_copy_post_metas' );
 /**
 * Remove defined custom fields from Polylang Sync
 *
@@ -1168,7 +1217,7 @@ add_filter( 'pll_copy_post_metas', 'q_pll_copy_post_metas' );
 * @param       Array       $metas
 * @return      Array       Array of meta fields
 */
-function q_pll_copy_post_metas( $metas )
+function tct_pll_copy_post_metas( $metas )
 {
     // this needs to be added to the PolyLang Settings page as an option ##
     $unsync = array (
@@ -1177,6 +1226,7 @@ function q_pll_copy_post_metas( $metas )
 		'tct_portfolio_data_location_country',
 		'tct_portfolio_data_architect',
 		'tct_portfolio_data_architect',
+		'tct_profile_wysiwyg'
     );
     #var_dump( $unsync );
     #var_dump( $metas );

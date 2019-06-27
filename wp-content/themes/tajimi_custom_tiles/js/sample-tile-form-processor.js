@@ -3,17 +3,21 @@
  *
  * Handles interaction with the sample tile gallery form
  * 
+ * VARIABLES
+ * TILES
+ * SUBMIT BUTTON
+ * 
  */
 
 jQuery(document).ready(function () {
 	
 	// VARIABLES
-	var checkbox_limit = 10;	
+	var checkbox_limit = 4;	
 	
-    jQuery( 'body' ).on( 'change', 'input.tile-checkbox', function(event) {
+    jQuery( 'body' ).on( 'change', 'input.tile-checkbox', function() {
 		
 		
-		//TILES
+		// TILES
 		
 		//Limits the amount of selectable checkboxes
 		if( jQuery( 'input.tile-checkbox:checked' ).length > checkbox_limit ) {
@@ -34,7 +38,7 @@ jQuery(document).ready(function () {
 		}
 		
 		
-		//RESET RADIO BUTTON ON CLOSING
+		// RESET RADIO BUTTON ON CLOSING
 		if ( ! this.checked ){
 			jQuery( this ).siblings( '.tile-radio-1' ).prop( 'checked', true ); // Checks it
 			jQuery( this ).siblings( '.tile-radio-2' ).prop( 'checked', false ); // Unchecks it
@@ -42,7 +46,7 @@ jQuery(document).ready(function () {
 		
 		
 		
-		//SUBMIT BUTTON
+		// SUBMIT BUTTON
 		
 		//Displays the submit button when 1 or more tiles are selected, hide if not
 		if( jQuery( 'input.tile-checkbox:checked' ).length > 0 ) {

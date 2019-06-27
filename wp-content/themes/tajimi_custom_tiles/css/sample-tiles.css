@@ -220,6 +220,31 @@ input[type="radio"]:checked + .tile-radio-label {
 	display: unset;
 }
 
+/*
+/* tile selection /
+.tile-checkbox-select,
+.tile-selection-label
+{
+	position: absolute;
+	z-index: 2;
+	display: none;
+}
+
+/* tile-checkbox-select normal state /
+.tile-checkbox:checked ~ .tile-checkbox-select + .tile-selection-label{
+	display: unset;
+	width: 40px;
+	height: 40px;
+	border: 1px solid black;
+}
+
+/* tile-checkbox-select active state /
+.tile-checkbox:checked ~ .tile-checkbox-select:checked + .tile-selection-label{
+	width: 60px;
+	height: 60px;
+}
+*/
+
 /* submit */
 .tile-submit-container{
 	display: none;

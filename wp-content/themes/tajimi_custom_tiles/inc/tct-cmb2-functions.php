@@ -26,6 +26,10 @@
  *  
  * CUSTOM POST TYPE: PORTFOLIO
  * * * PORTFOLIO DATA BOX
+ *  
+ * CUSTOM POST TYPE: SAMPLE TILES
+ * * * SAMPLE TILE IMAGES
+ * * * NO STOCK CHECKBOX
  * 
  * cmb2_get_term_options
  *  
@@ -486,6 +490,40 @@ function tct_register_sample_tiles_metabox() {
 	) );	
 	
 }
+
+
+/*
+*
+* CUSTOM POST TYPE: SAMPLE TILES //////////////////////////////////////////////
+* [radio_inline] no stock
+*
+*/
+
+add_action( 'cmb2_admin_init', 'tct_register_no_stock_metabox' );
+
+function tct_register_no_stock_metabox() {
+	
+	$prefix = 'tct_no_stock_option_';
+	
+	$cmb_no_stock_option = new_cmb2_box( array(
+		'id'            => $prefix . 'metabox',
+		'title'         => esc_html__( 'No Stock Option', 'cmb2' ),
+		'object_types'  => array( 'sample_tile' ), // Post type
+	) );
+	
+	// RADIO FIELD
+	$cmb_no_stock_option->add_field( array(
+		'name'    => 'Is stock available?',
+		'id'      => $prefix . 'nostock',
+		'type'    => 'radio_inline',
+		'options' => array(
+			'false' => __( 'Available', 'cmb2' ),
+			'true'   => __( 'Not Available', 'cmb2' ),
+		),
+		'default' => 'false',
+	) );
+}
+
 
 
 /**
