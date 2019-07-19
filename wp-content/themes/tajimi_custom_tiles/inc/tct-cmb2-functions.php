@@ -29,6 +29,8 @@
  *  
  * CUSTOM POST TYPE: SAMPLE TILES
  * * * SAMPLE TILE IMAGES
+ * * * SAMPLE TILE DIMENSIONS
+ * * * SAMPLE TILE INFO 
  * * * NO STOCK CHECKBOX
  * 
  * cmb2_get_term_options
@@ -494,11 +496,116 @@ function tct_register_sample_tiles_metabox() {
 
 /*
 *
+* CUSTOM POST TYPE: SAMPLE TILES  //////////////////////////////////////////////
+* SAMPLE TILE DIMENSIONS
+* [text_small] width
+* [text_small] height
+* [text_small] depth
+*
+*/
+add_action( 'cmb2_admin_init', 'tct_register_tct_sample_tiles_dimensions_metabox' );
+
+function tct_register_tct_sample_tiles_dimensions_metabox() {
+	
+	$prefix = 'tct_sample_tiles_dimensions_';
+	
+	$cmb_sample_tile_dimensions = new_cmb2_box( array(
+		'id'            => $prefix . 'metabox',
+		'title'         => esc_html__( 'Sample Tile Dimensions', 'cmb2' ),
+		'object_types'  => array( 'sample_tile' ), // Post type
+	) );
+
+	// WIDTH FIELD
+	$cmb_sample_tile_dimensions->add_field( array(
+		'name' => 'Width',
+		'desc' => esc_html__( 'positive number only', 'cmb2' ),
+		'type' => 'text_small',
+		'id'   => $prefix . 'width',
+		'before_field' => esc_html__( 'Width in mm:', 'cmb2' ),
+		'attributes' => array(
+			'type' => 'number',
+			'pattern' => '\d*',
+		),
+		'sanitization_cb' => 'absint',
+		'escape_cb'       => 'absint',
+	) );
+	
+	// HEIGHT FIELD
+	$cmb_sample_tile_dimensions->add_field( array(
+		'name' => 'Height',
+		'desc' => esc_html__( 'positive number only', 'cmb2' ),
+		'type' => 'text_small',
+		'id'   => $prefix . 'height',
+		'before_field' => esc_html__( 'Height in mm:', 'cmb2' ),
+		'attributes' => array(
+			'type' => 'number',
+			'pattern' => '\d*',
+		),
+		'sanitization_cb' => 'absint',
+		'escape_cb'       => 'absint',
+	) );
+	
+	// HEIGHT FIELD
+	$cmb_sample_tile_dimensions->add_field( array(
+		'name' => 'Depth',
+		'desc' => esc_html__( 'positive number only', 'cmb2' ),
+		'type' => 'text_small',
+		'id'   => $prefix . 'depth',
+		'before_field' => esc_html__( 'Depth in mm:', 'cmb2' ),
+		'attributes' => array(
+			'type' => 'number',
+			'pattern' => '\d*',
+		),
+		'sanitization_cb' => 'absint',
+		'escape_cb'       => 'absint',
+	) );	
+}	
+
+/*
+*
+* CUSTOM POST TYPE: SAMPLE TILES  //////////////////////////////////////////////
+* SAMPLE TILE INFO
+* [text] info EN
+* [text] info JA
+*
+*/
+add_action( 'cmb2_admin_init', 'tct_register_tct_sample_tiles_info_metabox' );
+
+function tct_register_tct_sample_tiles_info_metabox() {
+	
+	$prefix = 'tct_sample_tiles_info_';
+	
+	$cmb_sample_tile_info = new_cmb2_box( array(
+		'id'            => $prefix . 'metabox',
+		'title'         => esc_html__( 'Sample Tile Info', 'cmb2' ),
+		'object_types'  => array( 'sample_tile' ), // Post type
+	) );	
+	
+	// NOTE FIELD EN
+	$cmb_sample_tile_info->add_field( array(
+		'name' => 'Note EN',
+		'desc' => esc_html__( 'Notification on this sample tile EN. Max 85 characters.', 'cmb2' ),		
+		'type' => 'text',
+		'id'   => $prefix . 'note_en',
+	) );
+	
+	// NOTE FIELD JP
+	$cmb_sample_tile_info->add_field( array(
+		'name' => 'Note JP',
+		'desc' => esc_html__( 'Notification on this sample tile JP. Max 85 characters.', 'cmb2' ),		
+		'type' => 'text',
+		'id'   => $prefix . 'note_ja',
+	) );	
+	
+}
+
+
+/*
+*
 * CUSTOM POST TYPE: SAMPLE TILES //////////////////////////////////////////////
 * [radio_inline] no stock
 *
 */
-
 add_action( 'cmb2_admin_init', 'tct_register_no_stock_metabox' );
 
 function tct_register_no_stock_metabox() {

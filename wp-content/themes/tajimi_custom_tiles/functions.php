@@ -18,7 +18,9 @@
  * Get Custom Field Values: File List
  * Get Custom Field Values: Portfolio Data Bundle
  * Get Custom Field Values: Image (Sample Tile)
- * Get Custom Field Values: No Stock (Sample Tile)
+ * Get Custom Field Values: Sample Tile: No Stock
+ * Get Custom Field Values: Sample Tile: Dimensions 
+ * Get Custom Field Values: Sample Tile: Info
  * tct_tile_filter_menu_attributes: adds a data-slug attribute to the naviagtion links
  * get children of category
  * display additional header menu
@@ -184,6 +186,9 @@ function tajimi_custom_tiles_scripts() {
 	if ( is_post_type_archive( array( 'brand_story', 'production_method', 'collaborations' ) ) ) {
 		wp_enqueue_script( 'sample-tiles-scripts', get_template_directory_uri() . '/js/media-image-slider.js', array('jquery'), '', true );
 	}
+	
+	//SF: JS for removing dimensions from img tag
+	wp_enqueue_script( 'image-dimensions', get_template_directory_uri() . '/js/tct-img-markup.js', array('jquery'), '', true );
 	
 	//SF: on designated pages: load vimeo player api
 //	if ( is_home() || is_post_type_archive( array( 'brand_story', 'production_method', 'collaborations' ) ) ) {
@@ -575,7 +580,7 @@ add_filter( 'tct_custom_fields', 'tct_get_sample_tile_images' );
 
 
 /** SF:
- * Get Custom Field Values: No Stock (Sample Tile)
+ *  Get Custom Field Values: Sample Tile: No Stock
  */
 function tct_get_no_stock_value() {
 	
@@ -593,6 +598,72 @@ function tct_get_no_stock_value() {
 }
 add_filter( 'tct_custom_fields', 'tct_get_no_stock_value' );
 
+
+/** SF:
+ *  Get Custom Field Values: Sample Tile: Dimensions
+ */
+function tct_get_sample_tile_dimensions( $class ) {
+
+	$prefix = 'tct_sample_tiles_dimensions_';
+	$fields = array( 'width', 'height', 'depth' );
+	
+	// loops through the fields stated in the array $fields
+	foreach ( (array) $fields as $field) {
+		$field_value = get_post_meta( get_the_ID(), $prefix . $field, true );
+		
+		
+		// FIELD VALUES
+		switch ( $field ) {
+			
+			case 'width' :
+				// checks if the field contains a value, converts value into a readable format, returns "–" if not
+				$tile_width = !( $field_value == '' ) ? $field_value : '–';
+				break;
+				
+			case 'height' :
+				// checks if the field contains a value, converts value into a readable format, returns "–" if not
+				$tile_height = !( $field_value == '' ) ? $field_value : '–';
+				break;
+				
+			case 'depth' :
+				// checks if the field contains a value, converts value into a readable format, returns "–" if not
+				$tile_depth = !( $field_value == '' ) ? $field_value : '–';
+				break;				
+				
+			default :
+				// 
+		}		
+	}
+	
+	// MARKUP
+	// checks weather a field value exist or not
+	if ( !empty( $field_value ) ) {
+		echo '<span class="' . $class . '">';
+		echo __( 'Size: ', 'tajimi_custom_tiles' ) . 'w' . $tile_width . ' x h' . $tile_height . ' x t' . $tile_depth . ' mm' ;
+		echo '</span><!-- .' . $class . ' -->';
+	}
+	
+}
+add_filter( 'tct_custom_fields', 'tct_get_sample_tile_dimensions' );
+	
+	
+/** SF:
+ *  Get Custom Field Values: Sample Tile: Info
+ */
+function tct_get_sample_tile_info( $class ) {
+	
+	$lang = ( function_exists( 'pll_current_language' ) ) ? pll_current_language() : 'en';
+	
+	$field_value = get_post_meta( get_the_ID(), 'tct_sample_tiles_info_note_' . $lang, true );
+	
+	if ( !empty( $field_value ) ) {
+		echo '<span class="' . $class . '">';
+		echo __( 'Note: ', 'tajimi_custom_tiles' ) . $field_value;
+		echo '</span><!-- .' . $class . ' -->';
+	}	
+	
+}
+add_filter( 'tct_custom_fields', 'tct_get_sample_tile_info' );
 	
 
 /** SF:
@@ -833,18 +904,20 @@ function ajax_filter_posts_by_category() {
 		// TILE CONTAINER
 	
 		// the tile ID is submitted to give the radio buttons a uniqe name per post
+		// TILE SELECTION: select / out of stock
 		?>
 		<div class="sample-tile">
 			
 			<?php
-	/*
 			// get No Stock field value
-			$no_stock_msg = __( 'Sample not available', 'tajimi_custom_tiles' );
-	 		$no_stock = ( tct_get_no_stock_value() == true ) ? 'data-no-stock="' . $no_stock_msg . '"' : '';
-	*/		
+			$disabeled = ( tct_get_no_stock_value() == true ) ? 'disabled="disabled"' : '';
+			$availability = ( tct_get_no_stock_value() == true ) ? __( 'Out of Stock', 'tajimi_custom_tiles' ) : __( 'Select Tile', 'tajimi_custom_tiles' );
 			?>
 			
-			<input id="tct_sample_tile_checkbox_<?php the_ID(); ?>" type="checkbox" name="tct_tile[]" class="tile-checkbox" value="<?php the_ID(); ?>" <?php echo $no_stock; ?> >
+			<input id="tct_sample_tile_selection_<?php the_ID(); ?>" type="checkbox" name="tct_tile_selection[]" class="tile-selection" value="<?php the_ID(); ?>" <?php echo $disabeled ?> >
+			<label class="tile-selection-label" for="tct_sample_tile_selection_<?php the_ID(); ?>" ><?php echo $availability ?></label>			
+			
+			<input type="checkbox" name="checkbox" class="tile-checkbox" value="">
 			<label class="tile-checkbox-label" ><?php the_title(); ?></label>
 			
 			<input id="tct_sample_tile_radio_<?php the_ID(); ?>_1" type="radio" name="tct_tile_image_<?php the_ID(); ?>" class="tile-radio-1" checked="checked" value="">
@@ -853,10 +926,24 @@ function ajax_filter_posts_by_category() {
 			<input id="tct_sample_tile_radio_<?php the_ID(); ?>_2" type="radio" name="tct_tile_image_<?php the_ID(); ?>" class="tile-radio-2" value="">
 			<label for="tct_sample_tile_radio_<?php the_ID(); ?>_2" class="tile-radio-label" >2</label>
 			
+			<div class="tct-ux-tile-check"></div>
 			<?php
-			// TILE PRODUCTION METHOD
-			tct_get_child_category( 'slug', 'tile_production_method', 'tile_category' );
+			// TILE PRODUCTION METHOD (Taxonomy)
+//			tct_get_child_category( 'slug', 'tile_production_method', 'tile_category' );
+			
+			// TILE META
+			?>
+			<div class="tile-meta">
+				<?php
+					// TILE DIMENSIONS
+					tct_get_sample_tile_dimensions( 'tile-dimensions' ); //css class
 	
+					// TILE INFO
+					tct_get_sample_tile_info( 'tile-info' ); //css class	
+				?>
+			</div>	
+			
+			<?php			
 	
 			// TILE IMAGES: image1, image2
 			tct_get_sample_tile_images( 'tct_sample_tiles_', 'tile-image', 'medium-medium' ); 
@@ -867,19 +954,6 @@ function ajax_filter_posts_by_category() {
 			<div class="tile-tooltip">
 			  <p><?php the_title(); ?></p>
 			</div>
-			
-			
-			<?php
-	/*
-			SELECT / OUT OF STOCK: CHECKBOX
-			<input id="tct_sample_tile_selection_<?php the_ID(); ?>" type="checkbox" name="tct_tile_selection[]" class="tile-checkbox-select" value="<?php the_ID(); ?>" >
-			<label class="tile-selection-label" for="tct_sample_tile_selection_<?php the_ID(); ?>" >Select</label>
-	
-			// OUT OF STOCK MESSAGE
-			if( tct_get_no_stock_value() == true ){
-				echo '<span class="tile-no-stock">' . $no_stock_msg . '</span>';
-			}
-	*/		?>
 	
 		</div>
 		
@@ -1259,4 +1333,11 @@ function tct_add_img_title( $attr, $attachment = null ){
 	
 	return $attr;
 }
+
+
+function remove_img_attr( $html ) {
+    return preg_replace('/(width|height)="\d+"\s/', "", $html) ;
+}
+
+add_filter( 'get_image_tag', 'remove_img_attr' );
 

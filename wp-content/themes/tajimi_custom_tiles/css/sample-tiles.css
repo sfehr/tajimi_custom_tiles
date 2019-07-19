@@ -34,12 +34,11 @@ Description: Additional CSS for the Sample Tiles
 }
 
 .tile-checkbox:hover{
-/*	height: calc(150% + var(--grid-gap) ); */
 	height: 150%;
 }
 
 .tile-checkbox:checked{
-	z-index: 3;
+	z-index: 4;
 	top: 4px;
 	left: 44%;
 	width: 25px;
@@ -50,7 +49,8 @@ Description: Additional CSS for the Sample Tiles
 .tile-radio-1,
 .tile-radio-2,
 .tile-radio-label,
-.tile_production_method
+.tile_production_method,
+.tile-meta
 {
 	display: none;
 }
@@ -66,23 +66,49 @@ Description: Additional CSS for the Sample Tiles
 .tile-checkbox:checked + .tile-checkbox-label
 {
 	z-index: 2;
-	display: unset;
 	display: inline-flex;
 	background-color: white;
-/*	width: calc( var(--grid-column) * 2 + var(--grid-gap) ); */
 	width: calc( var(--grid-column) * 2);
-	min-height: 80px;
+	min-height: 110px;
 	padding-left: var(--grid-gap);
 	padding-top: 2px;
 }
 
 .tile-checkbox:checked ~ .tile-radio-label,
-.tile-checkbox:checked ~ .tile_production_method
+.tile-checkbox:checked ~ .tile_production_method,
+.tile-checkbox:checked ~ .tile-meta
 {
 	display: unset;
 	z-index: 2;
 	padding-left: var(--grid-gap);
 	padding-top: 2px;
+}
+
+
+/* tile selection checkbox */
+.tile-selection,
+.tile-selection-label
+{
+	z-index: 3;
+	display: none;
+}
+
+.tile-expanded .tile-selection-label{
+	display: unset;
+	position: absolute;
+	top: 100px;
+/*	left: calc( var(--grid-column) * 0.96); */
+	line-height: 0px !important;
+	width: 50%;
+	text-align: right;
+	padding-right: 3px;
+	font-weight: 400;
+	cursor: pointer;
+	padding-left: 25%;
+}
+
+.tile-expanded .tile-selection:disabled + .tile-selection-label{
+	cursor: default;
 }
 
 
@@ -94,7 +120,8 @@ Description: Additional CSS for the Sample Tiles
 .tile-checkbox:checked ~ .tile-radio-label
 {
 	position: relative;
-	margin-top: 60px;
+	left: 0px;
+	margin-top: 90px;
 	margin-right: var(--logo-size-small);
 	font-size: var(--font-size-xs);
 	height: 16px;
@@ -130,13 +157,31 @@ input[type="radio"]:checked + .tile-radio-label {
 
 
 /* production method */
-.tile-checkbox:checked ~ .tile_production_method
+.tile-checkbox:checked ~ .tile_production_method,
+.tile-checkbox:checked ~ .tile-meta
 {
-	margin-top: 22px;
+	margin-top: 26px;
 	font-size: var(--font-size-xs);
+	line-height: var(--font-lheight-xs);
+	width: 50%;
 }
 
-/* tile label close icon */
+.tile-checkbox:checked ~ .tile-meta span{
+	position: relative;
+	float: left;
+	max-height: 44px;
+	overflow: hidden;
+}
+
+/* UX initial */
+.tct-ux-tile-close,
+.tct-ux-tile-check
+{
+	display: none;
+}
+
+
+/* UX close icon */
 .tile-checkbox:checked + .tile-checkbox-label:before,
 .tile-checkbox:checked + .tile-checkbox-label:after {
 	z-index: 2;
@@ -157,13 +202,65 @@ input[type="radio"]:checked + .tile-radio-label {
 	transform: rotate(-45deg);  
 }
 
+
+/* UX check icon */
+.tile-selection:checked,
+.tile-selection:checked ~ .tct-ux-tile-check
+{
+	position: absolute;
+	display: unset;
+	top: 0px;
+	left: calc( 100% - 55px );
+	z-index: 2;
+	width: 55px;
+	height: 55px;
+	background: white;
+	cursor: pointer;
+}
+
+.tile-selection:checked{
+	z-index: 3;
+	opacity: 0;
+}
+
+.tile-selection:checked ~ .tct-ux-tile-check:before,
+.tile-selection:checked ~ .tct-ux-tile-check:after
+{
+	z-index: 2;
+	position: absolute;
+	top: 8px;
+	left: 58%;
+	content: '';
+	height: 35px;
+	width: 2px;
+	background-color: black;
+	transform: rotate(35deg);  
+}
+
+.tile-selection:checked ~ .tct-ux-tile-check:after{
+	top: 26px;
+	left: calc( 58% - 15px ) ;
+	height: 16px;
+	transform: rotate(-45deg);  
+}
+
+/* Hide Selection Label & Close Icon when selected */
+.tile-selection:checked + .tile-selection-label,
+.tile-expanded .tile-selection:checked ~ .tile-checkbox,
+.tile-expanded .tile-selection:checked ~ .tile-checkbox-label:after,
+.tile-expanded .tile-selection:checked ~ .tile-checkbox-label:before
+{
+	display: none;
+}
+
+
+
 /* Tile Tooltip */
 .sample-tile .tile-tooltip {
 	position: absolute;
 	top: 100%;
 	z-index: 3;
 	width: 100%;
-/*	height: calc(50% + var(--grid-gap) ); */
 	height: 80px;
 	visibility: hidden;
 	background-color: white;
@@ -220,31 +317,6 @@ input[type="radio"]:checked + .tile-radio-label {
 	display: unset;
 }
 
-/*
-/* tile selection /
-.tile-checkbox-select,
-.tile-selection-label
-{
-	position: absolute;
-	z-index: 2;
-	display: none;
-}
-
-/* tile-checkbox-select normal state /
-.tile-checkbox:checked ~ .tile-checkbox-select + .tile-selection-label{
-	display: unset;
-	width: 40px;
-	height: 40px;
-	border: 1px solid black;
-}
-
-/* tile-checkbox-select active state /
-.tile-checkbox:checked ~ .tile-checkbox-select:checked + .tile-selection-label{
-	width: 60px;
-	height: 60px;
-}
-*/
-
 /* submit */
 .tile-submit-container{
 	display: none;
@@ -296,11 +368,11 @@ input[type="radio"]:checked + .tile-radio-label {
 	opacity: 0.5;
 }
 
-.max-selection .tile-selected{
+.max-selection .tile-expanded{
 	opacity: 1;
 }
 
-.max-selection .tile-checkbox:hover{
+.max-selection :not(.tile-expanded) .tile-checkbox:hover{
 	cursor: default;
 }
 

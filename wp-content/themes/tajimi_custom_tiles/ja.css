@@ -23,7 +23,8 @@ Text Domain: tajimi_custom_tiles
 }
 
 .site-content h1,
-.tile-submit-container p
+.tile-submit-container p,
+.tile-meta span
 {
 	line-height: 120% !important;
 	text-align: initial;

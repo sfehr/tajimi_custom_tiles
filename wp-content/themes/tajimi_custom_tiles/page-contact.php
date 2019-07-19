@@ -21,7 +21,7 @@ get_header();
 			the_post();			
 			
 			// VARIABLES
-			$selected_tiles = $_POST['tct_tile'];
+			$selected_tiles = $_POST['tct_tile_selection'];
 			
 			// NONCE FIELD: for form security
 			$tct_add_contact_nonce = wp_create_nonce( 'tct_add_contact_form_nonce' );

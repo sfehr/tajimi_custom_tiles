@@ -20,12 +20,12 @@ jQuery(document).ready(function () {
 		// TILES
 		
 		//Limits the amount of selectable checkboxes
-		if( jQuery( 'input.tile-checkbox:checked' ).length > checkbox_limit ) {
+		if( jQuery( 'input.tile-checkbox:checked' ).length > checkbox_limit || jQuery( 'input.tile-selection:checked' ).length > checkbox_limit ) {
 			this.checked = false;
 		}
 		//Toggles the selected class, while limit is not exceeded
 		else{
-			jQuery( this ).parent().toggleClass( 'tile-selected' );
+			jQuery( this ).parent().toggleClass( 'tile-expanded' );
 			jQuery( '#tct-sample-tiles' ).removeClass( 'max-selection' );
 		}
 		
@@ -44,12 +44,15 @@ jQuery(document).ready(function () {
 			jQuery( this ).siblings( '.tile-radio-2' ).prop( 'checked', false ); // Unchecks it
 		}
 		
+	});
+	
+	
 		
-		
-		// SUBMIT BUTTON
-		
+	// SUBMIT BUTTON
+	jQuery( 'body' ).on( 'change', 'input.tile-selection', function() {		
+			
 		//Displays the submit button when 1 or more tiles are selected, hide if not
-		if( jQuery( 'input.tile-checkbox:checked' ).length > 0 ) {
+		if( jQuery( 'input.tile-selection:checked' ).length > 0 ) {
 			jQuery( '.tile-submit-container' ).css( 'display', 'block' );
 		}
 		else{
