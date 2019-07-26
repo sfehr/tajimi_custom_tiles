@@ -22,7 +22,7 @@
  * Get Custom Field Values: Sample Tile: Dimensions 
  * Get Custom Field Values: Sample Tile: Info
  * tct_tile_filter_menu_attributes: adds a data-slug attribute to the naviagtion links
- * get children of category
+ * tct_get_child_category
  * display additional header menu
  * display footer menu
  * Sort Posts by Taxonomy Term
@@ -639,7 +639,7 @@ function tct_get_sample_tile_dimensions( $class ) {
 	// checks weather a field value exist or not
 	if ( !empty( $field_value ) ) {
 		echo '<span class="' . $class . '">';
-		echo __( 'Size: ', 'tajimi_custom_tiles' ) . 'w' . $tile_width . ' x h' . $tile_height . ' x t' . $tile_depth . ' mm' ;
+		echo __( 'Size: ', 'tajimi_custom_tiles' ) . $tile_width . ' x ' . $tile_height . ' x t' . $tile_depth . ' mm' ;
 		echo '</span><!-- .' . $class . ' -->';
 	}
 	
