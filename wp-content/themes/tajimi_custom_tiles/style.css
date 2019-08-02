@@ -1704,11 +1704,20 @@ h1 {
 	margin-bottom: 23px;
 }
 
+.tmpl_hero_entry.production_method .entry-header,
+.tmpl_hero_entry.collaborations .entry-header
+{
+	display: none;
+}
+
 .home .tmpl_hero_entry .container-content{
 	margin-top: -2px;
 }
 
-.home .tmpl_hero_entry .entry-content p{
+.home .tmpl_hero_entry .entry-content p,
+.tmpl_hero_entry.production_method p,
+.tmpl_hero_entry.collaborations p
+{
 	font-size: var(--font-size-m);
 	line-height: var(--font-lheight-m);
 }
