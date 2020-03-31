@@ -17,7 +17,7 @@ if ( get_page_template_slug( get_the_ID() ) ){
 	<?php
 	
 		/* CUSTOM FIELDS */
-		tct_get_media_group_entries( 'tct_brand_story_group', 'entry-media' ); // ($meta_key, $class)
+//		tct_get_media_group_entries( 'tct_brand_story_group', 'entry-media' ); // ($meta_key, $class)
 	
 	?>
 
@@ -26,31 +26,34 @@ if ( get_page_template_slug( get_the_ID() ) ){
 	<div class="entry-content">
 		
 		<a href="<?php echo get_post_type_archive_link( get_post_type() ) ?>">
-			<?php
-			the_title( '<h1 class="entry-title">', '</h1>' );
-		   	//the_content();
+			<?php the_title( '<h1 class="entry-title">', '</h1>' ); ?>
 		   
-		   	// in english: 150words and 350 words in japanese
-		   	$words = ( function_exists( 'pll_current_language' ) && pll_current_language() == 'jp' ) ? 350 : 150;
-		   	echo '<p>' . wp_trim_words( get_the_content(), $words, ' ...' ) . '</p>';
+			<?php	
+			// in english: 150words and 350 words in japanese
+//			$words = ( function_exists( 'pll_current_language' ) && pll_current_language() == 'jp' ) ? 350 : 150;
+//			echo '<p>' . wp_trim_words( get_the_content(), $words, ' ...' ) . '</p>';
+			echo '<p>' . get_the_content() . '</p>';
 			?>
-		</a>
-		
-		<div class="entry-link">
-			<a href="<?php echo get_post_type_archive_link( get_post_type() ) ?>"><?php _e( 'Read More', 'tajimi_custom_tiles'  ) ?><i></i></a>
-		</div><!-- .entry-link -->
-			
-		<?php
-		wp_link_pages( array(
-			'before' => '<div class="page-links">' . esc_html__( 'Pages:', 'tajimi_custom_tiles' ),
-			'after'  => '</div>',
-		) );
-		?>
-	</div><!-- .entry-content -->
+		</a>	
 
-	<footer class="entry-footer">
-		<?php tajimi_custom_tiles_entry_footer(); ?>
-	</footer><!-- .entry-footer -->
+	</div><!-- .entry-content -->
+	
 </article><!-- #post-<?php the_ID(); ?> -->
 
+<div class="extra-content">
+	<?php
 
+	// page id with extra text contnt for start page
+	$id = 1553;
+	
+	if ( function_exists( 'pll_current_language' ) && pll_current_language() != pll_default_language() ){
+		$id = pll_get_post( $id );
+	}
+	
+//	$page = get_page_by_title( 'Start Page: Extra Content' );
+	$page = get_post( $id );
+	$content = apply_filters( 'the_content', $page->post_content );
+	echo $content;
+	
+	?>	
+</div><!-- .extra-content -->

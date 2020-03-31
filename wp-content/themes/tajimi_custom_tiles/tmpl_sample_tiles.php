@@ -3,9 +3,7 @@
 /* Template Name: Sample Tiles Archive Page */
 
 
-get_header();
-
-
+get_header( 'tmpl_sample_tiles' );
 
 ?>
 

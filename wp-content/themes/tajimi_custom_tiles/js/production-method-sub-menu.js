@@ -6,8 +6,11 @@
  */
 
 // VARIABLES
+/*
 var bodyStyles = window.getComputedStyle(document.body);
 var grid_gap = Number( bodyStyles.getPropertyValue( '--grid-gap' ).replace( /px|vw/, '' ) );
+*/
+var grid_gap = 0;
 
 jQuery( document ).ready(function( $ ){
 
@@ -25,7 +28,7 @@ jQuery( document ).ready(function( $ ){
 					var target = $( this ).closest( 'article' );
 					
 					$('html, body').stop().animate({
-						scrollTop: $( target ).position().top - (grid_gap - 1)
+						scrollTop: $( target ).position().top - (grid_gap - 2)
 					}, 500, 'swing');					
 				}
 			});

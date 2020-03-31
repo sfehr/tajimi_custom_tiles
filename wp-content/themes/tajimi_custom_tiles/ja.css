@@ -10,13 +10,24 @@ License URI: LICENSE
 Text Domain: tajimi_custom_tiles
 */
 
-.site-content *
-{
+.site-content *{
 	font-family: neue-haas-grotesk-text, source-han-sans-cjk-ja, sans-serif;
-	line-height: 155% !important;
 	text-align: justify;
 	font-variant-east-asian: proportional-width;
 }
+
+.home .site-content *,
+.archive .site-content *,
+.page:not(.page-template-tmpl_sample_tiles) .site-content *
+{
+	line-height: 155% !important;
+}
+
+
+.page-template-tmpl_sample_tiles .site-content article {
+	line-height: 0px;
+}
+
 
 .site-content .entry-link a{
 	font-variant-east-asian: initial;
@@ -26,16 +37,23 @@ Text Domain: tajimi_custom_tiles
 .tile-submit-container p,
 .tile-meta span
 {
-	line-height: 120% !important;
+	line-height: 110% !important;
 	text-align: initial;
 }
 
-.entry-content p{
-	font-size: calc( var(--font-size-s) - 1px );
+.entry-content p,
+.extra-content p
+{
+	font-size: calc( var(--font-size-s) - 1px ) !important;
 }
 
 .home .tmpl_hero_entry h1{
 	font-size: calc( var(--font-size-xl) - 1px );
+	line-height: 110% !important;
+}
+
+.extra-content{
+	padding-right: var(--grid-gap);
 }
 
 .page-template-tmpl_sample_tiles .entry-content{
@@ -53,11 +71,19 @@ Text Domain: tajimi_custom_tiles
 	font-family: neue-haas-grotesk-text, source-han-sans-cjk-ja, sans-serif;
 }
 
-/*
-.menu-tct-sample-tile-filter-jp-container .selected-cat,
-.menu-tct-footer-navi-jp-container .current-menu-item
+
+.site-content .sample-tile .tile-image,
+.site-content .sample-tile .tile-image *
 {
-	font-style: initial;
-	font-weight: 600;
+	line-height: 0px !important;
+}
+
+/*
+.site-content .sample-tile .tile-title,
+.site-content .sample-tile .tile-dimensions,
+.site-content .sample-tile .tile-color,
+.site-content .sample-tile .tile-info
+{
+	line-height: 120% !important;
 }
 */

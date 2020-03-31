@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Template part for displaying archive content in tmpl_sample_tiles.php
  *
@@ -25,12 +25,29 @@ if ( function_exists( 'pll_current_language' ) ){
 	$tct_add_tile_nonce = wp_create_nonce( 'tct_add_sample_tiles_form_nonce' );
 	?>
 	<form action="<?php echo esc_url( home_url( $lang . 'contact' ) ); ?>" method="post" id="tct-sample-tiles">
+
+	<?php
+		wp_nav_menu( array( 
+			'theme_location' => 'tct-tile-filter-menu'
+		) );		
+	?>		
+
+		<div class="ui-list">
+			<button type="button" class="switch-list-type"></button> 
+			<span class="list-title-tile"><?php echo __( 'Tile', 'tajimi_custom_tiles' ); ?> </span>
+			<span class="list-title-sizes"><?php echo __( 'Sizes', 'tajimi_custom_tiles' ); ?> </span>
+			<span class="list-title-colors"><?php echo __( 'Colors', 'tajimi_custom_tiles' ); ?> </span>
+			<span class="list-title-pm"><?php echo __( 'Production Method', 'tajimi_custom_tiles' ); ?> </span>
+			<span class="list-title-notes"><?php echo __( 'Notes', 'tajimi_custom_tiles' ); ?> </span>
+		</div>	
 		
 		<div class="tile-submit-container">
+			<div class="tile-count"></div>
 			<p><?php _e( 'Proceed with Selection', 'tajimi_custom_tiles' ); ?></p>
 			<i></i>
 			<input type="submit" name="tile_submit" id="tile_submit" class="button button-primary" value="Order Sample Tiles">
-		</div>	
+		</div>
+		
 		<input type="hidden" name="tct_sample_tiles_form_nonce" value="<?php echo $tct_add_tile_nonce ?>" />
 
 		<div class="entry-content">

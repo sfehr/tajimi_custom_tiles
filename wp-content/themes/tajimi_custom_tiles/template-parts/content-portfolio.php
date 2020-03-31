@@ -16,7 +16,7 @@
 		/* CUSTOM FIELDS */
 		
 		//portfolio images from file_list field
-		tct_get_portfolio_images('tct_portfolio_data_file_list', 'entry-media');
+		tct_get_portfolio_images( 'tct_portfolio_data_file_list', 'entry-media' );
 	
 	?>
 	

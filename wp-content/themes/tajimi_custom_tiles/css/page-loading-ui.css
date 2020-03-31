@@ -44,10 +44,10 @@ Description: css for pace.js
 	width: 100vw;
 	height: 100vh;
 	align-content: stretch;
-	padding-top: var(--grid-gap);
-	margin-left: var(--grid-gap);
+/*	padding-top: var(--grid-gap); */
+/*	margin-left: var(--grid-gap); */
 	grid-template-columns: var(--grid-setting);
-	grid-gap: var(--grid-gap);
+	grid-gap: 3px;
 	background: white;
 }
 
@@ -66,14 +66,14 @@ Description: css for pace.js
 	display: grid;
 	grid-template-columns: var(--grid-setting);  
 	grid-auto-rows: var(--grid-row); 
-	grid-gap: var(--grid-gap);
+	grid-gap: 3px;
 		
 	background-color: rgba(0,0,0,0.025);
 	background-image: 
-linear-gradient(white var(--grid-gap), transparent 2px),
-				linear-gradient(90deg, white var(--grid-gap), transparent 2px);
-	background-size: calc( var(--grid-column) + var(--grid-gap) ) calc( var(--grid-row) + var(--grid-gap) );
-	background-position: calc( var(--grid-gap) * -1 ) calc( var(--grid-gap) * -1 );	
+linear-gradient(white 3px, transparent 2px),
+				linear-gradient(90deg, white 3px, transparent 2px);
+	background-size: calc( var(--grid-column) + 3px ) calc( var(--grid-row) + 3px );
+	background-position: calc( 3px * -1 ) calc( 3px * -1 );	
 }
 
 .pace .pace-progress[data-progress-text="1%"]{ 

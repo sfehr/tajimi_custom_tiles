@@ -21,6 +21,7 @@
  * Get Custom Field Values: Sample Tile: No Stock
  * Get Custom Field Values: Sample Tile: Dimensions 
  * Get Custom Field Values: Sample Tile: Info
+ * Get Custom Field Values: Sample Tile: Color Variations
  * tct_tile_filter_menu_attributes: adds a data-slug attribute to the naviagtion links
  * tct_get_child_category
  * display additional header menu
@@ -78,6 +79,7 @@ if ( ! function_exists( 'tajimi_custom_tiles_setup' ) ) :
 			'menu-1' => esc_html__( 'Primary', 'tajimi_custom_tiles' ),
 			'tct-tile-filter-menu' => esc_html__( 'Sample Tile Filter Menu', 'tajimi_custom_tiles' ),
 			'tct-production-method-menu' => esc_html__( 'Production Method Menu', 'tajimi_custom_tiles' ),
+			'tct-collaborations-menu' => esc_html__( 'Collaborations Menu', 'tajimi_custom_tiles' ),
 			'tct-footer-menu' => esc_html__( 'Footer Menu', 'tajimi_custom_tiles' ),
 		) );
 
@@ -167,7 +169,11 @@ function tajimi_custom_tiles_scripts() {
 	//SF: load sample tiles css on sample tile page
 	if ( is_page( 'sample-tiles' ) ) {
 		wp_enqueue_style( 'sample_tiles_css', get_template_directory_uri() . '/css/sample-tiles.css' );
-		wp_enqueue_script( 'sample-tiles-scripts', get_template_directory_uri() . '/js/sample-tile-form-processor.js', array('jquery'), '', true );
+		wp_enqueue_script( 'sample-tiles-processor', get_template_directory_uri() . '/js/sample-tile-form-processor.js', array('jquery'), '', true );
+		wp_enqueue_script( 'sample-tiles-interaction', get_template_directory_uri() . '/js/sample-tile-interaction.js', array('jquery'), '', true );
+		wp_enqueue_script( 'sample-tiles-anchor-scroll', get_template_directory_uri() . '/js/tct-anchor-scroll.js', array('jquery'), '', true );
+		wp_enqueue_script( 'sample-tiles-color-preview', get_template_directory_uri() . '/js/sample-tile-color-preview.js', array('jquery'), '', true );
+		wp_enqueue_script( 'sample-tiles-sorting', get_template_directory_uri() . '/js/tinysort.min.js', array(), '', true );
 	}
 	
 	//SF: load file input js enhancement on contact page
@@ -175,15 +181,17 @@ function tajimi_custom_tiles_scripts() {
 		wp_enqueue_script( 'sample-tiles-scripts', get_template_directory_uri() . '/js/tct-file-input.js', array('jquery'), '', true );
 	}	
 	
-	//SF: on home: load extra css,
+	//SF: in homepage, load extra css
 	if ( is_home() ) {
-		wp_enqueue_style( 'home_page_css', get_template_directory_uri() . '/css/home-page.css' );
-		wp_enqueue_script( 'sample-tiles-scripts', get_template_directory_uri() . '/js/home-grid-layout.js', array('jquery'), '', true );
-		wp_enqueue_script( 'home-layout-scripts', get_template_directory_uri() . '/js/home-shrinking-header.js', array('jquery'), '', true );		
+		wp_enqueue_style( 'sample_tiles_css', get_template_directory_uri() . '/css/sample-tiles.css' );
+		wp_enqueue_script( 'sample-tiles-scripts', get_template_directory_uri() . '/js/sample-tile-interaction.js', array('jquery'), '', true );
+//		wp_enqueue_style( 'home_page_css', get_template_directory_uri() . '/css/home-page.css' );
+//		wp_enqueue_script( 'sample-tiles-scripts', get_template_directory_uri() . '/js/home-grid-layout.js', array('jquery'), '', true );
+//		wp_enqueue_script( 'home-layout-scripts', get_template_directory_uri() . '/js/home-shrinking-header.js', array('jquery'), '', true );		
 	}
 	
 	//SF: on designated post-type-archive: load media image slider skript
-	if ( is_post_type_archive( array( 'brand_story', 'production_method', 'collaborations' ) ) ) {
+	if ( is_post_type_archive( array( 'brand_story', 'production_method', 'collaborations', 'portfolio' ) ) ) {
 		wp_enqueue_script( 'sample-tiles-scripts', get_template_directory_uri() . '/js/media-image-slider.js', array('jquery'), '', true );
 	}
 	
@@ -197,8 +205,8 @@ function tajimi_custom_tiles_scripts() {
 //	}	
 	
 	//SF: on production method page: load sub navigation anchour slider
-	if ( is_post_type_archive( 'production_method' ) ) {
-		wp_enqueue_script( 'production-methods-scripts', get_template_directory_uri() . '/js/production-method-sub-menu.js', array('jquery'), '', true );
+	if ( is_post_type_archive( array( 'production_method', 'collaborations' ) ) ) {
+		wp_enqueue_script( 'production-methods-scripts', get_template_directory_uri() . '/js/sub-menu.js', array('jquery'), '', true );
 	}	
 		
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
@@ -421,11 +429,15 @@ function tct_get_portfolio_images( $file_list_meta_key, $class, $img_size = '' )
 	// Get the list of files
 	$files = get_post_meta( get_the_ID(), $file_list_meta_key, 1 );
 
-	// Loop through them and output an image
-	foreach ( (array) $files as $attachment_id => $attachment_url ) {
-		echo '<div class="' . $class . '">';
-		echo wp_get_attachment_image( $attachment_id, $img_size );
+	if( !empty( $files ) ){
+		
+		echo '<div class="' . $class . ' itm-img">';
+		// Loop through them and output an image
+		foreach ( (array) $files as $attachment_id => $attachment_url ) {
+			echo wp_get_attachment_image( $attachment_id, $img_size );
+		}		
 		echo '</div><!-- .' . $class . ' -->';
+		
 	}
 }
 add_filter( 'tct_custom_fields', 'tct_get_portfolio_images' );
@@ -542,8 +554,9 @@ function tct_get_sample_tile_images( $meta_key, $class, $img_size = '' ) {
 	
 	// Get the list of images
 	$images = array(
+		// main post images
 		get_post_meta( get_the_ID(), $meta_key . 'image_1_id', 1 ),
-		get_post_meta( get_the_ID(), $meta_key . 'image_2_id', 1 )
+		get_post_meta( get_the_ID(), $meta_key . 'image_2_id', 1 ),
 	);
 
 	// Loop through them and output an image
@@ -602,6 +615,7 @@ add_filter( 'tct_custom_fields', 'tct_get_no_stock_value' );
 /** SF:
  *  Get Custom Field Values: Sample Tile: Dimensions
  */
+/*
 function tct_get_sample_tile_dimensions( $class ) {
 
 	$prefix = 'tct_sample_tiles_dimensions_';
@@ -617,17 +631,17 @@ function tct_get_sample_tile_dimensions( $class ) {
 			
 			case 'width' :
 				// checks if the field contains a value, converts value into a readable format, returns "–" if not
-				$tile_width = !( $field_value == '' ) ? $field_value : '–';
+				$tile_width = !( $field_value == '' || $field_value == '0' ) ? $field_value : '–';
 				break;
 				
 			case 'height' :
 				// checks if the field contains a value, converts value into a readable format, returns "–" if not
-				$tile_height = !( $field_value == '' ) ? $field_value : '–';
+				$tile_height = !( $field_value == '' || $field_value == '0' ) ? $field_value : '–';
 				break;
 				
 			case 'depth' :
 				// checks if the field contains a value, converts value into a readable format, returns "–" if not
-				$tile_depth = !( $field_value == '' ) ? $field_value : '–';
+				$tile_depth = !( $field_value == '' || $field_value == '0' ) ? $field_value : '–';
 				break;				
 				
 			default :
@@ -636,16 +650,79 @@ function tct_get_sample_tile_dimensions( $class ) {
 	}
 	
 	// MARKUP
+	echo '<div class="' . $class . '">';
+	echo '<span class="info-title">' . __( 'Size ', 'tajimi_custom_tiles' ) . '</span>';
+	
 	// checks weather a field value exist or not
-	if ( !empty( $field_value ) ) {
-		echo '<span class="' . $class . '">';
-		echo __( 'Size: ', 'tajimi_custom_tiles' ) . $tile_width . ' x ' . $tile_height . ' x t' . $tile_depth . ' mm' ;
-		echo '</span><!-- .' . $class . ' -->';
+	if ( !empty( $field_value ) || $field_value != '0' ) {
+		echo $tile_width . ' x ' . $tile_height . ' x t' . $tile_depth . ' mm' ;
 	}
+	else{
+		echo '–';
+	}
+	
+	echo '</div><!-- .' . $class . ' -->';
 	
 }
 add_filter( 'tct_custom_fields', 'tct_get_sample_tile_dimensions' );
+*/
+function tct_get_sample_tile_dimensions( $class ) {
 	
+	$prefix = 'tct_sample_tiles_dimensions_';
+    $entries = get_post_meta( get_the_ID() , $prefix . 'metabox_sections', true);
+    
+
+	
+		
+	// OUTER MARKUP (wrapper)
+	echo '<div class="' . $class . '">';
+	echo '<span class="info-title">' . __( 'Size ', 'tajimi_custom_tiles' ) . '</span>';
+		
+	foreach( (array)$entries as $key => $entry ){
+
+		// GET FIELD VALUES
+
+		$width = $height = $depth = '';
+
+		// get width
+		if ( isset( $entry[ $prefix . 'width' ] ) ){ 
+			$width = esc_html( $entry[ $prefix . 'width' ] );
+		}
+
+		// get height
+		if ( isset( $entry[ $prefix . 'height' ] ) ){ 
+			$height = esc_html( $entry[ $prefix . 'height' ] );
+		}
+
+		// get depth
+		if ( isset( $entry[ $prefix . 'depth' ] ) ){ 
+			$depth = esc_html( $entry[ $prefix . 'depth' ] );
+		}
+
+		// INNER MARKUP
+
+			// field value
+			if ( !empty( $width ) && !empty( $height ) && !empty( $depth ) ) {
+				echo '<p>';
+				echo $width . ' x ' . $height . ' x t' . $depth . ' mm' ;
+				echo '</p>';
+			}
+			else{
+				echo '<p>';
+				echo '–';
+				echo '</p>';
+			}
+			
+	} // end foreach	
+		
+		echo '</div><!-- .' . $class . ' -->'; // end wrapper		
+		
+
+
+
+}
+add_filter( 'tct_custom_fields', 'tct_get_sample_tile_dimensions' );
+
 	
 /** SF:
  *  Get Custom Field Values: Sample Tile: Info
@@ -656,15 +733,113 @@ function tct_get_sample_tile_info( $class ) {
 	
 	$field_value = get_post_meta( get_the_ID(), 'tct_sample_tiles_info_note_' . $lang, true );
 	
+	// Add a dash (–) in case field is empty
+	$field_value = !( $field_value == '' ) ? $field_value : '–';
+	
+	// MARKUP
 	if ( !empty( $field_value ) ) {
-		echo '<span class="' . $class . '">';
-		echo __( 'Note: ', 'tajimi_custom_tiles' ) . $field_value;
-		echo '</span><!-- .' . $class . ' -->';
+		echo '<div class="' . $class . '">';
+		echo '<span class="info-title">' . __( 'Note ', 'tajimi_custom_tiles' ) . '</span>' . $field_value;
+//		echo $field_value;
+		echo '</div><!-- .' . $class . ' -->';
 	}	
 	
 }
 add_filter( 'tct_custom_fields', 'tct_get_sample_tile_info' );
+
+
+/** SF:
+ *  Get Custom Field Values: Sample Tile: Color Variations
+ */
+function tct_get_sample_tile_color_variation( $class ) {
 	
+	// get the attached posts of current post
+	$attached = get_post_meta( get_the_ID(), 'attached_sample_tile', true );
+
+	
+	/* DEFAULT COLOR */
+	$default_color = wp_get_post_terms( get_the_ID(), 'tile_category', array( 'fields' => 'names', 'parent' => '4' ) ); // term id 4 is a parent category [colors]
+	$default_color = $default_color[0];
+	
+	// gets translated term if translation is active
+	if( function_exists( 'pll_default_language' ) && ( pll_current_language() != pll_default_language() ) ){
+
+		// get translation in japanese
+		$default_color_obj = get_term_by( 'name', esc_html__( $default_color ), 'tile_category' );
+		$default_color_trans = get_term_by( 'id', pll_get_term( $default_color_obj->term_id, pll_current_language() ), 'tile_category' );
+		
+		// overwrite the variable
+		$default_color = $default_color_trans->name;
+	}
+	// end default color
+	
+
+	
+	// MARKUP
+	// open tag container
+	echo '<div class="' . $class . '">';
+	// info title
+	echo '<span class="info-title">' . __( 'Colors ', 'tajimi_custom_tiles' ) . '</span>';
+	
+	// get the values
+	if ( !empty( $attached ) || !empty( $default_color ) ) {
+		
+	// default color
+	echo '<span class="anchor-link">' . $default_color . '</span>';		
+	
+		// get the attached post values	
+		foreach ( $attached as $attached_post ) {
+			
+			// get post object	
+			$post = get_post( $attached_post );
+			
+			// ADDITIONAL CONDITION: checks if post is actually published
+			if ( get_post_status ( $post->ID ) == 'publish' ) {
+				
+				// get related sample tile name
+				$post_names = $post->post_title;	
+				// get related sample tile color
+				$post_colors = wp_get_post_terms( $post->ID, 'tile_category', array( 'fields' => 'names', 'parent' => '4' ) ); // term id 4 is a parent category [colors]
+				// term name
+				$post_color_name = $post_colors[ 0 ];
+
+
+				// gets translated term if translation is active
+				if( function_exists( 'pll_default_language' ) && ( pll_current_language() != pll_default_language() ) ){
+					// get default lang term id
+					$term = get_term_by( 'name', esc_attr__( $post_color_name ), 'tile_category' );
+/*					
+		$terms_obj = get_terms( array( 
+			'taxonomy'	=> 'tile_category',
+			'name'		=> esc_attr__( $post_color_name ),
+			'lang'		=> pll_current_language(),
+			)
+		);
+		var_dump( $terms_obj );
+*/		
+					
+					// get translation in japanese
+					$term_trans = get_term_by( 'id', pll_get_term( $term->term_id, 'ja' ), 'tile_category' );
+					// overwrite the variable
+					$post_color_name = $term_trans->name;
+				}
+
+
+				// the color
+				echo '<a class="anchor-link" href="#'. $post_names .'">'. /* $post_colors[ 0 ] */ $post_color_name . '</a>';
+			}
+		}
+	}
+	else{
+		echo '–';
+	}
+	
+	// close tag container
+	echo '</div><!-- .' . $class . ' -->';			
+	
+}
+add_filter( 'tct_custom_fields', 'tct_get_sample_tile_color_variation' );
+
 
 /** SF:
  *  tct_tile_filter_menu_attributes: adds a data-slug attribute to the naviagtion links
@@ -752,7 +927,8 @@ function tct_get_child_category( $field, $parent, $taxonomy ) {
 	$parents_id->term_id;
 	$parents_id_trans = function_exists( 'pll_default_language' ) ? pll_get_term( $parents_id->term_id, pll_default_language() ) : '';
 	
-	foreach ( $terms as $term ) {
+	foreach ( $terms as $term ) {				
+	
 		if( ( $term->parent === $parents_id->term_id ) || ( $term->parent === $parents_id_trans ) ) { 
 			
 			// default language
@@ -761,26 +937,37 @@ function tct_get_child_category( $field, $parent, $taxonomy ) {
 			// translation
 			$term_trans = get_term_by( 'id', pll_get_term( $term->term_id ), $taxonomy ) ;
 			$term_name = function_exists( 'pll_default_language' ) &&  ( pll_current_language() != pll_default_language() ) ? $term_trans->name : $term->name;
-			
-			print '<span class="' . $parent . '">' /* . $parent_name->name . ' – ' */ . $term_name . '</span>';
+
 			break;
 		}
-	}	
+	}
 	
+	// In case the production_method category is not set
+	if( empty( $term_name ) ){
+		$term_name = '–';
+	}
+	
+	// MARKUP
+	print '<div class="' . $parent . '"><span class="info-title">' . __( 'Production Method ', 'tajimi_custom_tiles' ) . '</span>' . $term_name . '</div>';
 }
 
 
 /** SF:
  * display additional header menu
  */
+
 function tct_display_additional_menu_in_header() { 
- 	
+/* 	
 	if( is_page( 'sample-tiles' ) ){
 		wp_nav_menu( array( 'theme_location' => 'tct-tile-filter-menu' ) );
 	}
-	
+*/	
 	if( is_post_type_archive( 'production_method' ) ){
 		wp_nav_menu( array( 'theme_location' => 'tct-production-method-menu' ) );
+	}
+	
+	if( is_post_type_archive( 'collaborations' ) ){
+		wp_nav_menu( array( 'theme_location' => 'tct-collaborations-menu' ) );
 	}	
 }
 add_action( 'wp_head', 'tct_display_additional_menu_in_header' ); 
@@ -801,6 +988,7 @@ add_action( 'wp_footer', 'tct_display_footer_menu' );
  *  Sort Posts by Taxonomy Term
  */
 add_filter('posts_clauses', 'tct_posts_clauses_with_tax', 10, 2);
+
 function tct_posts_clauses_with_tax( $clauses, $wp_query ) {
 	global $wpdb;
 	//array of sortable taxonomies
@@ -814,6 +1002,7 @@ function tct_posts_clauses_with_tax( $clauses, $wp_query ) {
 		$clauses[ 'where' ] .= " AND (taxonomy = '{$wp_query->query[ 'orderby'] }' OR taxonomy IS NULL)";
 		$clauses[ 'groupby' ] = "rel2.object_id";
 		$clauses[ 'orderby' ]  = "GROUP_CONCAT({$wpdb->terms}.name ORDER BY name ASC) ";
+//		$clauses[ 'orderby' ]  = "CAST(GROUP_CONCAT({$wpdb->terms}.slug ORDER BY slug ASC) as DECIMAL) "; // SF: order by slug instead of name // AS DECIMAl for sorting by integer
 		$clauses[ 'orderby' ] .= ( 'ASC' == strtoupper( $wp_query->get('order') ) ) ? 'ASC' : 'DESC';
 	}
 	return $clauses;
@@ -879,8 +1068,15 @@ function ajax_filter_posts_by_category() {
 					'terms'    => $terms
 				)
 			),
-			'orderby' => 'tile_category',
+			'orderby' => 'tile_category', //SF: Special case: taxonomy slug is passed to sort by taxonomy terms -> only possible with tct_posts_clauses_with_tax function
 			'order'   => 'ASC',
+			'meta_query' => array(
+				array(
+					'key'     => 'tct_no_stock_option_nostock',
+					'value'   => 'true',
+					'compare' => '!=',
+				),
+			),
 		);
 			
 	}	
@@ -892,6 +1088,13 @@ function ajax_filter_posts_by_category() {
 			'paged'     => $paged,
 //			'orderby' => 'title',
 			'order'   => 'DSC',
+			'meta_query' => array(
+				array(
+					'key'     => 'tct_no_stock_option_nostock',
+					'value'   => 'true',
+					'compare' => '!=',
+				),
+			),			
 		);
 	}
 
@@ -905,8 +1108,23 @@ function ajax_filter_posts_by_category() {
 	
 		// the tile ID is submitted to give the radio buttons a uniqe name per post
 		// TILE SELECTION: select / out of stock
+	
+	
+		// pollylang workaround: get_terms instead of get_term_by( 'slug', $terms, 'tile_category' )
+		// get term obj of term for retrieving the id
+		$terms_obj = get_terms( array( 
+			'taxonomy'	=> 'tile_category',
+			'slug'		=> $terms,
+			'lang'		=> $default_lang,
+			)
+		);
+	
+		// get category
+		$category = wp_get_post_terms( get_the_ID(), 'tile_category', array( 'fields' => 'slugs', 'child_of' => $terms_obj[0]->term_id ) );
+		$category_attribute = ( $terms != 'all' ) ? 'data-category="' . esc_attr( implode( ', ', $category ) ) . '"' : '' ;
+	
 		?>
-		<div class="sample-tile">
+		<div id="<?php the_title(); ?>" class="sample-tile" <?php echo $category_attribute; ?> >
 			
 			<?php
 			// get No Stock field value
@@ -914,47 +1132,57 @@ function ajax_filter_posts_by_category() {
 			$availability = ( tct_get_no_stock_value() == true ) ? __( 'Out of Stock', 'tajimi_custom_tiles' ) : __( 'Select Tile', 'tajimi_custom_tiles' );
 			?>
 			
+<?php /*			
 			<input id="tct_sample_tile_selection_<?php the_ID(); ?>" type="checkbox" name="tct_tile_selection[]" class="tile-selection" value="<?php the_ID(); ?>" <?php echo $disabeled ?> >
-			<label class="tile-selection-label" for="tct_sample_tile_selection_<?php the_ID(); ?>" ><?php echo $availability ?></label>			
+			<label class="tile-selection-label" for="tct_sample_tile_selection_<?php the_ID(); ?>" ><?php echo $availability ?></label>
 			
 			<input type="checkbox" name="checkbox" class="tile-checkbox" value="">
 			<label class="tile-checkbox-label" ><?php the_title(); ?></label>
-			
+
+
 			<input id="tct_sample_tile_radio_<?php the_ID(); ?>_1" type="radio" name="tct_tile_image_<?php the_ID(); ?>" class="tile-radio-1" checked="checked" value="">
 			<label for="tct_sample_tile_radio_<?php the_ID(); ?>_1" class="tile-radio-label" >1</label>
 			
 			<input id="tct_sample_tile_radio_<?php the_ID(); ?>_2" type="radio" name="tct_tile_image_<?php the_ID(); ?>" class="tile-radio-2" value="">
 			<label for="tct_sample_tile_radio_<?php the_ID(); ?>_2" class="tile-radio-label" >2</label>
 			
-			<div class="tct-ux-tile-check"></div>
-			<?php
-			// TILE PRODUCTION METHOD (Taxonomy)
-//			tct_get_child_category( 'slug', 'tile_production_method', 'tile_category' );
 			
-			// TILE META
-			?>
-			<div class="tile-meta">
-				<?php
-					// TILE DIMENSIONS
-					tct_get_sample_tile_dimensions( 'tile-dimensions' ); //css class
-	
-					// TILE INFO
-					tct_get_sample_tile_info( 'tile-info' ); //css class	
-				?>
-			</div>	
+			<div class="tct-ux-tile-check"></div>	
+			
+			<?php
+			
+*/	?>		
 			
 			<?php			
 	
 			// TILE IMAGES: image1, image2
 			tct_get_sample_tile_images( 'tct_sample_tiles_', 'tile-image', 'medium-medium' ); 
-			
+				
 	
-			// TILE TOOLTIP
+			// TITLE
 			?>
-			<div class="tile-tooltip">
-			  <p><?php the_title(); ?></p>
+			<div class="tile-title">
+				<span class="info-title"><?php echo __( 'Tile ', 'tajimi_custom_tiles' ); ?></span><?php the_title(); ?>
 			</div>
+			
+			<?php
+			// TILE DIMENSIONS
+			tct_get_sample_tile_dimensions( 'tile-dimensions' ); //css class
+			
+			// COLORS (related colors)
+			tct_get_sample_tile_color_variation( 'tile-color' ); //css class
 	
+			// TILE PRODUCTION METHOD (Taxonomy)
+			tct_get_child_category( 'slug', 'tile_production_method', 'tile_category' );	
+		
+			// TILE INFO
+			tct_get_sample_tile_info( 'tile-info' ); //css class
+	
+			// TILE SELECT CHECKBOX ?>
+			<input id="tct_sample_tile_selection_<?php the_ID(); ?>" type="checkbox" name="tct_tile_selection[]" class="tile-selection" value="<?php the_ID(); ?>" <?php echo $disabeled ?> >
+			<label class="tile-selection-label" for="tct_sample_tile_selection_<?php the_ID(); ?>" ><?php // echo $availability ?></label>
+			<div class="tct-ux-tile-check"></div>
+			<button type="button" class="switch-expand-info"></button>
 		</div>
 		
 	<?php
@@ -1212,6 +1440,7 @@ function tct_form_response(){
 /** SF:
  * Display Post Types in homepage
  */
+
 function tct_display_home_posts( $query ) {
 	
   if ( !is_admin() && $query->is_main_query() ) {
@@ -1219,34 +1448,27 @@ function tct_display_home_posts( $query ) {
     if ( $query->is_home() ) {
 		
 		// POST TYPE
-		$query->set( 'post_type', array( 'brand_story', 'production_method', 'collaborations', 'sample_tile' ) );
+//		$query->set( 'post_type', array( 'brand_story', 'sample_tile' ) );
+		$query->set( 'post_type', array( 'brand_story' ) );
 		
-		// META: checks if the post is featured
-		$meta_query = array(
-						 array(
-							'key' => 'tct_show_in_startpage_options_checkbox',
-							'value' => true,
-							'compare' => '!=',
-						 ),
-		);
-		$query->set( 'meta_query', $meta_query );
+		// LANGUAGE
+//		$lang = ( function_exists( 'pll_default_language' ) && pll_default_language() != pll_current_language() ) ? pll_current_language() : '';
+//		$query->set( 'lang', '' );		
+		
+		// PAGINATION
+		$query->set( 'posts_per_page', -1 );
 		
 		// ORDER: orders the post by post_type ASC and by date DESC
 		$post_order = array(
 			'post_type' => 'ASC',
 			'date' => 'DESC',
 		);
-		$query->set( 'orderby', $post_order );
-		
-		// LANGUAGE
-//		$lang = ( function_exists( 'pll_default_language' ) && pll_default_language() != pll_current_language() ) ? pll_current_language() : '';
-//		$query->set( 'lang', '' );
+		$query->set( 'orderby', $post_order );		
     }
   }
 }
 
 add_action( 'pre_get_posts', 'tct_display_home_posts' );
-
 
 
 /** SF:

@@ -16,7 +16,7 @@ if ( get_page_template_slug( get_the_ID() ) ){
 
 <article id="post-<?php the_ID(); ?>" <?php post_class( $template['filename'] ); ?>>
 	
-	<div class="container-media">
+	
 	
 		<?php
 
@@ -24,7 +24,7 @@ if ( get_page_template_slug( get_the_ID() ) ){
 			tct_get_media_group_entries( 'tct_brand_story_group', 'entry-media' ); // ($meta_key, $class)
 		?>
 	
-	</div><!-- .media-container -->
+	
 	
 	<div class="container-content">
 	
