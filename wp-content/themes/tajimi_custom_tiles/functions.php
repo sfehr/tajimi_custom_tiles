@@ -739,7 +739,7 @@ function tct_get_sample_tile_info( $class ) {
 	// MARKUP
 	if ( !empty( $field_value ) ) {
 		echo '<div class="' . $class . '">';
-		echo '<span class="info-title">' . __( 'Note ', 'tajimi_custom_tiles' ) . '</span>' . $field_value;
+		echo '<span class="info-title">' . __( 'Note ', 'tajimi_custom_tiles' ) . '</span>' . nl2br( $field_value );
 //		echo $field_value;
 		echo '</div><!-- .' . $class . ' -->';
 	}	
@@ -758,18 +758,19 @@ function tct_get_sample_tile_color_variation( $class ) {
 
 	
 	/* DEFAULT COLOR */
-	$default_color = wp_get_post_terms( get_the_ID(), 'tile_category', array( 'fields' => 'names', 'parent' => '4' ) ); // term id 4 is a parent category [colors]
-	$default_color = $default_color[0];
+	
+	$default_color = wp_get_post_terms( get_the_ID(), 'tile_category', array( 'fields' => 'ids', 'parent' => '4' ) ); // term id 4 is a parent category [colors]
+	$default_color_id = $default_color[ 0 ];
+	$default_color_obj = get_term_by( 'id', $default_color_id, 'tile_category' );
+	$default_color_name = $default_color_obj->name;	
 	
 	// gets translated term if translation is active
 	if( function_exists( 'pll_default_language' ) && ( pll_current_language() != pll_default_language() ) ){
 
 		// get translation in japanese
-		$default_color_obj = get_term_by( 'name', esc_html__( $default_color ), 'tile_category' );
-		$default_color_trans = get_term_by( 'id', pll_get_term( $default_color_obj->term_id, pll_current_language() ), 'tile_category' );
-		
+		$default_color_obj = get_term_by( 'id', pll_get_term( $default_color_id, 'ja' ), 'tile_category' );
 		// overwrite the variable
-		$default_color = $default_color_trans->name;
+		$default_color_name = $default_color_obj->name;
 	}
 	// end default color
 	
@@ -778,15 +779,18 @@ function tct_get_sample_tile_color_variation( $class ) {
 	// MARKUP
 	// open tag container
 	echo '<div class="' . $class . '">';
-	// info title
+	// info title, not linked
 	echo '<span class="info-title">' . __( 'Colors ', 'tajimi_custom_tiles' ) . '</span>';
 	
 	// get the values
 	if ( !empty( $attached ) || !empty( $default_color ) ) {
 		
 	// default color
-	echo '<span class="anchor-link">' . $default_color . '</span>';		
+	echo '<span class="anchor-link">' . $default_color_name . '</span>';		
 	
+		
+		/* COLOR VARIATIONS */
+		
 		// get the attached post values	
 		foreach ( $attached as $attached_post ) {
 			
@@ -799,29 +803,21 @@ function tct_get_sample_tile_color_variation( $class ) {
 				// get related sample tile name
 				$post_names = $post->post_title;	
 				// get related sample tile color
-				$post_colors = wp_get_post_terms( $post->ID, 'tile_category', array( 'fields' => 'names', 'parent' => '4' ) ); // term id 4 is a parent category [colors]
+				$post_colors = wp_get_post_terms( $post->ID, 'tile_category', array( 'fields' => 'ids', 'parent' => '4' ) ); // term id 4 is a parent category [colors]
 				// term name
-				$post_color_name = $post_colors[ 0 ];
-
-
+				$post_color_id = $post_colors[ 0 ];
+				
+				$post_color_obj = get_term_by( 'id', $post_color_id, 'tile_category' );
+				$post_color_name = $post_color_obj->name;
+							
 				// gets translated term if translation is active
 				if( function_exists( 'pll_default_language' ) && ( pll_current_language() != pll_default_language() ) ){
-					// get default lang term id
-					$term = get_term_by( 'name', esc_attr__( $post_color_name ), 'tile_category' );
-/*					
-		$terms_obj = get_terms( array( 
-			'taxonomy'	=> 'tile_category',
-			'name'		=> esc_attr__( $post_color_name ),
-			'lang'		=> pll_current_language(),
-			)
-		);
-		var_dump( $terms_obj );
-*/		
 					
 					// get translation in japanese
-					$term_trans = get_term_by( 'id', pll_get_term( $term->term_id, 'ja' ), 'tile_category' );
+					$term_trans = get_term_by( 'id', pll_get_term( $post_color_id, 'ja' ), 'tile_category' );					
 					// overwrite the variable
 					$post_color_name = $term_trans->name;
+					
 				}
 
 
@@ -1130,30 +1126,6 @@ function ajax_filter_posts_by_category() {
 			// get No Stock field value
 			$disabeled = ( tct_get_no_stock_value() == true ) ? 'disabled="disabled"' : '';
 			$availability = ( tct_get_no_stock_value() == true ) ? __( 'Out of Stock', 'tajimi_custom_tiles' ) : __( 'Select Tile', 'tajimi_custom_tiles' );
-			?>
-			
-<?php /*			
-			<input id="tct_sample_tile_selection_<?php the_ID(); ?>" type="checkbox" name="tct_tile_selection[]" class="tile-selection" value="<?php the_ID(); ?>" <?php echo $disabeled ?> >
-			<label class="tile-selection-label" for="tct_sample_tile_selection_<?php the_ID(); ?>" ><?php echo $availability ?></label>
-			
-			<input type="checkbox" name="checkbox" class="tile-checkbox" value="">
-			<label class="tile-checkbox-label" ><?php the_title(); ?></label>
-
-
-			<input id="tct_sample_tile_radio_<?php the_ID(); ?>_1" type="radio" name="tct_tile_image_<?php the_ID(); ?>" class="tile-radio-1" checked="checked" value="">
-			<label for="tct_sample_tile_radio_<?php the_ID(); ?>_1" class="tile-radio-label" >1</label>
-			
-			<input id="tct_sample_tile_radio_<?php the_ID(); ?>_2" type="radio" name="tct_tile_image_<?php the_ID(); ?>" class="tile-radio-2" value="">
-			<label for="tct_sample_tile_radio_<?php the_ID(); ?>_2" class="tile-radio-label" >2</label>
-			
-			
-			<div class="tct-ux-tile-check"></div>	
-			
-			<?php
-			
-*/	?>		
-			
-			<?php			
 	
 			// TILE IMAGES: image1, image2
 			tct_get_sample_tile_images( 'tct_sample_tiles_', 'tile-image', 'medium-medium' ); 

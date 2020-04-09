@@ -32,6 +32,7 @@
  * * * SAMPLE TILE DIMENSIONS
  * * * SAMPLE TILE INFO 
  * * * NO STOCK CHECKBOX
+ * * * COLOR VARIATIONS
  * 
  * cmb2_get_term_options
  *  
@@ -43,6 +44,7 @@
 *
 * [radio] weather to show in front page or not
 */
+/*
 add_action( 'cmb2_admin_init', 'tct_register_show_in_startpage_option_metabox' );
 
 function tct_register_show_in_startpage_option_metabox() {
@@ -63,7 +65,7 @@ function tct_register_show_in_startpage_option_metabox() {
 	) );
 	
 }
-
+*/
 
 /* TRANSLATION META BOX 
 *
@@ -462,7 +464,7 @@ function tct_register_sample_tiles_metabox() {
 			// 	'image/png',
 			// ),
 		// ),
-		'preview_size' => 'large', // Image size to use when previewing in the admin.
+		'preview_size' => 'medium', // Image size to use when previewing in the admin.
 	) );
 	
 	// IMAGE 2 (perspective) FIELD
@@ -488,7 +490,7 @@ function tct_register_sample_tiles_metabox() {
 			// 	'image/png',
 			// ),
 		// ),
-		'preview_size' => 'large', // Image size to use when previewing in the admin.
+		'preview_size' => 'medium', // Image size to use when previewing in the admin.
 	) );	
 	
 }
@@ -509,14 +511,27 @@ function tct_register_tct_sample_tiles_dimensions_metabox() {
 	
 	$prefix = 'tct_sample_tiles_dimensions_';
 	
+	// META BOX
 	$cmb_sample_tile_dimensions = new_cmb2_box( array(
 		'id'            => $prefix . 'metabox',
 		'title'         => esc_html__( 'Sample Tile Dimensions', 'cmb2' ),
 		'object_types'  => array( 'sample_tile' ), // Post type
 	) );
+	
+	// REPEATABLE GROUP
+	$repeat_group = $cmb_sample_tile_dimensions->add_field( array(
+		'id'          => $prefix . 'metabox_sections',
+		'type'        => 'group',
+		'options'     => array(
+			'group_title'   => __( 'Dimension', 'cmb2' ) . ' {#}', // {#} gets replaced by row number
+			'add_button'    => __( 'Add another Dimension', 'cmb2' ),
+			'remove_button' => __( 'Remove Dimension', 'cmb2' ),
+			'sortable'      => true, // beta
+		),
+	) );	
 
 	// WIDTH FIELD
-	$cmb_sample_tile_dimensions->add_field( array(
+	$cmb_sample_tile_dimensions->add_group_field( $repeat_group, array(
 		'name' => 'Width',
 		'desc' => esc_html__( 'positive number only', 'cmb2' ),
 		'type' => 'text_small',
@@ -531,7 +546,7 @@ function tct_register_tct_sample_tiles_dimensions_metabox() {
 	) );
 	
 	// HEIGHT FIELD
-	$cmb_sample_tile_dimensions->add_field( array(
+	$cmb_sample_tile_dimensions->add_group_field( $repeat_group, array(
 		'name' => 'Height',
 		'desc' => esc_html__( 'positive number only', 'cmb2' ),
 		'type' => 'text_small',
@@ -546,7 +561,7 @@ function tct_register_tct_sample_tiles_dimensions_metabox() {
 	) );
 	
 	// HEIGHT FIELD
-	$cmb_sample_tile_dimensions->add_field( array(
+	$cmb_sample_tile_dimensions->add_group_field( $repeat_group, array(
 		'name' => 'Depth',
 		'desc' => esc_html__( 'positive number only', 'cmb2' ),
 		'type' => 'text_small',
@@ -584,16 +599,14 @@ function tct_register_tct_sample_tiles_info_metabox() {
 	// NOTE FIELD EN
 	$cmb_sample_tile_info->add_field( array(
 		'name' => 'Note EN',
-		'desc' => esc_html__( 'Notification on this sample tile EN. Max 85 characters.', 'cmb2' ),		
-		'type' => 'text',
+		'type' => 'textarea_small',
 		'id'   => $prefix . 'note_en',
 	) );
 	
 	// NOTE FIELD JP
 	$cmb_sample_tile_info->add_field( array(
 		'name' => 'Note JP',
-		'desc' => esc_html__( 'Notification on this sample tile JP. Max 85 characters.', 'cmb2' ),		
-		'type' => 'text',
+		'type' => 'textarea_small',
 		'id'   => $prefix . 'note_ja',
 	) );	
 	
@@ -606,6 +619,7 @@ function tct_register_tct_sample_tiles_info_metabox() {
 * [radio_inline] no stock
 *
 */
+
 add_action( 'cmb2_admin_init', 'tct_register_no_stock_metabox' );
 
 function tct_register_no_stock_metabox() {
@@ -628,6 +642,44 @@ function tct_register_no_stock_metabox() {
 			'true'   => __( 'Not Available', 'cmb2' ),
 		),
 		'default' => 'false',
+	) );
+}
+
+
+/*
+*
+* CUSTOM POST TYPE: SAMPLE TILES //////////////////////////////////////////////
+* [custom_attached_posts] color variations
+*
+*/
+add_action( 'cmb2_admin_init', 'tct_register_color_variation_metabox' );
+
+function tct_register_color_variation_metabox() {
+	
+	$prefix = 'tct_color_variation_';
+	
+	$cmb_color_variation = new_cmb2_box( array(
+		'id'            => $prefix . 'metabox',
+		'title'         => esc_html__( 'Color Variation', 'cmb2' ),
+		'object_types'  => array( 'sample_tile' ), // Post type
+	) );
+	
+	// CUSTOM ATTACHED POST FIELD
+	$cmb_color_variation->add_field( array(
+		'name'    => __( 'Select Alternative Color', 'cmb2' ),
+		'desc'    => __( 'Drag posts from the left column to the right column to attach them to this page.<br />You may rearrange the order of the posts in the right column by dragging and dropping.', 'cmb2' ),
+		'id'      => 'attached_sample_tile',
+		'type'    => 'custom_attached_posts',
+		'column'  => true, // Output in the admin post-listing as a custom column. https://github.com/CMB2/CMB2/wiki/Field-Parameters#column
+		'options' => array(
+			'show_thumbnails' => true, // Show thumbnails on the left
+			'filter_boxes'    => true, // Show a text box for filtering the results
+			'query_args'      => array(
+				'posts_per_page' => 50,
+				'post_type'      => 'sample_tile',
+				'post_status'	=> 'publish',
+			), // override the get_posts args
+		),
 	) );
 }
 
