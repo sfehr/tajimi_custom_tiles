@@ -1497,7 +1497,9 @@ add_filter( 'template_include', 'tct_choose_template', 99 );
  */
 function tct_gutenberg_blocks() {
   return array(
-    'core/paragraph',
+	  'core/paragraph',
+	  'meow/faq-block',
+	  'meowapps/faq'
   );
 }
 add_filter( 'allowed_block_types', 'tct_gutenberg_blocks' );

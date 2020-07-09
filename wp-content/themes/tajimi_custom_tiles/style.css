@@ -1293,6 +1293,7 @@ h1 {
 # Content
 --------------------------------------------------------------*/
 
+
 .site-main{
 	min-height: 90vh;
 }
@@ -1824,9 +1825,7 @@ article.brand_story
 
 .container-content{
 	margin-top: var(--grid-gap);
-/*	margin-left: var(--grid-gap); */
 	margin-right: var(--grid-gap);
-/*	margin-bottom: var(--grid-row);	*/
 }
 
 .production_method .container-content{
@@ -2021,9 +2020,11 @@ article.brand_story
 
 
 /*--------------------------------------------------------------
-# Lazyloading
+# PLUGIN
 --------------------------------------------------------------*/
 
+
+/* Lazyloading */
 img[data-lazy-src]{
 	-webkit-transition: opacity 500ms ease-in-out;
 	-moz-transition: opacity 500ms ease-in-out;
@@ -2087,6 +2088,30 @@ img.loaded,
 img.lazyloaded
 {
 	opacity: 1;
+}
+
+
+/* FAQ */
+.meow-faq-block .meow-faq-question,
+.meow-faq-block .meow-tab-answer .meow-tab-content
+{
+	padding: 0;
+	margin: 0;
+	background: none;
+	color: black;
+}
+
+.meow-faq-block{
+	margin: 40px 0 ;
+}
+
+.meow-faq-block .meow-faq-question{
+	font-size: var(--font-size-m);
+	font-weight: 400;
+}
+
+.meow-faq-block label::after {
+	display: none;
 }
 
 
