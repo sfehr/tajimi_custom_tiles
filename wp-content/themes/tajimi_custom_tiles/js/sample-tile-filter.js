@@ -3,25 +3,34 @@
  *
  * Handles custom post query with category filter on sample page by using ajax.
  * 
+ * 
+ * INITIALIZE
+ * CLICK EVENT
+ * FILTER FUNCTION 
+ * SORT FUNCTION 
+ *   
  */
 
 
 jQuery(document).ready(function(){
 	
-	//initial loads all posts
-	filter_posts_by_category('all', 1);
+	//INITIALIZE initial loads all posts
+	filter_posts_by_category( 'all', 1 );
 	
+	
+	// CLICK EVENT
 	jQuery( '#menu-tct-sample-tile-filter a, #menu-tct-sample-tile-filter-jp a' ).each(function(){
 		
 		// preventing the link to 'click'
 		jQuery(this).click(function( e ) {
 			e.preventDefault();
 		});
-	});
+		
+	});	
 });
     
-    
-    var filter_posts_by_category = function(cat_slug, paged){
+    // FILTER FUNCTION
+    var filter_posts_by_category = function( cat_slug, paged ){
 //        var ajax_url = window.location.protocol + "//" + window.location.host + '/wp-admin/admin-ajax.php';
 		
         var total_posts = -1; // -1 for show all posts
@@ -65,14 +74,19 @@ jQuery(document).ready(function(){
 	
 				// LOADER: Remove loading status
 				jQuery( '.loader-state' ).remove();
-
-				
+			
 				// HTML: output the markup
-				jQuery( result ).insertAfter( '.entry-content' );				
+				jQuery( result ).insertAfter( '.entry-content' );
+				
+				// SORT: Result
+				tinysort( '.sample-tile', {
+					attr: 'data-category',
+					natural: true
+				});
 				
             },
             error: function(xhr,status,error){
 				//console.log(error);
             }
         });
-};
+	};

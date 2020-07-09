@@ -56,7 +56,25 @@ get_header();
 				<input type="text" name="tct[phone]" placeholder="<?php _e( 'Phone', 'tajimi_custom_tiles' ); ?>" value="<?php echo esc_attr( $_POST['tct']['phone'] ); ?>" required>
 				<input type="text" name="tct[subject]" placeholder="<?php _e( 'Subject', 'tajimi_custom_tiles' ); ?>" value="<?php echo esc_attr( $_POST['tct']['subject'] ); ?>" required>
 				<input type="email" name="tct[email]" placeholder="<?php _e( 'yourname@example.com', 'tajimi_custom_tiles' ); ?>" value="<?php echo esc_attr( $_POST['tct']['email'] ); ?>" required>
-				<?php if( isset( $input_html ) && !empty( $input_html ) ) echo implode('', $input_html) ?>
+				<fieldset>
+					<legend><?php _e( 'What are you interested in?', 'tajimi_custom_tiles' ); ?></legend>
+					<div>
+						<input type="checkbox" name="tct[custom-tailored-tiles]" id="custom-tailored-tiles" value="<?php echo esc_attr( $_POST['tct']['check_custom-tailored-tiles'] ); ?>">
+						<label for="custom-tailored-tiles"><?php _e( 'Custom-tailored tiles', 'tajimi_custom_tiles' ); ?></label>
+						<div class="tct-ux-tile-check"></div>
+					</div>	
+					<div>
+						<input type="checkbox" name="tct[customized-tiles]" id="customized-tiles" value="<?php echo esc_attr( $_POST['tct']['check_customized-tiles'] ); ?>">
+						<label for="customized-tiles"><?php _e( 'Customized tiles', 'tajimi_custom_tiles' ); ?></label>
+						<div class="tct-ux-tile-check"></div>
+					</div>
+					<div>
+						<input type="checkbox" name="tct[existing-tiles]" id="existing-tiles" value="<?php echo esc_attr( $_POST['tct']['check_existing-tiles'] ); ?>">
+						<label for="existing-tiles"><?php _e( 'Existing tiles', 'tajimi_custom_tiles' ); ?></label>
+						<div class="tct-ux-tile-check"></div>
+					</div>					
+				</fieldset>				
+				<?php if( isset( $input_html ) && !empty( $input_html ) ) echo implode('', $input_html) ?>	
     			<textarea type="text" name="tct[message]" placeholder="<?php _e( 'Message', 'tajimi_custom_tiles' ); ?>" required><?php echo esc_textarea( $_POST['tct']['message'] ); ?></textarea>
 				<input type="file" name="tct_multiple_attachments[]" id="tct_file" data-multiple-caption="{count} files selected" multiple="multiple">
 				<label id="tct_file_label" for="tct_file"><span><?php _e( 'Attach Files', 'tajimi_custom_tiles' ); ?></span></label> 

@@ -14,6 +14,7 @@
  * TCT Custom Image Sizes
  * Template Selection for Custom Post Types
  * Get Custom Field Values: Media Group
+ * modify_vimeo_embed_url
  * Get Custom Field Values: Profile 
  * Get Custom Field Values: File List
  * Get Custom Field Values: Portfolio Data Bundle
@@ -276,7 +277,29 @@ function tct_add_meta_tags() {
 			  })(document);
 			</script>
 		";
-	}		
+	}
+
+	echo '
+	<!-- Primary Meta Tags -->
+	<title>Tajimi Custom Tiles – Bespoke Tiles made in Tajimi, Japan</title>
+	<meta name="title" content="Tajimi Custom Tiles – Bespoke Tiles made in Tajimi, Japan">
+	<meta name="description" content="Tajimi City is the center of the Japanese tile industry, with a centuries-old tradition of craftsmanship and excellence. Tajimi Custom Tiles creates custom-tailored tiles in any size, shape, color or texture, using a range of unique production, glazing and firing methods. ">
+
+	<!-- Open Graph / Facebook -->
+	<meta property="og:type" content="website">
+	<meta property="og:url" content="https://tajimicustomtiles.jp/">
+	<meta property="og:title" content="Tajimi Custom Tiles – Bespoke Tiles made in Tajimi, Japan">
+	<meta property="og:description" content="Tajimi City is the center of the Japanese tile industry, with a centuries-old tradition of craftsmanship and excellence. Tajimi Custom Tiles creates custom-tailored tiles in any size, shape, color or texture, using a range of unique production, glazing and firing methods. ">
+	<meta property="og:image" content="https://tajimicustomtiles.jp/wp/wp-content/uploads/2020/04/TCT_Logo_mark_og.png">
+
+	<!-- Twitter -->
+	<meta property="twitter:card" content="summary_large_image">
+	<meta property="twitter:url" content="http://tajimicustomtiles.jp/">
+	<meta property="twitter:title" content="Tajimi Custom Tiles – Bespoke Tiles made in Tajimi, Japan">
+	<meta property="twitter:description" content="Tajimi City is the center of the Japanese tile industry, with a centuries-old tradition of craftsmanship and excellence. Tajimi Custom Tiles creates custom-tailored tiles in any size, shape, color or texture, using a range of unique production, glazing and firing methods. ">
+	<meta property="twitter:image" content="https://tajimicustomtiles.jp/wp/wp-content/uploads/2020/04/TCT_Logo_mark_og.png">
+	';	
+	
 }
 add_action('wp_head', 'tct_add_meta_tags');
 
@@ -1179,7 +1202,7 @@ function tct_form_response(){
 	//VARIABLES
 	$tct_subject = '['. get_bloginfo( 'name' ) . ']';
 	$tct_to = 'contact@tajimicustomtiles.jp';
-	$tct_fields = array( 'full_name', 'company', 'address', 'city_state', 'postal_code', 'country', 'phone', 'subject', 'email', 'message' );
+	$tct_fields = array( 'full_name', 'company', 'address', 'city_state', 'postal_code', 'country', 'phone', 'subject', 'email', 'check_custom-tailored-tiles', 'check_customized-tiles', 'check_existing-tiles', 'message' );
 	$tct_tile_selection = array();
 	$tct_response = array();
 	$posted_data = isset( $_POST ) ? $_POST : array();
@@ -1214,7 +1237,7 @@ function tct_form_response(){
 			}
 		}
 
-		// Check fields content
+		// ERROR MESSAGE: Check fields content
 		$errors_posted = array();
 		if( $posted[ 'full_name' ] == null ) array_push( $errors_posted, __( 'Please enter a full name.', 'tajimi_custom_tiles' ) );
 		if( $posted[ 'company' ] == null ) array_push( $errors_posted, __( 'Please enter a company.', 'tajimi_custom_tiles' ) );
@@ -1334,6 +1357,14 @@ function tct_form_response(){
 			$tct_message .= __( 'Phone: ', 'tajimi_custom_tiles' ) . $posted[ 'phone' ] . '<br>';
 			$tct_message .= __( 'Subject: ', 'tajimi_custom_tiles' ) . $posted[ 'subject' ] . '<br>';
 			$tct_message .= __( 'Email: ', 'tajimi_custom_tiles' ) . $posted[ 'email' ] . '<br>';
+			// optional checkbox values
+			$tct_message .= __( 'Interested in: ', 'tajimi_custom_tiles' ) . '<br>';
+				$tct_message .= __( 'Custom-tailored tiles', 'tajimi_custom_tiles' ) . ': '; 
+				$tct_message .= ( 'null' != $posted[ 'check_custom-tailored-tiles' ] ) ? 'yes' : 'no' . '<br>';
+				$tct_message .= __( 'Customized tiles', 'tajimi_custom_tiles' ) . ': '; 
+				$tct_message .= ( 'null' != $posted[ 'check_customized-tiles' ] ) ? 'yes' : 'no' . '<br>';
+				$tct_message .= __( 'Existing tiles', 'tajimi_custom_tiles' ) . ': '; 
+				$tct_message .= ( 'null' != $posted[ 'check_existing-tiles' ] ) ? 'yes' : 'no' . '<br>';			
 			$tct_message .= '</p>';
 			
 			$tct_message .= '<p>';

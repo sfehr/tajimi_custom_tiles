@@ -1565,10 +1565,76 @@ article.brand_story
 
 #tct-contact-form input[type=text],
 #tct-contact-form input[type=email],
+#tct-contact-form fieldset,
 #tct-contact-form textarea
 {
 	border: 1.5px black solid;
 	border-radius: 0px;
+}
+
+#tct-contact-form fieldset{
+	margin: 0;
+	font-weight: 400;
+}
+
+#tct-contact-form fieldset div{
+	position: relative;
+	margin: 12px 0;
+}
+
+#tct-contact-form input[type=checkbox]{
+  display: none;
+}
+
+#tct-contact-form input[type=checkbox] + label{
+		cursor: pointer;
+}
+
+#tct-contact-form input[type=checkbox] + label::before{
+	position: relative;
+	z-index: 2;
+	top: -2px;
+	width: 25px;
+	height: 25px;
+	border: 1.5px solid black;
+	display: block;
+	content: "";
+	float: left;
+	margin-right: 8px;
+}
+
+#tct-contact-form input[type=checkbox]:checked,
+#tct-contact-form input[type=checkbox]:checked ~ .tct-ux-tile-check
+{
+	position: absolute;
+	top: -31px;
+	left: 4px;
+	width: 35px;
+	height: 35px;
+	background: transparent;
+	cursor: pointer;
+}
+
+
+#tct-contact-form input[type=checkbox]:checked ~ .tct-ux-tile-check:before,
+#tct-contact-form input[type=checkbox]:checked ~ .tct-ux-tile-check:after
+{
+	z-index: 2;
+	position: absolute;
+	top: 12px;
+	left: 50%;
+	content: '';
+	height: 28px;
+	width: 2px;
+	background-color: black;
+	transform: rotate(35deg);  
+}
+
+#tct-contact-form input[type=checkbox]:checked ~ .tct-ux-tile-check:after{
+	top: 26px;
+	left: calc( 58% - 15px ) ;
+	height: 13px;
+	transform: rotate(-45deg);  
 }
 
 #tct-contact-form textarea{
@@ -1627,7 +1693,7 @@ article.brand_story
 .button-delete:before,
 .button-delete:after{
 	position: absolute;
-	z-index: 5;
+	z-index: 2;
 	top: 2px;
 	right: 6px;
 	content: '';
@@ -2459,27 +2525,6 @@ img.lazyloaded
 
 @media screen and (max-width: 1124px) {	
 	
-/*	
-	.menu-tct-sample-tile-filter-container,
-	.menu-tct-sample-tile-filter-jp-container
-	{
-		display: unset;
-		position: fixed;
-		left: 0px;
-		top: 0px;
-		height: 70px;
-		z-index: 4;
-	}
-	
-	.menu-tct-sample-tile-filter-container .menu,
-	.menu-tct-sample-tile-filter-jp-container .menu
-	
-	{
-		flex-wrap: wrap;
-		margin-top: 70px;
-		background: white;
-	}
-*/	
 	#tct-sample-tiles{
 		margin-top: unset;
 	}
@@ -2850,7 +2895,7 @@ img.lazyloaded
 	}
 	
 	.tile-grid-compact .tile-selection:checked, 
-	.tile-grid-compact .tile-selection:checked ~ .tct-ux-tile-check 
+	.tile-grid-compact .tile-selection:checked ~ .tct-ux-tile-check
 	{
 		right: calc( ( var(--grid-column) / 7 ) ) !important ;
 	}
