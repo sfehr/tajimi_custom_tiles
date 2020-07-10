@@ -1447,6 +1447,35 @@ article.brand_story
 	display: none;
 }
 
+.portfolio .entry-qa input[type=checkbox],
+.portfolio .entry-qa .entry-content
+{
+	display: none;
+}
+
+.portfolio .entry-qa label{
+	position: relative;
+	cursor: pointer;
+	padding-left: 25px;
+}
+
+.portfolio .entry-qa label::before,
+.portfolio .entry-qa label::after
+{
+	left: 6px;
+	height: 15px !important;
+}
+
+
+.portfolio .entry-qa input[type=checkbox]:checked ~ .entry-content{
+	display: block;	
+}
+
+.portfolio .entry-qa .entry-content p{
+	font-size: unset;
+	text-transform: unset;
+}
+
 
 /* CUSTOM POST TYPE: Sample Tiles */
 
@@ -1848,7 +1877,7 @@ article.brand_story
 }
 
 .slide-button:hover{
-	cursor: pointer;
+	cursor: none;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;
@@ -1960,19 +1989,30 @@ article.brand_story
 	margin-top: 20px;
 }
 
-.entry-link i,
-.tile-submit-container i{
+.slide-button .container-cursor{
 	position: relative;
-	top: 50%;
+	width: 100%;
+	height: 100%;
+}
+
+.entry-link i,
+.tile-submit-container i,
+.slide-button i
+{
+	position: relative;
+	top: 55%;
+	left: 5px;
 	border: solid black;
-	border-width: 2.0px 60px 0px 0px;
+	border-width: 2px 89px 0px 0px;
 	font-size: 0px;
 }
 	
-.entry-link i:before,
-.entry-link i:after,
-.tile-submit-container i:before,
-.tile-submit-container i:after
+.entry-link i::before,
+.entry-link i::after,
+.tile-submit-container i::before,
+.tile-submit-container i::after,
+.slide-button i::after,
+.slide-button i::before
 {
 	content: "";
     right: -90px;
@@ -1985,11 +2025,22 @@ article.brand_story
     transform-origin: right top;
   }
 
-.entry-link i:after,
-.tile-submit-container i:after{
+.entry-link i::after,
+.tile-submit-container i::after,
+.slide-button i::after
+{
     transform: rotate(45deg);
 	top: -1.5px;
 	right: -90.5px;	
+}
+
+.slide-button i{
+	display: none;
+	position: fixed;
+	transform: translate(-50%, -100%);
+	color: white;
+	border-color: white;
+	mix-blend-mode: difference;
 }
 
 .switch-list-type,
@@ -2102,17 +2153,57 @@ img.lazyloaded
 }
 
 .meow-faq-block{
-	margin: 40px 0 ;
+	margin: 40px 0;
 }
 
 .meow-faq-block .meow-faq-question{
 	font-size: var(--font-size-m);
 	font-weight: 400;
+	border-bottom: 1px solid black;	
 }
 
-.meow-faq-block label::after {
+.meow-faq-block .meow-tab-answer{
+	margin-top: 3px;
+}
+
+.meow-faq-block label{
+	margin-right: 3px!important;
+}
+
+.meow-faq-block label::before,
+.meow-faq-block label::after,
+.portfolio .entry-qa label::before,
+.portfolio .entry-qa label::after
+{
+    position: absolute;
+    z-index: 2;
+    top: 2px;
+    right: 9px;
+    content: '' !important;
+    height: 20px;
+    width: 2px;
+    background-color: black;
+	padding: 0;
+}
+
+.meow-faq-block label::before,
+.portfolio .entry-qa label::before
+{
+    transform: rotate(90deg) !important;
+}
+
+.meow-faq-block label::after,
+.portfolio .entry-qa label::after
+{
+    transform: rotate(0deg) !important;
+}
+
+.meow-faq-block input[type="checkbox"]:checked + label::after,
+.portfolio .entry-qa input[type="checkbox"]:checked ~ label::after
+{
 	display: none;
 }
+
 
 
 /*--------------------------------------------------------------
@@ -2247,6 +2338,11 @@ img.lazyloaded
 		margin-left: 4px;
 		margin-right: 5px;
 	}
+	
+	.portfolio .entry-qa{
+		grid-area: auto / 1 / auto / span 5;
+	}
+	
 	
 	/* 
 	 * CUSTOM POST TYPE: Sample Tiles 
@@ -2770,7 +2866,8 @@ img.lazyloaded
 	.entry-portfolio-data-year,
 	.entry-portfolio-data-location, 
 	.entry-portfolio-data-architect, 
-	.entry-portfolio-data-method
+	.entry-portfolio-data-method,
+	.entry-portfolio-data-photographer
 	{
 		grid-column: 1 / -1;
 	}

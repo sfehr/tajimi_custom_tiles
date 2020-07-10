@@ -334,7 +334,7 @@ function tct_register_portfolio_data_metabox() {
 		// 'date_format' => 'l jS \of F Y',
 		'date_format' => 'Y',
 	) );	
-	
+/*	
 	// LOCATION: CITY FIELD
 	$cmb_portfolio->add_field( array(
 		'name' => 'Location: City',
@@ -343,6 +343,7 @@ function tct_register_portfolio_data_metabox() {
 		'type' => 'text',
 		'id'   => $prefix . 'location_city'
 	) );
+*/	
 	
 	// LOCATION: PREFECTURE FIELD
 	$cmb_portfolio->add_field( array(
@@ -411,6 +412,14 @@ function tct_register_portfolio_data_metabox() {
 		'sanitization_cb' => 'absint',
 		'escape_cb'       => 'absint',
 	) );
+	
+	// PHOTO CREDITS
+	$cmb_portfolio->add_field( array(
+		'name' => 'Photographer',
+		'desc' => 'who is the photographer?',
+		'type' => 'text',
+		'id'   => $prefix . 'photographer'
+	) );	
 }
 	 
 

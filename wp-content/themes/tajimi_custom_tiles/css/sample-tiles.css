@@ -231,15 +231,6 @@ Description: Additional CSS for the Sample Tiles
 }
 
 
-/* UX ARROW */
-
-.tile-submit-container i{
-	position: absolute;
-	top: 80%;
-	right: 50px;
-}
-
-
 /* TILE COLOR PREVIEW */
 .tile-color-preview{
 	transform: translate(100%, 0);

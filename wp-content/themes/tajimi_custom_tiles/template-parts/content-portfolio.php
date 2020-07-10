@@ -42,16 +42,26 @@
 	<?php tajimi_custom_tiles_post_thumbnail(); ?>
 	
 	<?php
-	//<div class="entry-content"> // remove this level for css-grid
 	
-		/* CUSTOM FIELDS */
+	/* CUSTOM FIELDS */
 	
-		//portfolio data from several fields
-		tct_get_portfolio_data_bundle( 'entry-portfolio-data' );
+	//portfolio data from several fields
+	tct_get_portfolio_data_bundle( 'entry-portfolio-data' );
 	
-	//</div>
+	// display QA only when content exists
+	if( !empty( get_the_content() ) ) :
 	?>	
-
+	<div class="entry-qa">
+		<input type="checkbox" id="qa-<?php the_ID(); ?>" name="qa-<?php the_ID(); ?>">
+		<label for="qa-<?php the_ID(); ?>"><?php echo esc_html__( 'Q&A', 'tajimi_custom_tiles' ); ?></label>
+		<div class="entry-content">
+			<?php the_content(); ?>
+		</div><!-- .entry-content -->	
+	</div>	
+	<?php
+	endif;
+	?>
+	
 	<footer class="entry-footer">
 		<?php tajimi_custom_tiles_entry_footer(); ?>
 	</footer><!-- .entry-footer -->

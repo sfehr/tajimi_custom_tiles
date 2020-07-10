@@ -473,7 +473,7 @@ add_filter( 'tct_custom_fields', 'tct_get_portfolio_images' );
 function tct_get_portfolio_data_bundle( $class ) {
 	
 	$prefix = 'tct_portfolio_data_';
-	$fields = array( 'year', 'location_city', 'location_prefecture', 'location_country', 'architect', 'method', 'volume');
+	$fields = array( 'year', 'location_prefecture', 'location_country', 'architect', 'method', 'volume', 'photographer'  );
 	
 	// loops through the fields stated in the array $fields
 	foreach ( (array) $fields as $field) {
@@ -488,7 +488,7 @@ function tct_get_portfolio_data_bundle( $class ) {
 				$field_output = !( $field_value == '' ) ?  date( "Y", $field_value) : '–';
 				$field_title = 'year';
 				break;
-				
+/*				
 			case 'location_city' :
 				// checks if the field contains a value, returns "–" if not
 				$city = !( $field_value == '' ) ?  $field_value : '–';
@@ -496,7 +496,7 @@ function tct_get_portfolio_data_bundle( $class ) {
 				// reset value 
 				$field_output = '';
 				break;
-				
+*/				
 			case 'location_prefecture' :
 				// checks if the field contains a value, returns "–" if not
 				$prefecture = !( $field_value == '' ) ?  $field_value : '–';
@@ -509,7 +509,7 @@ function tct_get_portfolio_data_bundle( $class ) {
 				// checks if the field contains a value, returns "–" if not
 				$country = !( $field_value == '' ) ?  $field_value : '–';
 				// if all fields are without value ('-'), then display '–' only once
-				$field_output = ( !( $city == '–' ) && !( $prefecture == '–' ) && !( $country == '–' ) ) ? $city . ', ' . $prefecture . ', ' . $country : '–';
+				$field_output = ( !( $prefecture == '–' ) && !( $country == '–' ) ) ? $prefecture . ', ' . $country : '–';
 				$field_title = 'location';
 				break;
 				
@@ -530,6 +530,12 @@ function tct_get_portfolio_data_bundle( $class ) {
 				// checks if the field contains a value, adds 'm2' to the value, returns "–" if not
 				$field_output = !( $field_value == '' ) && !( $field_value == '0' ) ?  $field_value . 'm2' : '–';
 				$field_title = 'volume';
+				break;
+				
+			case 'photographer' :
+				// checks if the field contains a value, returns "–" if not
+				$field_output = !( $field_value == '' ) ?  $field_value : '–';
+				$field_title = 'photographer';
 				break;				
 				
 			default:

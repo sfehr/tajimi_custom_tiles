@@ -2,6 +2,11 @@
  * File media-image-slider.js
  *
  * IMAGE SLIDER: jQuery image slider used in home page. 
+ * INITIALIZE
+ * SLIDER OBJECT COSTRUCTOR
+ * NAVIGATE THROUGH SLIDES
+ * GET ALT TEXT 
+ * UI INTERACTION
  *
  */
 
@@ -63,8 +68,8 @@ jQuery(document).ready( function ( $ ) {
 	// SLIDER OBJECT COSTRUCTOR
 	function Slider( slides ) {
 		this.length = slides.length;
-		this.nextButton = '<a class="slide-button next"></a>';
-		this.prevButton = '<a class="slide-button prev"></a>';
+		this.nextButton = '<a class="slide-button next"><div class="container-cursor"><i></i></div></a>';
+		this.prevButton = '<a class="slide-button prev"><div class="container-cursor"><i></i></div></a>';
 	}
 
 
@@ -112,5 +117,24 @@ jQuery(document).ready( function ( $ ) {
 		});
 	});
 	
+	
+	// UI INTERACTION
+	// Display Arrow Cursor
+	$( document ).on( 'mousemove', '.slide-button', function( e ) { 
+		
+		$( this ).find( 'i' ).css({
+			'display': 'block',
+			'top': e.clientY,
+			'left': e.clientX
+		});
+
+	});
+	// Hide Arrow Cursor			   
+	$( 'body' ).on( 'mouseleave', '.slide-button', function() { 
+		
+		$( this ).find( 'i' ).css({
+			'display': 'none',
+		});		
+	});			
 	
 });
