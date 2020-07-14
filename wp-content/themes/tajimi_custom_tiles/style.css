@@ -49,6 +49,7 @@ Nicolas Gallagher and Jonathan Neal https://necolas.github.io/normalize.css/
 # Lazyloading
 # Grid Enhancement
 # Media Queries
+# CAPABILITY QUERIES
 --------------------------------------------------------------*/
 
 /*--------------------------------------------------------------
@@ -3030,5 +3031,22 @@ img.lazyloaded
 		transform: scale(0.75, 0.75);
 		right: 23px !important;
 	}	
+}
+
+
+/*--------------------------------------------------------------
+# CAPABILITY QUERIES
+--------------------------------------------------------------*/
+
+/* touch */
+@media (pointer: coarse) {
+	.container-cursor{
+		display: none;
+	}	
+}
+
+/* mouse */
+@media (pointer: fine) {
+
 }
 

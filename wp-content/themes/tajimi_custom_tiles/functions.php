@@ -521,14 +521,26 @@ function tct_get_portfolio_data_bundle( $class ) {
 
 			case 'method' :
 				// checks if the field contains a value, returns "–" if not
-				$field_output = !( $field_value == '' ) ?  get_term( $field_value ) : '–';
-				$field_output = $field_output->name;
+				$term = !( $field_value == '' ) ? get_term( $field_value ) : '–';
+				$field_output = $term->name;
+				
+				// gets translated term if translation is active
+				if( function_exists( 'pll_default_language' ) && ( pll_current_language() != pll_default_language() ) ){
+					// get the current language
+					$lang = ( pll_current_language() === pll_default_language() ) ? '' : pll_current_language();
+					// get translation in japanese
+					$translation = get_term_by( 'id', pll_get_term( $term->term_id, $lang ), 'tile_category' );
+					// overwrite the variable
+					$field_output = $translation->name;
+				}				
+				
 				$field_title = 'method';
 				break;
 				
 			case 'volume' :
 				// checks if the field contains a value, adds 'm2' to the value, returns "–" if not
 				$field_output = !( $field_value == '' ) && !( $field_value == '0' ) ?  $field_value . 'm2' : '–';
+				$field_output = __( 'Quantity', 'tajimi_custom_tiles' ) . ' ' .  $field_output;
 				$field_title = 'volume';
 				break;
 				
@@ -1208,7 +1220,7 @@ function tct_form_response(){
 	//VARIABLES
 	$tct_subject = '['. get_bloginfo( 'name' ) . ']';
 	$tct_to = 'contact@tajimicustomtiles.jp';
-	$tct_fields = array( 'full_name', 'company', 'address', 'city_state', 'postal_code', 'country', 'phone', 'subject', 'email', 'check_custom-tailored-tiles', 'check_customized-tiles', 'check_existing-tiles', 'message' );
+	$tct_fields = array( 'full_name', 'company', 'address', 'city_state', 'postal_code', 'country', 'phone', 'subject', 'email', 'custom-tailored-tiles', 'customized-tiles', 'existing-tiles', 'message' );
 	$tct_tile_selection = array();
 	$tct_response = array();
 	$posted_data = isset( $_POST ) ? $_POST : array();
@@ -1366,11 +1378,13 @@ function tct_form_response(){
 			// optional checkbox values
 			$tct_message .= __( 'Interested in: ', 'tajimi_custom_tiles' ) . '<br>';
 				$tct_message .= __( 'Custom-tailored tiles', 'tajimi_custom_tiles' ) . ': '; 
-				$tct_message .= ( 'null' != $posted[ 'check_custom-tailored-tiles' ] ) ? 'yes' : 'no' . '<br>';
+				$tct_message .= ( !empty( $posted[ 'custom-tailored-tiles' ] ) ) ? 'yes' : 'not set';
+				$tct_message .= '<br>';
 				$tct_message .= __( 'Customized tiles', 'tajimi_custom_tiles' ) . ': '; 
-				$tct_message .= ( 'null' != $posted[ 'check_customized-tiles' ] ) ? 'yes' : 'no' . '<br>';
+				$tct_message .= ( !empty( $posted[ 'customized-tiles' ] ) ) ? 'yes' : 'not set';
+				$tct_message .= '<br>';
 				$tct_message .= __( 'Existing tiles', 'tajimi_custom_tiles' ) . ': '; 
-				$tct_message .= ( 'null' != $posted[ 'check_existing-tiles' ] ) ? 'yes' : 'no' . '<br>';			
+				$tct_message .= ( !empty( $posted[ 'existing-tiles' ] ) ) ? 'yes' : 'not set';
 			$tct_message .= '</p>';
 			
 			$tct_message .= '<p>';

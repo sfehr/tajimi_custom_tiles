@@ -376,12 +376,19 @@ function tct_register_portfolio_data_metabox() {
 	// METHOD USED FIELD
 	
 	// PLL CHECKS FOR TRANSLATION
-	if ( function_exists( 'pll_current_language' ) ){
-		$lang = ( pll_current_language() === pll_default_language() ) ? '' : '_' . pll_current_language();
+	
+	$category = get_term_by( 'slug', 'tile_production_method', 'tile_category' );
+	$parent_term_id = $category->term_id;
+/*	
+	$parent_term_id_default = $parent_term_id;
+
+	if( function_exists( 'pll_default_language' ) && ( pll_current_language() != pll_default_language() ) ){
+		// get the current language
+		$lang = ( pll_current_language() === pll_default_language() ) ? '' : pll_current_language();
+		// get ID of translation
+		$parent_term_id = pll_get_term( $parent_term_id, $lang );
 	}
-	
-	$category = get_term_by( 'slug', 'tile_production_method' . $lang, 'tile_category' );
-	
+*/	
 	$cmb_portfolio->add_field( array(
 		'name' => 'Method used',
 		'desc' => 'which production method?',
@@ -393,7 +400,8 @@ function tct_register_portfolio_data_metabox() {
 		'get_terms_args' => array(
 			'taxonomy'   => 'tile_category',
 			'hide_empty' => false,
-			'child_of'   => $category->term_id
+			'child_of'   => $parent_term_id,
+			'lang' 		 => '' // default lang only to keep option values (term ids) consistent
 		),		
 	) );
 	
@@ -715,7 +723,19 @@ function cmb2_get_term_options( $field ) {
 	$term_options = array();
 	if ( ! empty( $terms ) ) {
 		foreach ( $terms as $term ) {
-			$term_options[ $term->term_id ] = $term->name;
+			
+			$term_name = $term->name;
+			
+			if( function_exists( 'pll_default_language' ) && ( pll_current_language() != pll_default_language() ) ){
+				// get the current language
+				$lang = ( pll_current_language() === pll_default_language() ) ? '' : pll_current_language();
+				// get translation
+				$translation = get_term_by( 'id', pll_get_term( $term->term_id, $lang ), $taxonomy );
+				// overwrite the variable
+				$term_name = $translation->name;
+			}
+			
+			$term_options[ $term->term_id ] = $term_name;
 		}
 	}
 

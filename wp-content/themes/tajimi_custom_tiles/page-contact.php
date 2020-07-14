@@ -59,17 +59,17 @@ get_header();
 				<fieldset>
 					<legend><?php _e( 'What are you interested in?', 'tajimi_custom_tiles' ); ?></legend>
 					<div>
-						<input type="checkbox" name="tct[custom-tailored-tiles]" id="custom-tailored-tiles" value="<?php echo esc_attr( $_POST['tct']['check_custom-tailored-tiles'] ); ?>">
+						<input type="checkbox" name="tct[custom-tailored-tiles]" id="custom-tailored-tiles">
 						<label for="custom-tailored-tiles"><?php _e( 'Custom-tailored tiles', 'tajimi_custom_tiles' ); ?></label>
 						<div class="tct-ux-tile-check"></div>
 					</div>	
 					<div>
-						<input type="checkbox" name="tct[customized-tiles]" id="customized-tiles" value="<?php echo esc_attr( $_POST['tct']['check_customized-tiles'] ); ?>">
+						<input type="checkbox" name="tct[customized-tiles]" id="customized-tiles">
 						<label for="customized-tiles"><?php _e( 'Customized tiles', 'tajimi_custom_tiles' ); ?></label>
 						<div class="tct-ux-tile-check"></div>
 					</div>
 					<div>
-						<input type="checkbox" name="tct[existing-tiles]" id="existing-tiles" value="<?php echo esc_attr( $_POST['tct']['check_existing-tiles'] ); ?>">
+						<input type="checkbox" name="tct[existing-tiles]" id="existing-tiles">
 						<label for="existing-tiles"><?php _e( 'Existing tiles', 'tajimi_custom_tiles' ); ?></label>
 						<div class="tct-ux-tile-check"></div>
 					</div>					

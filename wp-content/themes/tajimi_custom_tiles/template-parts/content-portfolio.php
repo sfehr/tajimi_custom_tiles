@@ -53,7 +53,7 @@
 	?>	
 	<div class="entry-qa">
 		<input type="checkbox" id="qa-<?php the_ID(); ?>" name="qa-<?php the_ID(); ?>">
-		<label for="qa-<?php the_ID(); ?>"><?php echo esc_html__( 'Q&A', 'tajimi_custom_tiles' ); ?></label>
+		<label for="qa-<?php the_ID(); ?>"><?php echo esc_html__( 'Q&A with the Architect', 'tajimi_custom_tiles' ); ?></label>
 		<div class="entry-content">
 			<?php the_content(); ?>
 		</div><!-- .entry-content -->	
