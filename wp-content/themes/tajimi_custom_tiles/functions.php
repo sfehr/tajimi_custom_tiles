@@ -260,6 +260,19 @@ require_once( dirname(__FILE__) . '/inc/tct-cmb2-functions.php');
  * Add Meta Tags
  */
 function tct_add_meta_tags() {
+	
+	// Google Tag Manager
+	echo "
+		<!-- Google Tag Manager -->
+		<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+		new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+		j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+		'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+		})(window,document,'script','dataLayer','GTM-5HMMGD2');</script>
+		<!-- End Google Tag Manager -->	
+	";
+	
+	
 	// for EN typeface
 	echo '<link rel="stylesheet" href="https://use.typekit.net/wlv6frg.css">';
 	
@@ -279,6 +292,7 @@ function tct_add_meta_tags() {
 		";
 	}
 
+	// Social Media
 	echo '
 	<!-- Primary Meta Tags -->
 	<title>Tajimi Custom Tiles – Bespoke Tiles made in Tajimi, Japan</title>
@@ -298,7 +312,7 @@ function tct_add_meta_tags() {
 	<meta property="twitter:title" content="Tajimi Custom Tiles – Bespoke Tiles made in Tajimi, Japan">
 	<meta property="twitter:description" content="Tajimi City is the center of the Japanese tile industry, with a centuries-old tradition of craftsmanship and excellence. Tajimi Custom Tiles creates custom-tailored tiles in any size, shape, color or texture, using a range of unique production, glazing and firing methods. ">
 	<meta property="twitter:image" content="https://tajimicustomtiles.jp/wp/wp-content/uploads/2020/04/TCT_Logo_mark_og.png">
-	';	
+	';
 	
 }
 add_action('wp_head', 'tct_add_meta_tags');

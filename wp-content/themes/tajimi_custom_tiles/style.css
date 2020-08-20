@@ -1085,17 +1085,16 @@ a:visited
 	text-decoration: none;
 }
 
-a:hover{
-
-}
-
 p{
 	line-height: var(--font-lheight-m);
 	margin: unset;
 }
 
-p a{
-	text-decoration: underline 1.5px;
+p a,
+p a:hover
+{
+	text-decoration: underline;
+	text-decoration-thickness: 1.5px;
 	text-underline-offset: 3px;	
 }
 
@@ -1144,6 +1143,7 @@ h1 {
 	background: white;
 }
 
+.site-header:hover .custom-logo-link,
 .custom-logo-link:hover,
 .home .custom-logo-link:hover
 {
@@ -1161,6 +1161,7 @@ h1 {
 	padding: var(--grid-gap);
 }
 
+.site-header:hover .custom-logo,
 .custom-logo-link .custom-logo:hover,
 .home .shrink .custom-logo-link .custom-logo:hover
 {
@@ -2311,7 +2312,7 @@ img.lazyloaded
 	}
 	
 	.portfolio .entry-media{
-		grid-column: auto / span 5;
+		grid-column: auto / span 7;
 	}
 
 	.portfolio .entry-header{
