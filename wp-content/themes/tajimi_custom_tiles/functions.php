@@ -407,10 +407,14 @@ function modify_vimeo_embed_url( $html ) {
 	
 	// OPTIONS
 	$params .= '&autoplay=1';
-	$params .= '&background=1';
+	$params .= '&muted=1';
+	
+	if( is_post_type_archive( 'production_method' ) ){
+		$params .= '&background=1';
+	}	
 	
 	// RETURN HTML
-	$html = '<iframe src="' . $src[1] . $params . '" frameborder="0" allow="loop autoplay fullscreen" allowfullscreen></iframe>';
+	$html = '<iframe src="' . $src[1] . $params . '" frameborder="0" allow="loop; autoplay; fullscreen" allowfullscreen></iframe>';
 	
 	return $html;
 }
