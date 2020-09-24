@@ -1147,10 +1147,10 @@ h1 {
 .custom-logo-link:hover,
 .home .custom-logo-link:hover
 {
-	width: calc( (var(--grid-column) + 30px) / 2);
+/*	width: calc( (var(--grid-column) + 30px) / 2); */
 	background: url("img/tct_logo_type.svg") no-repeat;
-	height: calc( var(--grid-column) / 2 );
-	transform: translate(-2px, 4.5px);
+/*	height: calc( var(--grid-column) / 2 ); */
+/*	transform: translate(-2px, 4.5px); */
 	margin: var(--grid-gap);
 }
 

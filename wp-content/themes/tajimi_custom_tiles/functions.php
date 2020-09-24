@@ -36,6 +36,8 @@
  * Limiting Gutenbergs Block elements
  * Unsync specified custom fields
  * Adding Title Attribute to Images
+ * remove the image with and height attribute of the image tag
+ * Redirect Handler
  * 
  */
 
@@ -1600,9 +1602,36 @@ function tct_add_img_title( $attr, $attachment = null ){
 }
 
 
-function remove_img_attr( $html ) {
+/** SF:
+ *  remove the image with and height attribute of the image tag
+ */
+function tct_remove_img_attr( $html ) {
     return preg_replace('/(width|height)="\d+"\s/', "", $html) ;
 }
 
 add_filter( 'get_image_tag', 'remove_img_attr' );
 
+
+/** SF:
+ * Redirect Single Custom Post Type Pages to Post Type Archive Page and 404 errors to homepage
+ */
+function tct_redirect_handler( $attr, $attachment = null ){
+
+	$post_type = array( 'brand_story', 'production_method', 'collaborations', 'portfolio', 'sample_tile' );
+	
+	// avoid signle post views and redirect to archive page
+	if ( is_singular( $post_type ) && ( !is_admin() ) && is_singular( $post_type ) ) {
+		global $post;
+		$redirectLink = get_post_type_archive_link( get_post_type() );
+		
+		wp_redirect( $redirectLink, 302 );
+		exit;
+	}
+	
+	// redirect 404 errors to homepage
+    if( is_404() ){
+        wp_redirect( home_url(), 301 );
+        exit();
+    }
+}
+add_action( 'template_redirect', 'tct_redirect_handler' );
