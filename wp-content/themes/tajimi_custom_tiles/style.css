@@ -2666,6 +2666,10 @@ img.lazyloaded
 		position: unset;
 	}
 	
+	.page-template-page-contact .entry-content{
+		width: unset;
+	}
+	
 	span.list-title-pm,
 	span.list-tile-notes,
 	.page-template-tmpl_sample_tiles .sample-tile .tile_production_method,
