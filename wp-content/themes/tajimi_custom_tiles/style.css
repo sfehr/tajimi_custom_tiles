@@ -2036,6 +2036,12 @@ article.brand_story
 	right: -90.5px;	
 }
 
+.tile-submit-container i{
+	position: absolute;
+	top: unset;
+	bottom: 35px;
+}
+
 .slide-button i{
 	display: none;
 	position: fixed;
@@ -2968,10 +2974,12 @@ img.lazyloaded
 	.tile-submit-container p{
 		top: 33% !important;
 	}
-	
+
 	.tile-submit-container i{
-		top: 50% !important;
-	}	
+		left: unset;
+		right: 10px;
+	}
+	
 	
 	#tct-contact-form *{
 		grid-column: 1 / -1;
@@ -3029,8 +3037,7 @@ img.lazyloaded
 	}
 	
 	.tile-submit-container i{
-		transform: scale(0.75, 0.75);
-		right: 23px !important;
+		transform: scale( 0.85 ); 
 	}	
 }
 
