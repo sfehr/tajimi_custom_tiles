@@ -411,7 +411,7 @@ function modify_vimeo_embed_url( $html ) {
 	$params .= '&autoplay=1';
 	$params .= '&muted=1';
 	
-	if( is_post_type_archive( 'production_method' ) ){
+	if( is_post_type_archive( 'brand_story', 'production_method' ) ){
 		$params .= '&background=1';
 	}	
 	
